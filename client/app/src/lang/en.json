@@ -1,0 +1,14 @@
+{
+  "about": {
+    "aboutHeading": "This is an about page(In English)"
+  },
+  "home": {
+    "homeTitle": "This is home page (In English)"
+  },
+  "demo": {
+    "demoHeading": "This is text in English"
+  },
+  "component2": {
+    "title": "This is component 2 text in English (Loaded from file)"
+  }
+}

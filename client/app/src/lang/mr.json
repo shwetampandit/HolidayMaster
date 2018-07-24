@@ -1,0 +1,14 @@
+{
+  "about":{
+    "aboutHeading":"this is about page (In marathi)"
+  },
+  "home": {
+    "homeTitle": "This is home page (In marathi)"
+  },
+  "demo": {
+    "demoHeading": "This is text in Marathi"
+  },
+  "component2": {
+    "title": "This is component 2 text in Marathi (Loaded from file)"
+  }
+}
