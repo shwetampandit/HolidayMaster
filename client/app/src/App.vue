@@ -3,7 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/login">Login</router-link> |
+      <router-link name="loginlink" to="/login">Login</router-link> |
       <router-link to="/i18Demo">Languages</router-link> |
       <router-link to="/mqlRequestDemo">MQL Request</router-link>
     </div>
