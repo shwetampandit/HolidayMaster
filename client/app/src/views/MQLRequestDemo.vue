@@ -18,8 +18,10 @@ import * as serviceNames from '@/serviceNames';
 import Vue from 'vue'
 
 export default {
-    data: {
-        result: null
+    data () {
+        return {
+            result: null
+        }
     },
     methods: {
 
@@ -32,9 +34,15 @@ export default {
                 // Do in case of error
                 Vue.error(error)
             })
-
+            Vue.$MQLFetch(serviceNames.O_COUNTRY).then(res => {
+                this.result = res
+                // Vue.info(res)
+            }).catch(error => {
+                // Do in case of error
+                Vue.error(error)
+            })
         }
-    },
+    }
 }
 </script>
 

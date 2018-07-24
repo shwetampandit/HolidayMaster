@@ -56,7 +56,7 @@ const MQLRequest = {
       })
     }
     /* Post MQLFetch method */
-    Vue.prototype.$MQLFetch = function (serviceKey, postData = null, queryData = null, localStore = false, mutableKey = null) {
+    const MQLFetch = (serviceKey, postData = null, queryData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
@@ -80,6 +80,8 @@ const MQLRequest = {
         }
       })
     }
+    Vue.prototype.$MQLFetch = MQLFetch
+    Vue.MQLFetch = MQLFetch
   }
 }
 
