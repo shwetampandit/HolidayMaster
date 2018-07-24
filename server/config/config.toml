@@ -1,0 +1,6 @@
+# configuration file for ideas
+appname = "Ideas"
+appversion = "0.0.1"
+appport = "8080"
+databasedir = "database/"
+logdir = "logs/"
