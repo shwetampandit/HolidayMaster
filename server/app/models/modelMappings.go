@@ -17,3 +17,8 @@ func GetLoginFilePath() string {
 func GetConfigFilePath() string {
 	return "config/config.toml"
 }
+
+// GetProgramFilePath return programs master
+func GetProgramFilePath() string {
+	return DBROOTPATH + "programs.json"
+}

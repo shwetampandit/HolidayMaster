@@ -1,9 +1,9 @@
 package main
 
 import (
-	"TemplateProject/app"
-	"TemplateProject/app/models"
-	"TemplateProject/routes"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/routes"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/configmdl"
 
@@ -28,6 +28,7 @@ func initializeAll(g *gin.Engine) {
 	loggermdl.Init(models.Config.LogDir, 5, 2048, 2, 1)
 
 	models.DBROOTPATH = models.Config.DatabaseDir
+	loggermdl.LogInfo(models.DBROOTPATH)
 	// Routes Init
 	routes.Init(g)
 

@@ -1,8 +1,9 @@
 package login
 
 import (
-	"TemplateProject/app/models"
 	"encoding/json"
+
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
 

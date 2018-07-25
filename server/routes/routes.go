@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"TemplateProject/middleware"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/middleware"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
 
