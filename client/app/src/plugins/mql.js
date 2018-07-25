@@ -4,19 +4,22 @@ import axios from 'axios'
 const MQLRequest = {
   install (Vue, options) {
     // ------------ Do Not Change it-------------- //
-    var version = options.version || 'default'
-    var region = options.region || 'default'
-    const GET = 'get'
+    var version = process.env.VUE_APP_VERSION
+    var region = options.region
     const POST = 'post'
     // ------------ Do Not Change it-------------- //
 
     const prepareAxiosRequest = (requestType, serviceKey, postParam = null, queryParams = null) => {
       return axios({
-        url: serviceKey.split('.').length > 0
-          ? version + (region.trim() !== ''
-            ? '/' + region : '') + '/' + serviceKey.split('.')[0].toLowerCase() + '/mql' : serviceKey,
+        url: process.env.NODE_ENV !== 'development'
+          ? serviceKey.split('.').length > 0
+            ? version + (region.trim() !== ''
+              ? '/' + region : '') + '/' + serviceKey.split('.')[0].toLowerCase() + '/mql'
+            : serviceKey
+          : serviceKey.split('.')[0].toLowerCase() + '/mql',
+        // url: serviceKey.split('.')[1],
         method: requestType,
-        headers: { 'Service-Header': serviceKey },
+        headers: { 'Service-Header': serviceKey.split('.')[1] },
         data: postParam,
         params: queryParams
       })
@@ -33,16 +36,20 @@ const MQLRequest = {
     Vue.getRegion = function () {
       return region
     }
-    /* Get instance method */
-    Vue.prototype.$Get = function (serviceKey, postData = null, queryData = null, localStore = false, mutableKey = null) {
+
+    /* Post MQLFetch method */
+    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareAxiosRequest(GET, serviceKey, postData, queryData)
+          prepareAxiosRequest(POST, serviceKey, postData)
             .then(function (response) {
               if (localStore) {
                 Vue.localStorage.set(serviceKey, JSON.stringify(response.data))
+              }
+              if (mutableKey !== null) {
+                window.app.$store.commit(mutableKey, response.data)
               }
               resolve(response.data)
             })
@@ -55,13 +62,12 @@ const MQLRequest = {
         }
       })
     }
-    /* Post MQLFetch method */
-    const MQLFetch = (serviceKey, postData = null, queryData = null, localStore = false, mutableKey = null) => {
+    const MQLGet = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareAxiosRequest(POST, serviceKey, postData, queryData)
+          prepareAxiosRequest('get', serviceKey, postData)
             .then(function (response) {
               if (localStore) {
                 Vue.localStorage.set(serviceKey, JSON.stringify(response.data))
@@ -82,6 +88,7 @@ const MQLRequest = {
     }
     Vue.prototype.$MQLFetch = MQLFetch
     Vue.MQLFetch = MQLFetch
+    Vue.MQLGet = MQLGet
   }
 }
 

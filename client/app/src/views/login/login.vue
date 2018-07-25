@@ -7,14 +7,38 @@
             <img src="../../assets/mkcl-logo.png" alt="mkcl logo" class="mb-4" width="100px">
             <div class="form-group">
               <label for="email">Email address</label>
-              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+              <input type="email" v-model="username" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password">
+              <input type="password" v-model="password" @keyup="validatePassword()" @focus="showPassInfo = true" @blur="showPassInfo = false" name="password" class="form-control" id="password" placeholder="Password">
             </div>
-            <button type="submit" class="btn btn-info px-4">Submit</button>
+            <button type="submit" name="btnlogin" @click="authenticate()" class="btn btn-info px-4">Submit</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="aro-pswd_info">
+            <div id="pswd_info" v-show="showPassInfo">
+              <h4>Password must be requirements</h4>
+              <ul>
+                <li id="letter" class="invalid">At least
+                  <strong>one letter</strong>
+                </li>
+                <li id="capital" class="invalid">At least
+                  <strong>one capital letter</strong>
+                </li>
+                <li id="number" class="invalid">At least
+                  <strong>one number</strong>
+                </li>
+                <li id="length" class="invalid">Be at least
+                  <strong>8 characters</strong>
+                </li>
+                <li id="space" class="invalid">be
+                  <strong> use [~,!,@,#,$,%,^,&,*,-,=,.,;,']</strong>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -23,8 +47,81 @@
 </template>
 
 <script>
+import Vue from 'vue'
 export default {
+  data () {
+    return {
+      username: '',
+      password: '',
+      showPassInfo: false
+    }
+  },
+  methods: {
+    authenticate () {
+      this.$store.dispatch('AUTH_REQUEST', { username: this.username, password: this.password }).then(res => {
+        //Redirect to next page after suucessfull login
+      })
+        .catch(err => {
+          Vue.error(err)
+        })
+    },
+    validatePassword () {
+      //validate password length
+      if (this.password.length < 8) {
+        var showLengthMsg = document.getElementById('length')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      } else {
+        var showLengthMsg = document.getElementById('length')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      }
 
+      //validate letter
+      if (this.password.match(/[A-z]/)) {
+        var showLengthMsg = document.getElementById('letter')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('letter')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+
+      //validate capital letter
+      if (this.password.match(/[A-Z]/)) {
+        var showLengthMsg = document.getElementById('capital')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('capital')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+
+      //validate number
+      if (this.password.match(/\d/)) {
+        var showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+
+      //validate space
+      if (this.password.match(/[^a-zA-Z0-9\-\/]/)) {
+        var showLengthMsg = document.getElementById('space')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('space')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+    }
+  }
 }
 </script>
 
@@ -34,5 +131,56 @@ export default {
     box-shadow: 0 0 10px #ccc;
     padding: 30px;
   }
+}
+#pswd_info {
+  background: #dfdfdf none repeat scroll 0 0;
+  color: #fff;
+  left: 20px;
+  position: absolute;
+  top: 115px;
+}
+#pswd_info h4 {
+  background: black none repeat scroll 0 0;
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0;
+  padding: 17px 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+#pswd_info ul {
+  list-style: outside none none;
+}
+#pswd_info ul li {
+  padding: 10px 45px;
+}
+
+.valid {
+  background: rgba(0, 0, 0, 0)
+    url("https://s19.postimg.org/vq43s2wib/valid.png") no-repeat scroll 2px 6px;
+  color: green;
+  line-height: 21px;
+  padding-left: 22px;
+}
+
+.invalid {
+  background: rgba(0, 0, 0, 0)
+    url("https://s19.postimg.org/olmaj1p8z/invalid.png") no-repeat scroll 2px
+    6px;
+  color: red;
+  line-height: 21px;
+  padding-left: 22px;
+}
+
+#pswd_info::before {
+  background: #dfdfdf none repeat scroll 0 0;
+  content: "";
+  height: 25px;
+  left: -13px;
+  margin-top: -12.5px;
+  position: absolute;
+  top: 50%;
+  transform: rotate(45deg);
+  width: 25px;
 }
 </style>
