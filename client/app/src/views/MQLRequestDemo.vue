@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import * as serviceNames from '@/serviceNames';
+import { services } from '@/plugins/services';
 import Vue from 'vue'
 
 export default {
@@ -26,8 +26,8 @@ export default {
     methods: {
 
         GetAllPosts () {
-
-            this.$MQLFetch(serviceNames.O_COUNTRY).then(res => {
+            console.log(services.options)
+            this.$MQLFetch(services.options.O_Country).then(res => {
                 this.result = res
                 // Vue.info(res)
             }).catch(error => {
@@ -35,7 +35,7 @@ export default {
                 Vue.error(error)
             })
 
-            Vue.MQLFetch(serviceNames.O_COUNTRY).then(res => {
+            Vue.MQLFetch(services.options.O_State).then(res => {
                 this.result = res
                 // Vue.info(res)
             }).catch(error => {

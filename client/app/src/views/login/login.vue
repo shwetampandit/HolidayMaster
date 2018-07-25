@@ -90,11 +90,33 @@ export default {
 
       //validate capital letter
       if (this.password.match(/[A-Z]/)) {
-        var showLengthMsg = document.getElementById('letter')
+        var showLengthMsg = document.getElementById('capital')
         showLengthMsg.classList.remove('invalid')
         showLengthMsg.classList.add('valid')
       } else {
-        var showLengthMsg = document.getElementById('letter')
+        var showLengthMsg = document.getElementById('capital')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+
+      //validate number
+      if (this.password.match(/\d/)) {
+        var showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
+      }
+
+      //validate space
+      if (this.password.match(/[^a-zA-Z0-9\-\/]/)) {
+        var showLengthMsg = document.getElementById('space')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
+      } else {
+        var showLengthMsg = document.getElementById('space')
         showLengthMsg.classList.remove('valid')
         showLengthMsg.classList.add('invalid')
       }

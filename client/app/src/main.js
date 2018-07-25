@@ -5,14 +5,15 @@ import store from '@/store'
 import './registerServiceWorker'
 import axios from 'axios'
 import logger from './plugins/logger.js'
-import mqlRequest from './plugins/mqlRequest.js'
+import mql from './plugins/mql.js'
+import { services } from '@/plugins/services'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
-
+console.log(process.env.NODE_ENV)
 const optionsLogger = {
   // optional : defaults to true if not specified
   isEnabled: true,
@@ -31,8 +32,13 @@ axios.defaults.baseURL = 'http://localhost:8080/server/'
 // delete axios.defaults.headers.common['Authorization']
 
 Vue.use(logger, optionsLogger)
-Vue.use(mqlRequest, {})
+Vue.use(mql, {})
 Vue.use(VueLocalStorage)
+
+// TODO: Call MQLFetch instead of MQLGet
+// Vue.MQLGet('O.services').then(res => {
+//   services.options = res
+// })
 
 router.beforeEach((to, from, next) => {
   loadLanguageAsync(to.meta.lang).then(() => next())

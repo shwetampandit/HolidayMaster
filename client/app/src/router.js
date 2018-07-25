@@ -37,6 +37,12 @@ export default new Router({
       name: 'i18Demo',
       component: () => import('@/views/I18Demo'),
       meta: { title: 'Language Demo' }
+    },
+    {
+      path: '/validator',
+      name: 'validator',
+      component: () => import('@/views/Validator'),
+      meta: { title: 'Validator' }
     }
   ]
 })
