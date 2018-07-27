@@ -27,7 +27,7 @@ func GetProgramsMaster() {
 	service := servicebuildermdl.GetSB("GetProgramsMaster", &blProgram.AbstractBusinessLogicHolder).
 		AddStep("Fetch Program", "$1 == true", blProgram.GetProgramFileData, blProgram.FetchProgram, nil)
 
-	routebuildermdl.RegisterMasterService("GetProgramsMaster", service, false, false)
+	routebuildermdl.RegisterMasterService("GetProgramsMaster", service, true, true)
 }
 
 // GetProgramFileData load program file data
