@@ -1,5 +1,10 @@
 package models
 
+const (
+	// JWTKey is jwt auth token creation key
+	JWTKey = "mysupersecretpassword"
+)
+
 var (
 	// DBROOTPATH global db path
 	DBROOTPATH = ""
