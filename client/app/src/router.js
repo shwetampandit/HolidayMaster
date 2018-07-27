@@ -43,6 +43,12 @@ export default new Router({
       name: 'validator',
       component: () => import('@/views/Validator'),
       meta: { title: 'Validator' }
+    },
+    {
+      path: '/browserCompatibility',
+      name: 'browserCompatibility',
+      component: () => import('@/views/BrowserCompatibility'),
+      meta: { title: 'Browser Compatibility' }
     }
   ]
 })
