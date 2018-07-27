@@ -6,7 +6,6 @@ import './registerServiceWorker'
 import axios from 'axios'
 import logger from './plugins/logger.js'
 import mql from './plugins/mql.js'
-import { services } from '@/plugins/services'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 
@@ -34,11 +33,6 @@ axios.defaults.baseURL = 'http://localhost:8080/server/'
 Vue.use(logger, optionsLogger)
 Vue.use(mql, {})
 Vue.use(VueLocalStorage)
-
-// TODO: Call MQLFetch instead of MQLGet
-// Vue.MQLGet('O.services').then(res => {
-//   services.options = res
-// })
 
 router.beforeEach((to, from, next) => {
   loadLanguageAsync(to.meta.lang).then(() => next())
