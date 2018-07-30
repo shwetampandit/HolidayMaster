@@ -27,6 +27,12 @@ export default new Router({
       meta: { title: 'Login', lang: 'mr' }
     },
     {
+      path: '/registration',
+      name: 'registration',
+      component: () => import('@/views/Registration.vue'),
+      meta: { title: 'Registration', lang: 'mr' }
+    },
+    {
       path: '/mqlRequestDemo',
       name: 'mqlRequestDemo',
       component: () => import('@/views/MQLRequestDemo'),

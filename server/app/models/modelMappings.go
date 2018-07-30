@@ -27,3 +27,8 @@ func GetConfigFilePath() string {
 func GetProgramFilePath() string {
 	return DBROOTPATH + "programs.json"
 }
+
+// GetUserFilePath return UserFilePath
+func GetUserFilePath(fileName string) string {
+	return DBROOTPATH + "userPic/" + fileName + ".jpg"
+}

@@ -2,6 +2,7 @@ package login
 
 import (
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
+	"github.com/tidwall/sjson"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
 
@@ -37,4 +38,26 @@ func (m *BLHolder) CheckLogin() (map[string]interface{}, error) {
 func (m *BLHolder) ErrorFunction() (map[string]interface{}, error) {
 	// You can write your recovery logic here
 	return nil, errormdl.Wrap("User Not Found")
+}
+
+// AppendToLoginData append object in login data
+func (m *BLHolder) AppendToLoginData() (map[string]interface{}, error) {
+	inputData, ok := m.GetDataInterface("inputData")
+	if !ok {
+		return nil, errormdl.Wrap("Data Not Found: inputData")
+	}
+	rs, ok1 := m.GetDataResultset("loginData")
+	if !ok1 {
+		return nil, errormdl.Wrap("Data Not Found")
+	}
+
+	result, setError := sjson.Set(rs.String(), "-1", inputData)
+	if setError != nil {
+		loggermdl.LogError(setError)
+		return nil, setError
+	}
+	m.SetFinalData(result)
+	return map[string]interface{}{
+		"$1": len(result),
+	}, nil
 }
