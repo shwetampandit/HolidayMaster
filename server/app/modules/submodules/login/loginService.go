@@ -2,6 +2,13 @@ package login
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"mime/multipart"
+
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/utiliymdl/guidmdl"
+
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/filemdl"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
 
@@ -37,6 +44,9 @@ func Init() {
 
 	// Register Your serviced with restricted and role based configuration
 	routebuildermdl.RegisterNormalService("LoginService", CheckLoginService, false, false)
+
+	routebuildermdl.RegisterFormBasedService("RegisterUserService", RegisterUserService, false, true)
+
 }
 
 // CheckLoginService is login service return result and error
@@ -76,7 +86,7 @@ func (blHolder *BLHolder) GetLoginFileData(ab *servicebuildermdl.AbstractBusines
 		// FilePath Set file Path
 		FilePath(models.GetLoginFilePath()).
 		// IsCacheable cache your data with query
-		IsCacheable(true).
+		IsCacheable(false).
 		// You can use queries while fetching data from FDB
 		// for more information kindly visit http://github.com/tidwall/gjson
 		Query("*").
@@ -86,5 +96,96 @@ func (blHolder *BLHolder) GetLoginFileData(ab *servicebuildermdl.AbstractBusines
 	}
 	// SetResultset set result of DAO for further use
 	blHolder.SetResultset("loginData", data)
+	return nil
+}
+
+// RegisterUserService RegisterUser in fdb
+func RegisterUserService(form *multipart.Form) (interface{}, error) {
+	files, ok := form.File["file"]
+	fmt.Println(len(files))
+	if !ok {
+		err := errormdl.Wrap("File attribute Not found")
+		loggermdl.LogError(err)
+		return nil, err
+	}
+	user, extractErr := extractRegistrationServiceData(form)
+	if extractErr != nil {
+		loggermdl.LogError(extractErr)
+		return nil, extractErr
+	}
+	blHolder := BLHolder{}
+	blHolder.Build()
+	blHolder.SetCustomData("inputData", user)
+	_, err := servicebuildermdl.GetSB("RegisterUserService", &blHolder.AbstractBusinessLogicHolder).
+		AddStep("Step 1", "$1 > 0", blHolder.GetLoginFileData, blHolder.AppendToLoginData, blHolder.ErrorFunction).
+		Run(saveUserInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	saveError := SaveUserPic(files[0], user.UserID)
+	if saveError != nil {
+		loggermdl.LogError(saveError)
+		return nil, saveError
+	}
+	return user, nil
+}
+
+func saveUserInfo(ab *servicebuildermdl.AbstractBusinessLogicHolder) (*interface{}, error) {
+	result := ab.GetFinalData()
+	out := *result
+	ba := []byte(out.(string))
+	saveError := filemdl.GetInstance().Save(models.GetLoginFilePath(), ba, true, false)
+	if saveError != nil {
+		loggermdl.LogError(saveError)
+		return nil, saveError
+	}
+	return result, nil
+}
+
+func extractRegistrationServiceData(form *multipart.Form) (models.Login, error) {
+	user := models.Login{}
+
+	loginID, ok := form.Value["loginId"]
+	if !ok {
+		err := errormdl.Wrap("loginId attribute Not found")
+		loggermdl.LogError(err)
+		return user, err
+	}
+	user.LoginID = loginID[0]
+
+	password, ok := form.Value["password"]
+	if !ok {
+		err := errormdl.Wrap("password attribute Not found")
+		loggermdl.LogError(err)
+		return user, err
+	}
+	user.Password = password[0]
+	groups, ok := form.Value["group"]
+	if ok {
+		user.Group = groups
+	}
+	user.UserID = guidmdl.GetGUID()
+	return user, nil
+}
+
+// SaveUserPic save user display pic
+func SaveUserPic(file *multipart.FileHeader, userID string) error {
+	multipartFile, openError := file.Open()
+	if openError != nil {
+		loggermdl.LogError(openError)
+		return openError
+	}
+	ba, readError := ioutil.ReadAll(multipartFile)
+	if readError != nil {
+		loggermdl.LogError(readError)
+		return readError
+	}
+	path := models.GetUserFilePath(userID)
+	saveError := filemdl.GetInstance().Save(path, ba, true, false)
+	if saveError != nil {
+		loggermdl.LogError(saveError)
+		return saveError
+	}
 	return nil
 }

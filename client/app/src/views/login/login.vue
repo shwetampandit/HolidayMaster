@@ -12,7 +12,7 @@
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" v-model="password" @keyup="validatePassword()" @focus="showPassInfo = true" @blur="showPassInfo = false" name="password" class="form-control" id="password" placeholder="Password">
+              <input type="password" v-model="password"  @focus="showPassInfo = true" @blur="showPassInfo = false" name="password" class="form-control" id="password" placeholder="Password">
             </div>
             <button type="submit" name="btnlogin" @click="authenticate()" class="btn btn-info px-4">Submit</button>
           </div>
@@ -47,82 +47,97 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import Vue from "vue";
+import * as services from "@/plugins/services";
 export default {
-  data () {
+  data() {
     return {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       showPassInfo: false
-    }
+    };
   },
   methods: {
-    authenticate () {
-      this.$store.dispatch('AUTH_REQUEST', { username: this.username, password: this.password }).then(res => {
-        //Redirect to next page after suucessfull login
-      })
-        .catch(err => {
-          Vue.error(err)
+    authenticate() {
+      // this.$store.dispatch('AUTH_REQUEST', { username: this.username, password: this.password }).then(res => {
+      //   //Redirect to next page after suucessfull login
+      // })
+      //   .catch(err => {
+      //     Vue.error(err)
+      //   })
+
+      let req = {
+        loginId: this.username,
+        password: this.password
+      };
+      this.$MQLFetch(services.O_LOGINSERVICE, req)
+        .then(res => {
+          // alert(JSON.stringify(res));
+          this.$router.push("/");
         })
+        .catch(error => {
+          // Do in case of error
+          Vue.error(error);
+        });
     },
-    validatePassword () {
+    validatePassword() {
       //validate password length
       if (this.password.length < 8) {
-        var showLengthMsg = document.getElementById('length')
-        showLengthMsg.classList.remove('valid')
-        showLengthMsg.classList.add('invalid')
+        var showLengthMsg = document.getElementById("length");
+        showLengthMsg.classList.remove("valid");
+        showLengthMsg.classList.add("invalid");
       } else {
-        var showLengthMsg = document.getElementById('length')
-        showLengthMsg.classList.remove('invalid')
-        showLengthMsg.classList.add('valid')
+        var showLengthMsg = document.getElementById("length");
+        showLengthMsg.classList.remove("invalid");
+        showLengthMsg.classList.add("valid");
       }
 
       //validate letter
       if (this.password.match(/[A-z]/)) {
-        var showLengthMsg = document.getElementById('letter')
-        showLengthMsg.classList.remove('invalid')
-        showLengthMsg.classList.add('valid')
+        var showLengthMsg = document.getElementById("letter");
+        showLengthMsg.classList.remove("invalid");
+        showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById('letter')
-        showLengthMsg.classList.remove('valid')
-        showLengthMsg.classList.add('invalid')
+        var showLengthMsg = document.getElementById("letter");
+        showLengthMsg.classList.remove("valid");
+        showLengthMsg.classList.add("invalid");
       }
 
       //validate capital letter
       if (this.password.match(/[A-Z]/)) {
-        var showLengthMsg = document.getElementById('capital')
-        showLengthMsg.classList.remove('invalid')
-        showLengthMsg.classList.add('valid')
+        var showLengthMsg = document.getElementById("capital");
+        showLengthMsg.classList.remove("invalid");
+        showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById('capital')
-        showLengthMsg.classList.remove('valid')
-        showLengthMsg.classList.add('invalid')
+        var showLengthMsg = document.getElementById("capital");
+        showLengthMsg.classList.remove("valid");
+        showLengthMsg.classList.add("invalid");
       }
 
       //validate number
       if (this.password.match(/\d/)) {
-        var showLengthMsg = document.getElementById('number')
-        showLengthMsg.classList.remove('invalid')
-        showLengthMsg.classList.add('valid')
+        var showLengthMsg = document.getElementById("number");
+        showLengthMsg.classList.remove("invalid");
+        showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById('number')
-        showLengthMsg.classList.remove('valid')
-        showLengthMsg.classList.add('invalid')
+        var showLengthMsg = document.getElementById("number");
+        showLengthMsg.classList.remove("valid");
+        showLengthMsg.classList.add("invalid");
       }
 
       //validate space
       if (this.password.match(/[^a-zA-Z0-9\-\/]/)) {
-        var showLengthMsg = document.getElementById('space')
-        showLengthMsg.classList.remove('invalid')
-        showLengthMsg.classList.add('valid')
+        var showLengthMsg = document.getElementById("space");
+        showLengthMsg.classList.remove("invalid");
+        showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById('space')
-        showLengthMsg.classList.remove('valid')
-        showLengthMsg.classList.add('invalid')
+        var showLengthMsg = document.getElementById("space");
+        showLengthMsg.classList.remove("valid");
+        showLengthMsg.classList.add("invalid");
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

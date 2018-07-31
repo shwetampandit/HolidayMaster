@@ -26,7 +26,7 @@ export default {
     methods: {
 
         GetAllPosts () {
-            console.log(services.options)
+            // console.log(services.options)
             this.$MQLFetch(services.O_COUNTRY).then(res => {
                 this.result = res
                 // Vue.info(res)

@@ -36,6 +36,7 @@ func (blProgram *BLProgram) GetProgramFileData(bl *servicebuildermdl.AbstractBus
 	if errormdl.CheckErr(err) != nil {
 		return errormdl.CheckErr(err)
 	}
+
 	blProgram.SetFinalData(programs.Value())
 	return nil
 }
