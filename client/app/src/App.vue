@@ -7,7 +7,8 @@
       <router-link to="/i18Demo">Languages</router-link> |
       <router-link to="/mqlRequestDemo">MQL Request</router-link> |
       <router-link to="/validator">Validator</router-link> |
-      <router-link to="/browserCompatibility">Compatiblity</router-link>
+      <router-link to="/browserCompatibility">Compatiblity</router-link> |
+      <router-link to="/encryption">EncryptDecypt</router-link>
     </div>
     <router-view/>
   </div>

@@ -49,6 +49,12 @@ export default new Router({
       name: 'browserCompatibility',
       component: () => import('@/views/BrowserCompatibility'),
       meta: { title: 'Browser Compatibility' }
+    },
+    {
+      path: '/encryption',
+      name: 'encryption',
+      component: () => import('@/views/Encryption'),
+      meta: { title: 'Encrypt' }
     }
   ]
 })
