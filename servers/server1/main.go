@@ -1,9 +1,9 @@
 package main
 
 import (
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app"
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/routes"
+	_ "GolangFullStack/servers/server1/app"
+	"GolangFullStack/servers/server1/app/models"
+	"GolangFullStack/servers/server1/routes"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/configmdl"
 
@@ -32,8 +32,6 @@ func initializeAll(g *gin.Engine) {
 	// Routes Init
 	routes.Init(g)
 
-	// App Init
-	app.Init()
 }
 
 func setconfig() error {

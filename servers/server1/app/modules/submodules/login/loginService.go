@@ -10,26 +10,26 @@ import (
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/filemdl"
 
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
-
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/dalmdl/dao"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
 
+	"GolangFullStack/servers/server1/app/models"
+
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/loggermdl"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/servicebuildermdl"
 )
 
-// BLHolder inherits servicebuildermdl
-type BLHolder struct {
+// BLLogin inherits servicebuildermdl
+type BLLogin struct {
 	servicebuildermdl.AbstractBusinessLogicHolder
 }
 
 // Init - login package initialise
-func Init() {
+func init() {
 	// This is response header as an optional data send with result
 	// This response header is apply when LoginService called
 	routebuildermdl.CreateResponseHeader("LoginService").
@@ -43,7 +43,7 @@ func Init() {
 		SetResponseHeader()
 
 	// Register Your serviced with restricted and role based configuration
-	routebuildermdl.RegisterNormalService("LoginService", CheckLoginService, false, false)
+	//routebuildermdl.RegisterNormalService("LoginService", CheckLoginService, false, false)
 
 	routebuildermdl.RegisterFormBasedService("RegisterUserService", RegisterUserService, false, true)
 
@@ -58,17 +58,17 @@ func CheckLoginService(data []byte) (interface{}, error) {
 		loggermdl.LogError(unmarshalError)
 		return nil, errormdl.CheckErr(unmarshalError)
 	}
-	// create new instance of BLHolder per Service
-	blHolder := BLHolder{}
+	// create new instance of BLLogin per Service
+	blLogin := BLLogin{}
 	// This allocate memory for each service
-	blHolder.Build()
+	blLogin.New()
 	// SetCustomData insert any custom data you want to use further
-	blHolder.SetCustomData("inputData", login)
+	blLogin.SetCustomData("inputData", login)
 	// GetSB returns serviceBuilder instance
-	result, err := servicebuildermdl.GetSB("LoginService", &blHolder.AbstractBusinessLogicHolder).
+	result, err := servicebuildermdl.GetSB("LoginService", &blLogin.AbstractBusinessLogicHolder).
 		// AddStep add step by step BL logics in your service
 		// For more information visit http://github.com/oleksandr/conditions
-		AddStep("Step 1", "$1 ==  true", blHolder.GetLoginFileData, blHolder.CheckLogin, blHolder.ErrorFunction).
+		AddStep("Step 1", "$1 ==  true", blLogin.GetLoginFileData, blLogin.CheckLogin, blLogin.ErrorFunction).
 		// Run Method with exceute your logic and return result and error as per
 		Run(nil)
 	if err != nil {
@@ -80,13 +80,13 @@ func CheckLoginService(data []byte) (interface{}, error) {
 
 // GetLoginFileData is return login file data
 // This function is used to get data from fdb by calling generic DAO
-func (blHolder *BLHolder) GetLoginFileData(ab *servicebuildermdl.AbstractBusinessLogicHolder) error {
+func (blLogin *BLLogin) GetLoginFileData(ab *servicebuildermdl.AbstractBusinessLogicHolder) error {
 	// GetDAO return instance of dalmdl
 	data, err := dalmdl.GetDAO().
 		// FilePath Set file Path
 		FilePath(models.GetLoginFilePath()).
 		// IsCacheable cache your data with query
-		IsCacheable(false).
+		IsCacheable().
 		// You can use queries while fetching data from FDB
 		// for more information kindly visit http://github.com/tidwall/gjson
 		Query("*").
@@ -95,7 +95,7 @@ func (blHolder *BLHolder) GetLoginFileData(ab *servicebuildermdl.AbstractBusines
 		return err
 	}
 	// SetResultset set result of DAO for further use
-	blHolder.SetResultset("loginData", data)
+	blLogin.SetResultset("loginData", data)
 	return nil
 }
 
@@ -113,11 +113,11 @@ func RegisterUserService(form *multipart.Form) (interface{}, error) {
 		loggermdl.LogError(extractErr)
 		return nil, extractErr
 	}
-	blHolder := BLHolder{}
-	blHolder.Build()
-	blHolder.SetCustomData("inputData", user)
-	_, err := servicebuildermdl.GetSB("RegisterUserService", &blHolder.AbstractBusinessLogicHolder).
-		AddStep("Step 1", "$1 > 0", blHolder.GetLoginFileData, blHolder.AppendToLoginData, blHolder.ErrorFunction).
+	blLogin := BLLogin{}
+	blLogin.New()
+	blLogin.SetCustomData("inputData", user)
+	_, err := servicebuildermdl.GetSB("RegisterUserService", &blLogin.AbstractBusinessLogicHolder).
+		AddStep("Step 1", "$1 > 0", blLogin.GetLoginFileData, blLogin.AppendToLoginData, blLogin.ErrorFunction).
 		Run(saveUserInfo)
 	if err != nil {
 		return nil, err

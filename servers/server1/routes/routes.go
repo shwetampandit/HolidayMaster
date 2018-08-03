@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/middleware"
+	"GolangFullStack/servers/server1/middleware"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
 
