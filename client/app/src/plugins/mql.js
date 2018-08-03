@@ -8,7 +8,20 @@ const MQLRequest = {
     var region = options.region
     const POST = 'post'
     // ------------ Do Not Change it-------------- //
+    const deepFreeze = (object) => {
+      // Retrieve the property names defined on object
+      var propNames = Object.getOwnPropertyNames(object)
+      // Freeze properties before freezing self
 
+      for (let name of propNames) {
+        let value = object[name]
+
+        object[name] = value && typeof value === 'object'
+          ? deepFreeze(value) : value
+      }
+
+      return Object.freeze(object)
+    }
     const prepareAxiosRequest = (requestType, serviceKey, postParam = null, queryParams = null) => {
       return axios({
         url: process.env.NODE_ENV !== 'development'
@@ -45,13 +58,40 @@ const MQLRequest = {
         } else {
           prepareAxiosRequest(POST, serviceKey, postData)
             .then(function (response) {
+              var data = deepFreeze(response.data)
               if (localStore) {
-                Vue.localStorage.set(serviceKey, JSON.stringify(response.data))
+                Vue.localStorage.set(serviceKey, JSON.stringify(data))
               }
               if (mutableKey !== null) {
-                window.app.$store.commit(mutableKey, response.data)
+                window.app.$store.commit(mutableKey, data)
               }
-              resolve(response.data)
+              resolve(data)
+            })
+            .catch(function (error) {
+              reject(error)
+            })
+            .then(function () {
+              resolve('do something')
+            })
+        }
+      })
+    }
+    /** ******* SLOW MQL Fetch ****************/
+    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
+      return new Promise((resolve, reject) => {
+        if (localStore && Vue.localStorage.get(serviceKey) !== null) {
+          resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
+        } else {
+          prepareAxiosRequest(POST, serviceKey, postData)
+            .then(function (response) {
+              var data = response.data
+              if (localStore) {
+                Vue.localStorage.set(serviceKey, JSON.stringify(data))
+              }
+              if (mutableKey !== null) {
+                window.app.$store.commit(mutableKey, data)
+              }
+              resolve(data)
             })
             .catch(function (error) {
               reject(error)
@@ -88,6 +128,8 @@ const MQLRequest = {
     }
     Vue.prototype.$MQLFetch = MQLFetch
     Vue.MQLFetch = MQLFetch
+    Vue.prototype.$SlowMQLFetch = SlowMQLFetch
+    Vue.SlowMQLFetch = SlowMQLFetch
     Vue.MQLGet = MQLGet
   }
 }
