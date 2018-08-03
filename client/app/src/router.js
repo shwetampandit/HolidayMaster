@@ -1,65 +1,65 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
 
 Vue.use(Router)
-
+function loadView (view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`)
+}
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: loadView('Home'),
       meta: { title: 'Home' }
     },
     {
       path: '/about',
       name: 'about',
-      component: About,
+      component: loadView('About'),
       meta: { title: 'About' }
     },
     {
       path: '/login',
       name: 'login',
       // TODO: Change login.vue to Login.vue
-      component: () => import('@/views/login/login'),
+      component: loadView('login'),
       meta: { title: 'Login', lang: 'mr' }
     },
     {
       path: '/registration',
       name: 'registration',
-      component: () => import('@/views/Registration.vue'),
+      component: loadView('Registration'),
       meta: { title: 'Registration', lang: 'mr' }
     },
     {
       path: '/mqlRequestDemo',
       name: 'mqlRequestDemo',
-      component: () => import('@/views/MQLRequestDemo'),
+      component: loadView('MQLRequestDemo'),
       meta: { title: 'MQLRequestDemo' }
     },
     {
       path: '/i18Demo',
       name: 'i18Demo',
-      component: () => import('@/views/I18Demo'),
+      component: loadView('I18Demo'),
       meta: { title: 'Language Demo' }
     },
     {
       path: '/validator',
       name: 'validator',
-      component: () => import('@/views/Validator'),
+      component: loadView('Validator'),
       meta: { title: 'Validator' }
     },
     {
       path: '/browserCompatibility',
       name: 'browserCompatibility',
-      component: () => import('@/views/BrowserCompatibility'),
+      component: loadView('BrowserCompatibility'),
       meta: { title: 'Browser Compatibility' }
     },
     {
       path: '/encryption',
       name: 'encryption',
-      component: () => import('@/views/Encryption'),
+      component: loadView('Encryption'),
       meta: { title: 'Encrypt' }
     }
   ]
