@@ -2,5 +2,5 @@ package app
 
 //  Register project wise submodules here
 import (
-	_ "GolangFullStack/server/app/modules/submodules"
+	_ "GolangFullStack/servers/server1/app/modules/submodules"
 )

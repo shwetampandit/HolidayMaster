@@ -1,9 +1,7 @@
 package program
 
 import (
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
-
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
+	"GolangFullStack/servers/server1/app/models"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/dalmdl/dao"
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
@@ -23,11 +21,11 @@ type BLProgram struct {
 // GetProgramsMaster is used to get program file
 func GetProgramsMaster() {
 	blProgram := BLProgram{}
-	blProgram.Build()
-	service := servicebuildermdl.GetSB("GetProgramsMaster", &blProgram.AbstractBusinessLogicHolder).
-		AddStep("Fetch Program", "$1 == true", blProgram.GetProgramFileData, blProgram.FetchProgram, nil)
+	blProgram.New()
+	// service := servicebuildermdl.GetSB("GetProgramsMaster", &blProgram.AbstractBusinessLogicHolder).
+	// 	AddStep("Fetch Program", "$1 == true", blProgram.GetProgramFileData, blProgram.FetchProgram, nil)
 
-	routebuildermdl.RegisterMasterService("GetProgramsMaster", service, true, true)
+	// routebuildermdl.RegisterMasterService("GetProgramsMaster", service, true, true)
 }
 
 // GetProgramFileData load program file data

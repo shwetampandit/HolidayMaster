@@ -1,9 +1,9 @@
 package login
 
 import (
-	"GolangFullStack/server/app/models"
+	"GolangFullStack/servers/server1/app/models"
 
-	"github.com/tidwall/sjsons"
+	"github.com/tidwall/sjson"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
 
@@ -11,7 +11,7 @@ import (
 )
 
 // CheckLogin verify usename and password
-func (m *BLHolder) CheckLogin() (map[string]interface{}, error) {
+func (m *BLLogin) CheckLogin() (map[string]interface{}, error) {
 	inputData, ok := m.GetDataInterface("inputData")
 	if !ok {
 		return nil, errormdl.Wrap("Data Not Found: inputData")
@@ -36,13 +36,13 @@ func (m *BLHolder) CheckLogin() (map[string]interface{}, error) {
 }
 
 // ErrorFunction is a recovery function, execute while your output validation fails
-func (m *BLHolder) ErrorFunction() (map[string]interface{}, error) {
+func (m *BLLogin) ErrorFunction() (map[string]interface{}, error) {
 	// You can write your recovery logic here
 	return nil, errormdl.Wrap("User Not Found")
 }
 
 // AppendToLoginData append object in login data
-func (m *BLHolder) AppendToLoginData() (map[string]interface{}, error) {
+func (m *BLLogin) AppendToLoginData() (map[string]interface{}, error) {
 	inputData, ok := m.GetDataInterface("inputData")
 	if !ok {
 		return nil, errormdl.Wrap("Data Not Found: inputData")
