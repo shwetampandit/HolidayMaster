@@ -10,13 +10,13 @@ import (
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/filemdl"
 
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
-
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/dalmdl/dao"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
+
+	"GolangFullStack/server/app/models"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/loggermdl"
 
@@ -29,7 +29,7 @@ type BLHolder struct {
 }
 
 // Init - login package initialise
-func Init() {
+func init() {
 	// This is response header as an optional data send with result
 	// This response header is apply when LoginService called
 	routebuildermdl.CreateResponseHeader("LoginService").

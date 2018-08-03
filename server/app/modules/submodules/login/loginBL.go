@@ -1,8 +1,9 @@
 package login
 
 import (
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/models"
-	"github.com/tidwall/sjson"
+	"GolangFullStack/server/app/models"
+
+	"github.com/tidwall/sjsons"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
 

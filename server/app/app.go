@@ -1,12 +1,6 @@
 package app
 
+//  Register project wise submodules here
 import (
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/modules/submodules/login"
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/GolangFullStack/server/app/modules/submodules/program"
+	_ "GolangFullStack/server/app/modules/submodules"
 )
-
-// Init :- all packages
-func Init() {
-	login.Init()
-	program.Init()
-}

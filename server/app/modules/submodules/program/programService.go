@@ -11,7 +11,7 @@ import (
 )
 
 // Init :- program Package
-func Init() {
+func init() {
 	GetProgramsMaster()
 }
 
