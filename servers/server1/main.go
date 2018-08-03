@@ -6,6 +6,7 @@ import (
 	"GolangFullStack/servers/server1/routes"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/configmdl"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/dalmdl/mongodb"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/loggermdl"
 
@@ -40,5 +41,11 @@ func setconfig() error {
 		loggermdl.LogError("err: ", err)
 		return err
 	}
+
+	mongoConErr := mongodb.Init("config/mongo-config.toml", "clickerpointhost")
+	if mongoConErr != nil {
+		loggermdl.LogError("mongoConErr: ", mongoConErr)
+	}
+
 	return nil
 }
