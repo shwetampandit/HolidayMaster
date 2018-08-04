@@ -29,10 +29,9 @@ export default {
             // console.log(services.options)
             this.$MQLFetch(services.O_COUNTRY).then(res => {
                 this.result = res
-                // Vue.info(res)
             }).catch(error => {
                 // Do in case of error
-                Vue.error(error)
+                this.$log.error(error)
             })
 
             Vue.MQLFetch(services.O_COUNTRY).then(res => {
@@ -40,7 +39,7 @@ export default {
                 // Vue.info(res)
             }).catch(error => {
                 // Do in case of error
-                Vue.error(error)
+                this.$log.error(error)
             })
         }
     }
