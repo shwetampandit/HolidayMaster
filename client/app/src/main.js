@@ -4,7 +4,7 @@ import router from './router'
 import store from '@/store'
 import './registerServiceWorker'
 import axios from 'axios'
-import logger from './plugins/logger.js'
+import VueLogger from 'vuejs-logger'
 import mql from './plugins/mql.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
@@ -12,15 +12,31 @@ import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
-console.log(process.env.NODE_ENV)
-const optionsLogger = {
-  // optional : defaults to true if not specified
+import VueLogger from 'vuejs-logger'
+import mql from './plugins/mql.js'
+import VueLocalStorage from 'vue-localstorage'
+import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
+import vSelect from 'vue-select'
+import Vuebar from 'vuebar'
+
+Vue.use(Vuebar)
+Vue.component('v-select', vSelect)
+
+Vue.use(BootstrapVue)
+Vue.config.productionTip = false
+
+const isProduction = process.env.NODE_ENV === 'production'
+
+const options = {
   isEnabled: true,
-  // required ['debug', 'info', 'warn', 'error', 'fatal']
-  logLevel: 'debug',
-  // optional : defaults to '|' if not specified
-  separator: '|'
+  logLevel: isProduction ? 'error' : 'debug',
+  stringifyArguments: false,
+  showLogLevel: true,
+  showMethodName: true,
+  separator: '|',
+  showConsoleColors: true
 }
+Vue.use(VueLogger, options)
 
 axios.defaults.baseURL = 'http://localhost:8080/server/'
 
@@ -30,7 +46,6 @@ axios.defaults.baseURL = 'http://localhost:8080/server/'
 // TODO: delete axios header on logout and clear session storage
 // delete axios.defaults.headers.common['Authorization']
 
-Vue.use(logger, optionsLogger)
 Vue.use(mql, {})
 Vue.use(VueLocalStorage)
 
