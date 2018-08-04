@@ -12,19 +12,6 @@ import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
-import VueLogger from 'vuejs-logger'
-import mql from './plugins/mql.js'
-import VueLocalStorage from 'vue-localstorage'
-import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
-import vSelect from 'vue-select'
-import Vuebar from 'vuebar'
-
-Vue.use(Vuebar)
-Vue.component('v-select', vSelect)
-
-Vue.use(BootstrapVue)
-Vue.config.productionTip = false
-
 const isProduction = process.env.NODE_ENV === 'production'
 
 const options = {
