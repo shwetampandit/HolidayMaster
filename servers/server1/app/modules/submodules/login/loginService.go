@@ -1,12 +1,12 @@
 package login
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/utiliymdl/guidmdl"
+	"github.com/tidwall/gjson"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/filemdl"
 
@@ -50,20 +50,14 @@ func init() {
 }
 
 // CheckLoginService is login service return result and error
-func CheckLoginService(data []byte) (interface{}, error) {
+func CheckLoginService(rs *gjson.Result) (interface{}, error) {
 
-	login := models.Login{}
-	unmarshalError := json.Unmarshal(data, &login)
-	if errormdl.CheckErr(unmarshalError) != nil {
-		loggermdl.LogError(unmarshalError)
-		return nil, errormdl.CheckErr(unmarshalError)
-	}
 	// create new instance of BLLogin per Service
 	blLogin := BLLogin{}
 	// This allocate memory for each service
 	blLogin.New()
 	// SetCustomData insert any custom data you want to use further
-	blLogin.SetCustomData("inputData", login)
+	blLogin.SetCustomData("inputData", rs)
 	// GetSB returns serviceBuilder instance
 	result, err := servicebuildermdl.GetSB("LoginService", &blLogin.AbstractBusinessLogicHolder).
 		// AddStep add step by step BL logics in your service

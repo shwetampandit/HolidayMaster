@@ -4,4 +4,5 @@ client/app/dist
 *.log
 
 \.vscode/
+vendor
 
