@@ -6,13 +6,26 @@ import (
 	"github.com/tidwall/sjson"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/servicebuildermdl"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/loggermdl"
 )
 
+// BLLogin inherits servicebuildermdl
+type BLLogin struct {
+	servicebuildermdl.AbstractBusinessLogicHolder
+}
+
+// GetBLInstance gives instance of BL
+func GetBLInstance(principal *servicebuildermdl.Principal) *BLLogin {
+	blInstanceName := BLLogin{}
+	blInstanceName.New(principal)
+	return &blInstanceName
+}
+
 // CheckLogin verify usename and password
 func (m *BLLogin) CheckLogin() (map[string]interface{}, error) {
-	inputData, ok := m.GetDataInterface("inputData")
+	inputData, ok := m.GetCustomData("inputData")
 	if !ok {
 		return nil, errormdl.Wrap("Data Not Found: inputData")
 	}
@@ -43,7 +56,7 @@ func (m *BLLogin) ErrorFunction() (map[string]interface{}, error) {
 
 // AppendToLoginData append object in login data
 func (m *BLLogin) AppendToLoginData() (map[string]interface{}, error) {
-	inputData, ok := m.GetDataInterface("inputData")
+	inputData, ok := m.GetCustomData("inputData")
 	if !ok {
 		return nil, errormdl.Wrap("Data Not Found: inputData")
 	}

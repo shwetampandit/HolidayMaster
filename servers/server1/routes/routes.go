@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"GolangFullStack/servers/server1/app/models"
 	"GolangFullStack/servers/server1/middleware"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/routebuildermdl"
@@ -16,5 +17,5 @@ func Init(g *gin.Engine) {
 	// r.Use(jwt.Auth(models.JWTKey))
 	c := r.Group("/c")
 	// c.Use(aclmdl.ACLMiddleware("config/roleenforcer.csv", models.JWTKey, "group"))
-	routebuildermdl.Init(o, r, c)
+	routebuildermdl.Init(o, r, c, models.JWTKey)
 }

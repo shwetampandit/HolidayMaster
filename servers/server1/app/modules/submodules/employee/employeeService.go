@@ -22,7 +22,7 @@ func init() {
 }
 
 // CheckActiveEmployees is login service return result and error
-func CheckActiveEmployees(rs *gjson.Result) (interface{}, error) {
+func CheckActiveEmployees(rs *gjson.Result, principal servicebuildermdl.Principal) (interface{}, error) {
 
 	mongoDAO := mongodb.GetMongoDAO("Customer")
 	mongoQuery := bson.M{}
@@ -33,7 +33,7 @@ func CheckActiveEmployees(rs *gjson.Result) (interface{}, error) {
 		return nil, customerDataError
 	}
 
-	blHolder := GetEmployeeBL()
+	blHolder := GetEmployeeBL(&principal)
 	blHolder.SetResultset("employeeEmails", customerObj)
 	result, err := servicebuildermdl.GetSB("CheckBL1", &blHolder.AbstractBusinessLogicHolder).
 		AddStep("Checking mahendra email", "$1 == true", nil, blHolder.ValidateMahendraEmail, blHolder.ErrorFunction).

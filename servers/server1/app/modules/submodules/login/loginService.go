@@ -1,7 +1,6 @@
 package login
 
 import (
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 
@@ -22,11 +21,6 @@ import (
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/servicebuildermdl"
 )
-
-// BLLogin inherits servicebuildermdl
-type BLLogin struct {
-	servicebuildermdl.AbstractBusinessLogicHolder
-}
 
 // Init - login package initialise
 func init() {
@@ -50,12 +44,10 @@ func init() {
 }
 
 // CheckLoginService is login service return result and error
-func CheckLoginService(rs *gjson.Result) (interface{}, error) {
+func CheckLoginService(rs *gjson.Result, principal servicebuildermdl.Principal) (interface{}, error) {
 
 	// create new instance of BLLogin per Service
-	blLogin := BLLogin{}
-	// This allocate memory for each service
-	blLogin.New()
+	blLogin := GetBLInstance(&principal)
 	// SetCustomData insert any custom data you want to use further
 	blLogin.SetCustomData("inputData", rs)
 	// GetSB returns serviceBuilder instance
@@ -94,9 +86,8 @@ func (blLogin *BLLogin) GetLoginFileData(ab *servicebuildermdl.AbstractBusinessL
 }
 
 // RegisterUserService RegisterUser in fdb
-func RegisterUserService(form *multipart.Form) (interface{}, error) {
+func RegisterUserService(form *multipart.Form, principal servicebuildermdl.Principal) (interface{}, error) {
 	files, ok := form.File["file"]
-	fmt.Println(len(files))
 	if !ok {
 		err := errormdl.Wrap("File attribute Not found")
 		loggermdl.LogError(err)
@@ -107,8 +98,7 @@ func RegisterUserService(form *multipart.Form) (interface{}, error) {
 		loggermdl.LogError(extractErr)
 		return nil, extractErr
 	}
-	blLogin := BLLogin{}
-	blLogin.New()
+	blLogin := GetBLInstance(&principal)
 	blLogin.SetCustomData("inputData", user)
 	_, err := servicebuildermdl.GetSB("RegisterUserService", &blLogin.AbstractBusinessLogicHolder).
 		AddStep("Step 1", "$1 > 0", blLogin.GetLoginFileData, blLogin.AppendToLoginData, blLogin.ErrorFunction).
