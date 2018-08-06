@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import * as services from "@/plugins/services";
 export default {
   data() {
     return {
@@ -41,7 +40,7 @@ export default {
       form.append("file", this.file, this.file.name);
       form.append("loginId", this.loginId);
       form.append("password", this.password);
-      this.$MQLFetch(services.O_REGISTERUSERSERVICE, form)
+      this.$MQLFetch('services.O_REGISTERUSERSERVICE', form)
         .then(res => {
           this.result = res;
         })

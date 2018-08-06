@@ -25,15 +25,19 @@ const options = {
 }
 Vue.use(VueLogger, options)
 
-axios.defaults.baseURL = 'http://localhost:8080/server/'
+var baseURL = 'http://localhost:8080/server/'
 
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
 // TODO: delete axios header on logout and clear session storage
 // delete axios.defaults.headers.common['Authorization']
+Vue.use(mql, {
+  mqlBaseURL: baseURL,
+  versionEnable: false,
+  regionEnable: false
+})
 
-Vue.use(mql, {})
 Vue.use(VueLocalStorage)
 
 router.beforeEach((to, from, next) => {
@@ -71,6 +75,7 @@ axios.interceptors.request.use(function (config) {
 }, function (error) {
   return Promise.reject(error)
 })
+
 
 var vm = new Vue({
   router,
