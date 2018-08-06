@@ -33,13 +33,15 @@ const MQLRequest = {
         ? (mqlServiceName.split('.')[0].toLowerCase() === 'c' ? 'r/' + mqlServiceName.split('.')[0].toLowerCase() + '/' : mqlServiceName.split('.')[0].toLowerCase() + '/')
       // length < 0 default to restrict 'r'
         : 'r/') +
-      // mql
-      'mql'
+        // mql
+        'mql'
     }
 
-    const generateHeaders = (mqlServiceName, headers) => {
-      return { 'Service-Header': mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName }
+    const generateHeaders = (mqlServiceName, headers = {}) => {
+      headers['Service-Header'] = mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName
+      return headers
     }
+
     // Return mql base axios request of type 'POST'
     const prepareMQLRequest = (requestType, mqlServiceName, postParam = null) => {
       return axios({
@@ -61,7 +63,7 @@ const MQLRequest = {
     const getRegion = function () {
       return options.regionEnable ? region + '/' : ''
     }
-    
+
     /* Post MQLFetch method */
     const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {
