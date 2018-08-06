@@ -5,8 +5,9 @@ const MQLRequest = {
   install (Vue, options) {
     // ------------ Do Not Change it-------------- //
     var version = process.env.VUE_APP_VERSION
-    var region = options.region
+    var region = process.env.VUE_APP_REGION
     const POST = 'post'
+    var mqlBaseURL = options.mqlBaseURL
     // ------------ Do Not Change it-------------- //
     const deepFreeze = (object) => {
       // Retrieve the property names defined on object
@@ -22,19 +23,26 @@ const MQLRequest = {
 
       return Object.freeze(object)
     }
-    const prepareAxiosRequest = (requestType, serviceKey, postParam = null, queryParams = null) => {
+    const generateURL = (mqlServiceName) => {
+      return mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
+    }
+    // baseURL/ version/ region/ restrictType/mql
+    const getServiceURL = (mqlServiceName) => {
+      return (mqlServiceName.split('.').length > 1
+      // length > 0
+        ? (mqlServiceName.split('.')[0].toLowerCase() === 'c' ? 'r/' + mqlServiceName.split('.')[0].toLowerCase() + '/' : mqlServiceName.split('.')[0].toLowerCase() + '/')
+      // length < 0 default to restrict 'r'
+        : 'r/') +
+      // mql
+      'mql'
+    }
+    // Return mql base axios request of type 'POST'
+    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null) => {
       return axios({
-        url: process.env.NODE_ENV !== 'development'
-          ? serviceKey.split('.').length > 0
-            ? version + (region.trim() !== ''
-              ? '/' + region : '') + '/' + serviceKey.split('.')[0].toLowerCase() + '/mql'
-            : serviceKey
-          : serviceKey.split('.')[0].toLowerCase() + '/mql',
-        // url: serviceKey.split('.')[1],
+        url: generateURL(mqlServiceName),
         method: requestType,
-        headers: { 'Service-Header': serviceKey.split('.')[1] },
-        data: postParam,
-        params: queryParams
+        headers: { 'Service-Header': mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName },
+        data: postParam
       })
     }
     Vue.setVersion = function (newVersion) {
@@ -43,11 +51,11 @@ const MQLRequest = {
     Vue.setRegion = function (newRegion) {
       region = newRegion
     }
-    Vue.getVersion = function () {
-      return version
+    const getVersion = function () {
+      return options.versionEnable ? version + '/' : ''
     }
-    Vue.getRegion = function () {
-      return region
+    const getRegion = function () {
+      return options.regionEnable ? region + '/' : ''
     }
 
     /* Post MQLFetch method */
@@ -56,7 +64,7 @@ const MQLRequest = {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareAxiosRequest(POST, serviceKey, postData)
+          prepareMQLRequest(POST, serviceKey, postData)
             .then(function (response) {
               var data = deepFreeze(response.data)
               if (localStore) {
@@ -82,7 +90,7 @@ const MQLRequest = {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareAxiosRequest(POST, serviceKey, postData)
+          prepareMQLRequest(POST, serviceKey, postData)
             .then(function (response) {
               var data = response.data
               if (localStore) {
@@ -102,35 +110,10 @@ const MQLRequest = {
         }
       })
     }
-    const MQLGet = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
-      return new Promise((resolve, reject) => {
-        if (localStore && Vue.localStorage.get(serviceKey) !== null) {
-          resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
-        } else {
-          prepareAxiosRequest('get', serviceKey, postData)
-            .then(function (response) {
-              if (localStore) {
-                Vue.localStorage.set(serviceKey, JSON.stringify(response.data))
-              }
-              if (mutableKey !== null) {
-                window.app.$store.commit(mutableKey, response.data)
-              }
-              resolve(response.data)
-            })
-            .catch(function (error) {
-              reject(error)
-            })
-            .then(function () {
-              resolve('do something')
-            })
-        }
-      })
-    }
     Vue.prototype.$MQLFetch = MQLFetch
     Vue.MQLFetch = MQLFetch
     Vue.prototype.$SlowMQLFetch = SlowMQLFetch
     Vue.SlowMQLFetch = SlowMQLFetch
-    Vue.MQLGet = MQLGet
   }
 }
 

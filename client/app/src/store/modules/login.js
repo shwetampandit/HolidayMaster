@@ -1,9 +1,6 @@
 
 import * as types from '../types'
 // TODO: O.AuthService Call
-// import * as serviceNames from '../../serviceNames'
-import axios from 'axios'
-
 const state = {
   token: sessionStorage.getItem('user-token') || '',
   status: ''
@@ -35,7 +32,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(types.MUTATE_AUTH_REQUEST, payload)
       sessionStorage.setItem('user-token', 'token')
-      axios.defaults.headers.common['Authorization'] = 'token'
+      // axios.defaults.headers.common['Authorization'] = 'token'
       resolve(true)
       // axios.post('url', payload).then(response => {
       //   const token = response.data.token
@@ -57,7 +54,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       sessionStorage.removeItem('user-token')
       // remove the axios default header
-      delete axios.defaults.headers.common['Authorization']
+      // delete axios.defaults.headers.common['Authorization']
       resolve()
     })
   }

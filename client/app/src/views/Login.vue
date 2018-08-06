@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-md-4 offset-md-4">
           <div class="login-card">
-            <img src="../../assets/mkcl-logo.png" alt="mkcl logo" class="mb-4" width="100px">
+            <img src="../assets/mkcl-logo.png" alt="mkcl logo" class="mb-4" width="100px">
             <div class="form-group">
               <label for="email">Email address</label>
               <input type="email" v-model="username" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -48,7 +48,6 @@
 
 <script>
 import Vue from "vue";
-import * as services from "@/plugins/services";
 export default {
   data() {
     return {
@@ -70,7 +69,7 @@ export default {
         loginId: this.username,
         password: this.password
       };
-      this.$MQLFetch(services.O_LOGINSERVICE, req)
+      this.$MQLFetch('O.LoginService', req)
         .then(res => {
           // alert(JSON.stringify(res));
           this.$router.push("/");
