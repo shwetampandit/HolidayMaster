@@ -36,12 +36,16 @@ const MQLRequest = {
       // mql
       'mql'
     }
+
+    const generateHeaders = (mqlServiceName, headers) => {
+      return { 'Service-Header': mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName }
+    }
     // Return mql base axios request of type 'POST'
     const prepareMQLRequest = (requestType, mqlServiceName, postParam = null) => {
       return axios({
         url: generateURL(mqlServiceName),
         method: requestType,
-        headers: { 'Service-Header': mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName },
+        headers: generateHeaders(mqlServiceName),
         data: postParam
       })
     }
@@ -57,7 +61,7 @@ const MQLRequest = {
     const getRegion = function () {
       return options.regionEnable ? region + '/' : ''
     }
-
+    
     /* Post MQLFetch method */
     const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {
@@ -76,7 +80,7 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              reject(error)
+              reject(error.response.data.error)
             })
             .then(function () {
               resolve('do something')
@@ -102,7 +106,7 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              reject(error)
+              reject(error.response.data.error)
             })
             .then(function () {
               resolve('do something')
