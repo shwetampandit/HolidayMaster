@@ -5,6 +5,8 @@
   branch = "devbranch"
   name = "corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2"
   packages = [
+    "authmdl/jwtmdl",
+    "authmdl/roleenforcemdl",
     "cachemdl",
     "configmdl",
     "constantmdl",
@@ -22,7 +24,7 @@
     "validationmdl",
     "workerpoolmdl"
   ]
-  revision = "0e7714a302e4327941bef39a55227248b2f183d4"
+  revision = "7ba0d9bc2e0337c03596748731f21297d13e6138"
 
 [[projects]]
   name = "github.com/BurntSushi/toml"
@@ -59,6 +61,15 @@
   name = "github.com/bluele/gcache"
   packages = ["."]
   revision = "472614239ac7e5bc6461e237c798a6ebd5aff8c1"
+
+[[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = [
+    ".",
+    "request"
+  ]
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
 
 [[projects]]
   name = "github.com/fatih/color"
