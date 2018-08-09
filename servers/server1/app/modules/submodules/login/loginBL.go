@@ -1,7 +1,11 @@
 package login
 
 import (
-	"GolangFullStack/servers/server1/app/models"
+	"time"
+
+	"github.com/tidwall/gjson"
+
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/authmdl/jwtmdl"
 
 	"github.com/tidwall/sjson"
 
@@ -25,7 +29,7 @@ func GetBLInstance(principal *servicebuildermdl.Principal) *BLLogin {
 
 // CheckLogin verify usename and password
 func (m *BLLogin) CheckLogin() (map[string]interface{}, error) {
-	inputData, ok := m.GetCustomData("inputData")
+	inputData, ok := m.GetDataResultset("inputData")
 	if !ok {
 		return nil, errormdl.Wrap("Data Not Found: inputData")
 	}
@@ -33,18 +37,35 @@ func (m *BLLogin) CheckLogin() (map[string]interface{}, error) {
 	if !ok1 {
 		return nil, errormdl.Wrap("Data Not Found")
 	}
-	loginInput, casteOk := inputData.(models.Login)
-	if !casteOk {
-		return nil, errormdl.Wrap("Data Casting Error")
-	}
+
 	// For this types of queries kindly visit http://github.com/tidwall/gjson
-	password := rs.Get("#[loginId ==" + loginInput.LoginID + "].password").String()
-	loggermdl.LogInfo(password == loginInput.Password)
-	m.SetFinalData(password == loginInput.Password)
+	loginObject := rs.Get("#[loginId ==" + inputData.Get("loginId").String() + "]")
+	// loggermdl.LogInfo(password == loginInput.Password)
+	password := loginObject.Get("password").String()
+	inputPassword := inputData.Get("password").String()
+	status := inputPassword == password
+	if !status {
+		return nil, errormdl.Wrap("Invalid Username or Password")
+	}
+	principalObj := servicebuildermdl.Principal{}
+	principalObj.UserID = inputData.Get("loginId").String()
+	token, tokenError := jwtmdl.GenerateToken(principalObj.UserID, loginObject.Get("groups").Value(), 24*time.Hour)
+	if errormdl.CheckErr(tokenError) != nil {
+		loggermdl.LogError(tokenError)
+		return nil, errormdl.CheckErr(tokenError)
+	}
+	m.SetCustomData("token", token)
+	finalObject, setError := sjson.Set(loginObject.String(), "password", "")
+	if errormdl.CheckErr(setError) != nil {
+		loggermdl.LogError(setError)
+		return nil, errormdl.CheckErr(setError)
+	}
+	m.SetFinalData(gjson.Parse(finalObject).Value())
+
 	// this is output validation
 	// For more information kindly visit http://github.com/oleksandr/conditions
 	return map[string]interface{}{
-		"$1": password == loginInput.Password,
+		"$1": password == inputPassword,
 	}, nil
 }
 

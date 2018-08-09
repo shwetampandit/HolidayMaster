@@ -5,8 +5,9 @@ import (
 	"GolangFullStack/servers/server1/app/models"
 	"GolangFullStack/servers/server1/routes"
 
+	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/errormdl"
+
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/configmdl"
-	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/dalmdl/mongodb"
 
 	"corelab.mkcl.org/MKCLOS/coredevelopmentplatform/corepkgv2/loggermdl"
 
@@ -16,7 +17,10 @@ import (
 func main() {
 	g := gin.Default()
 	initializeAll((g))
-	g.Run(":" + models.Config.AppPort)
+	err := g.Run(":" + models.Config.AppPort)
+	if errormdl.CheckErr(err) != nil {
+		loggermdl.LogError(err)
+	}
 }
 
 func initializeAll(g *gin.Engine) {
@@ -42,10 +46,10 @@ func setconfig() error {
 		return err
 	}
 
-	mongoConErr := mongodb.Init("config/mongo-config.toml", "clickerpointhost")
-	if mongoConErr != nil {
-		loggermdl.LogError("mongoConErr: ", mongoConErr)
-	}
+	// mongoConErr := mongodb.Init("config/mongo-config.toml", "clickerpointhost")
+	// if mongoConErr != nil {
+	// 	loggermdl.LogError("mongoConErr: ", mongoConErr)
+	// }
 
 	return nil
 }

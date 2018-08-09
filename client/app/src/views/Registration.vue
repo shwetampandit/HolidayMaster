@@ -7,7 +7,6 @@
             <button type="submit">Submit</button>
         </form>
         <div v-text="result">
-
         </div>
     </div>
 </template>
@@ -45,8 +44,7 @@ export default {
           this.result = res;
         })
         .catch(error => {
-          // Do in case of error
-          Vue.error(error);
+          alert(err.response.data.error);
         });
     }
   }

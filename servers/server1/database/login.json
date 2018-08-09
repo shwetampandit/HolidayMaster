@@ -5,7 +5,7 @@
 		"password": "demo",
 		"loginState": 0,
 		"learnerCode": "",
-		"group": [
+		"groups": [
 			"admin"
 		]
 	},

@@ -10,6 +10,7 @@ type BLEmployee struct {
 	servicebuildermdl.AbstractBusinessLogicHolder
 }
 
+// GetEmployeeBL - GetEmployeeBL
 func GetEmployeeBL(principal *servicebuildermdl.Principal) *BLEmployee {
 	b := BLEmployee{}
 	b.New(principal)
