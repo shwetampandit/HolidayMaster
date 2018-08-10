@@ -39,17 +39,19 @@ func init() {
 	// Register Your serviced with restricted and role based configuration
 	//routebuildermdl.RegisterNormalService("LoginService", CheckLoginService, false, false)
 
+	routebuildermdl.RegisterLoginSerivce(CheckLoginService)
+
 	routebuildermdl.RegisterFormBasedService("RegisterUserService", RegisterUserService, false, true)
 
 }
 
 // CheckLoginService is login service return result and error
-func CheckLoginService(rs *gjson.Result, principal servicebuildermdl.Principal) (interface{}, error) {
+func CheckLoginService(rs *gjson.Result, principal servicebuildermdl.Principal) (interface{}, string, error) {
 
 	// create new instance of BLLogin per Service
 	blLogin := GetBLInstance(&principal)
 	// SetCustomData insert any custom data you want to use further
-	blLogin.SetCustomData("inputData", rs)
+	blLogin.SetResultset("inputData", rs)
 	// GetSB returns serviceBuilder instance
 	result, err := servicebuildermdl.GetSB("LoginService", &blLogin.AbstractBusinessLogicHolder).
 		// AddStep add step by step BL logics in your service
@@ -58,10 +60,13 @@ func CheckLoginService(rs *gjson.Result, principal servicebuildermdl.Principal) 
 		// Run Method with exceute your logic and return result and error as per
 		Run(nil)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	output := *result
-	return output.(bool), nil
+	token, ok := blLogin.GetDataString("token")
+	if !ok {
+		return nil, token, errormdl.Wrap("Data Not Found: token")
+	}
+	return *result, token, nil
 }
 
 // GetLoginFileData is return login file data
