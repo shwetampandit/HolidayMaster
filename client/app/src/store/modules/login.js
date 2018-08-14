@@ -1,6 +1,6 @@
 
 import * as types from '../types'
-// TODO: O.AuthService Call
+import axios from 'axios'
 const state = {
   token: sessionStorage.getItem('user-token') || '',
   status: ''
@@ -33,20 +33,19 @@ const actions = {
       commit(types.MUTATE_AUTH_REQUEST, payload)
       sessionStorage.setItem('user-token', 'token')
       // axios.defaults.headers.common['Authorization'] = 'token'
-      resolve(true)
-      // axios.post('url', payload).then(response => {
-      //   const token = response.data.token
-      //   sessionStorage.setItem('user-token', token)
-      //   // set axios header
-      //   axios.defaults.headers.common['Authorization'] = token
-      //   commit(types.MUTATE_AUTH_SUCCESS, response)
-      //   resolve(response)
-      // })
-      //   .catch(err => {
-      //     commit(types.MUTATE_AUTH_ERROR, err)
-      //     sessionStorage.removeItem('user-token')
-      //     reject(err)
-      //   })
+      axios.post('o/mql/login', payload).then(response => {
+        var token = response.headers.authorization
+        sessionStorage.setItem('user-token', token)
+        // set axios header
+        // axios.defaults.headers.common['Authorization'] = token
+        commit(types.MUTATE_AUTH_SUCCESS, response)
+        resolve(response)
+      })
+        .catch(err => {
+          commit(types.MUTATE_AUTH_ERROR, err)
+          sessionStorage.removeItem('user-token')
+          reject(err)
+        })
     })
   },
 

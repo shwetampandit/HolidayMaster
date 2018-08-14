@@ -58,26 +58,28 @@ export default {
   },
   methods: {
     authenticate() {
-      // this.$store.dispatch('AUTH_REQUEST', { username: this.username, password: this.password }).then(res => {
-      //   //Redirect to next page after suucessfull login
-      // })
-      //   .catch(err => {
-      //     Vue.error(err)
-      //   })
-
-      let req = {
-        loginId: this.username,
-        password: this.password
-      };
-      this.$MQLFetch('O.LoginService', req)
-        .then(res => {
-          // alert(JSON.stringify(res));
-          this.$router.push("/");
+      this.$store.dispatch('AUTH_REQUEST', { loginId: this.username, password: this.password }).then(res => {
+        //Redirect to next page after suucessfull login
+        alert('success')
+      })
+        .catch(err => {
+          alert(err)
+          Vue.$log.error(err)
         })
-        .catch(error => {
-          // Do in case of error
-          Vue.error(error);
-        });
+
+      // let req = {
+      //   loginId: this.username,
+      //   password: this.password
+      // };
+      // this.$MQLFetch('O.LoginService', req)
+      //   .then(res => {
+      //     // alert(JSON.stringify(res));
+      //     this.$router.push("/");
+      //   })
+      //   .catch(error => {
+      //     // Do in case of error
+      //     Vue.error(error);
+      //   });
     },
     validatePassword() {
       //validate password length
