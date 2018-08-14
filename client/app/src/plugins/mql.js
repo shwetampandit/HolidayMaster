@@ -39,6 +39,9 @@ const MQLRequest = {
 
     const generateHeaders = (mqlServiceName, headers = {}) => {
       headers['Service-Header'] = mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName
+      if (mqlServiceName.split('.').length > 1 && mqlServiceName.split('.')[0].toLowerCase() !== 'o') {
+        headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
+      }
       return headers
     }
 

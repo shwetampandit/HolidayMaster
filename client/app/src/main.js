@@ -26,7 +26,7 @@ const options = {
 Vue.use(VueLogger, options)
 
 var baseURL = 'http://localhost:8080/server/'
-
+axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
