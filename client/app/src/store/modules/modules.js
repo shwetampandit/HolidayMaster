@@ -13,7 +13,6 @@ requireModule.keys().forEach(fileName => {
   const moduleName = upperFirst(
     fileName.replace(/(\.\/|\.js)/g, '')
   )
-  alert(moduleName)
   modules[moduleName] = requireModule(fileName)
 })
 
