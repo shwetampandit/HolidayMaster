@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Login from './modules/login'
+// import Login from './modules/login'
+import modules from './modules/modules'
 
 import actions from './actions'
 import getters from './getters'
@@ -15,8 +16,6 @@ export default new Vuex.Store({
   getters,
   mutations,
   actions,
-  modules: {
-    Login
-  },
+  modules,
   plugins: [createPersistedState()]
 })
