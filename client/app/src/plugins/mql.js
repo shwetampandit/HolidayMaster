@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const MQLRequest = {
   install (Vue, options) {
+    var mqlInstance = axios.create()
     // ------------ Do Not Change it-------------- //
     var version = process.env.VUE_APP_VERSION
     var region = process.env.VUE_APP_REGION
@@ -47,7 +48,7 @@ const MQLRequest = {
 
     // Return mql base axios request of type 'POST'
     const prepareMQLRequest = (requestType, mqlServiceName, postParam = null) => {
-      return axios({
+      return mqlInstance({
         url: generateURL(mqlServiceName),
         method: requestType,
         headers: generateHeaders(mqlServiceName),
@@ -85,7 +86,11 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              reject(error.response.data.error)
+              if (undefined === error.response.data.error) {
+                reject(JSON.stringify(error.response.data))
+              } else {
+                reject(error.response.data.error)
+              }
             })
             .then(function () {
               resolve('do something')
@@ -93,6 +98,18 @@ const MQLRequest = {
         }
       })
     }
+
+    mqlInstance.interceptors.request.use(function (config) {
+      if (config.url.indexOf('/r/') !== -1) { // Check for restricted request
+        if (sessionStorage.getItem('user-token') === null) {
+          window.app.$store.dispatch('AUTH_LOGOUT')
+        }
+      }
+      return config
+    }, function (error) {
+      return Promise.reject(error)
+    })
+
     /** ******* SLOW MQL Fetch ****************/
     const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
       return new Promise((resolve, reject) => {

@@ -1,17 +1,17 @@
 
 import * as types from '../types'
 import axios from 'axios'
-const state = {
+export const state = {
   token: sessionStorage.getItem('user-token') || '',
   status: ''
 }
 
-const getters = {
+export const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status
 }
 
-const mutations = {
+export const mutations = {
 
   [types.MUTATE_AUTH_REQUEST]: (state) => {
     state.status = 'loading'
@@ -27,7 +27,7 @@ const mutations = {
   }
 }
 
-const actions = {
+export const actions = {
   AUTH_REQUEST: ({ commit }, payload) => {
     return new Promise((resolve, reject) => {
       commit(types.MUTATE_AUTH_REQUEST, payload)
@@ -59,9 +59,9 @@ const actions = {
   }
 }
 
-export default {
+/* export default {
   state,
   getters,
   mutations,
   actions
-}
+} */
