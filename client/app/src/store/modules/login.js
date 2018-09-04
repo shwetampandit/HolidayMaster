@@ -1,6 +1,7 @@
 
 import * as types from '../types'
 import axios from 'axios'
+import router from '../../router'
 export const state = {
   token: sessionStorage.getItem('user-token') || '',
   status: ''
@@ -54,6 +55,9 @@ export const actions = {
       sessionStorage.removeItem('user-token')
       // remove the axios default header
       // delete axios.defaults.headers.common['Authorization']
+      router.push({
+        name: 'login'
+      })
       resolve()
     })
   }
