@@ -24,8 +24,12 @@ const MQLRequest = {
 
       return Object.freeze(object)
     }
-    const generateURL = (mqlServiceName) => {
-      return mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
+    const generateURL = (mqlServiceName, customURL) => {
+      if (customURL != null || customURL !== undefined) {
+        return customURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
+      } else {
+        return mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
+      }
     }
     // baseURL/ version/ region/ restrictType/mql
     const getServiceURL = (mqlServiceName) => {
@@ -47,9 +51,9 @@ const MQLRequest = {
     }
 
     // Return mql base axios request of type 'POST'
-    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null) => {
+    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null, customURL = null) => {
       return mqlInstance({
-        url: generateURL(mqlServiceName),
+        url: generateURL(mqlServiceName, customURL),
         method: requestType,
         headers: generateHeaders(mqlServiceName),
         data: postParam
@@ -69,12 +73,12 @@ const MQLRequest = {
     }
 
     /* Post MQLFetch method */
-    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
+    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareMQLRequest(POST, serviceKey, postData)
+          prepareMQLRequest(POST, serviceKey, postData, customURL)
             .then(function (response) {
               var data = deepFreeze(response.data)
               if (localStore) {
@@ -86,8 +90,13 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              if (undefined === error.response.data.error) {
-                reject(JSON.stringify(error.response.data))
+              if (!error.response.data.error) {
+                // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
+                var data = {}
+                data.result = null
+                data.error = error.response.status
+                // reject(JSON.stringify(error.response))
+                reject(data)
               } else {
                 reject(error.response.data.error)
               }
@@ -111,12 +120,12 @@ const MQLRequest = {
     })
 
     /** ******* SLOW MQL Fetch ****************/
-    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null) => {
+    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareMQLRequest(POST, serviceKey, postData)
+          prepareMQLRequest(POST, serviceKey, postData, customURL)
             .then(function (response) {
               var data = response.data
               if (localStore) {
@@ -128,7 +137,16 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              reject(error.response.data.error)
+              if (!error.response.data.error) {
+                // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
+                var data = {}
+                data.result = null
+                data.error = error.response.status
+                // reject(JSON.stringify(error.response))
+                reject(data)
+              } else {
+                reject(error.response.data.error)
+              }
             })
             .then(function () {
               resolve('do something')
