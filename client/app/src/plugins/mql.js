@@ -25,7 +25,7 @@ const MQLRequest = {
       return Object.freeze(object)
     }
     const generateURL = (mqlServiceName, customURL) => {
-      if (customURL != null || customURL !== undefined) {
+      if (customURL != null && customURL !== undefined) {
         return customURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
       } else {
         return mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
