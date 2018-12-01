@@ -3,12 +3,17 @@ import axios from 'axios'
 
 const MQLRequest = {
   install (Vue, options) {
-    var mqlInstance = axios.create()
+    console.log(options.mqlBaseURL)
+    // var mqlInstance = axios.create()
+    const mqlInstance = axios.create({
+      baseURL: options.mqlBaseURL
+    })
     // ------------ Do Not Change it-------------- //
     var version = process.env.VUE_APP_VERSION
     var region = process.env.VUE_APP_REGION
     const POST = 'post'
-    var mqlBaseURL = options.mqlBaseURL
+    //var mqlBaseURL = options.mqlBaseURL
+    //mqlInstance.defaults.baseURL = mqlBaseURL
     // ------------ Do Not Change it-------------- //
     const deepFreeze = (object) => {
       // Retrieve the property names defined on object
@@ -25,10 +30,12 @@ const MQLRequest = {
       return Object.freeze(object)
     }
     const generateURL = (mqlServiceName, customURL) => {
-      if (customURL != null || customURL !== undefined) {
+      //console.log('1' + mqlBaseURL)
+      if (customURL != null && customURL !== undefined) {
         return customURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
       } else {
-        return mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
+        //console.log(mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName))
+        return getVersion() + getRegion() + getServiceURL(mqlServiceName)
       }
     }
     // baseURL/ version/ region/ restrictType/mql
@@ -51,11 +58,11 @@ const MQLRequest = {
     }
 
     // Return mql base axios request of type 'POST'
-    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null, customURL = null) => {
+    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null, customURL = null, headers = null) => {
       return mqlInstance({
         url: generateURL(mqlServiceName, customURL),
         method: requestType,
-        headers: generateHeaders(mqlServiceName),
+        headers: generateHeaders(mqlServiceName, headers),
         data: postParam
       })
     }
@@ -73,12 +80,12 @@ const MQLRequest = {
     }
 
     /* Post MQLFetch method */
-    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null) => {
+    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null, headers = {}) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareMQLRequest(POST, serviceKey, postData, customURL)
+          prepareMQLRequest(POST, serviceKey, postData, customURL, headers)
             .then(function (response) {
               var data = deepFreeze(response.data)
               if (localStore) {
@@ -120,12 +127,12 @@ const MQLRequest = {
     })
 
     /** ******* SLOW MQL Fetch ****************/
-    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null) => {
+    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null, headers = {}) => {
       return new Promise((resolve, reject) => {
         if (localStore && Vue.localStorage.get(serviceKey) !== null) {
           resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
         } else {
-          prepareMQLRequest(POST, serviceKey, postData, customURL)
+          prepareMQLRequest(POST, serviceKey, postData, customURL, headers)
             .then(function (response) {
               var data = response.data
               if (localStore) {
