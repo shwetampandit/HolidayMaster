@@ -1,15 +1,22 @@
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
+
 module.exports = {
-  configureWebpack: config => {
-    if (process.env.NODE_ENV === 'production') {
-      // mutate config for production...
-    } else {
-      // mutate for development...
-    }
+  configureWebpack: {
+    plugins: [
+      new CompressionWebpackPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+        threshold: 5000,
+        minRatio: 0.8
+      })
+    ]
   },
   devServer: {
     proxy: {
       '/server': {
-        target: 'http://localhost:3000/',
+        target: 'http://localhost:3001/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -17,5 +24,6 @@ module.exports = {
         }
       }
     }
-  }
+  },
+  productionSourceMap:false,
 }
