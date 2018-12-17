@@ -23,17 +23,17 @@ export default {
     methods: {
 
         GetAllPosts () {
-            this.$MQLFetch('c.ServiceName', null, null, null, "http://111.11.11.11:9999/extracustom/").then(res => {
+            this.$MQLFetch('o.ServiceName1', null, null, null, null, headers).then(res => {
                 this.result = res
             }).catch(error => {
-                this.$log.error(error)
+                this.$log.error(1,error)
             })
            var headers = {}
            headers['Test-Header'] = "Hello Test"
-        this.$MQLFetch('c.ServiceName', null, null, null, null, headers).then(res => {
+        this.$MQLFetch('r.ServiceName2', null, null, null, null, headers).then(res => {
                 this.result = res
             }).catch(error => {
-                this.$log.error(error)
+                this.$log.error(2,error)
             })
         }
     }

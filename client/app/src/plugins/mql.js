@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const MQLRequest = {
   install (Vue, options) {
-    console.log(options.mqlBaseURL)
+    //console.log(options.mqlBaseURL)
     // var mqlInstance = axios.create()
     const mqlInstance = axios.create({
       baseURL: options.mqlBaseURL
@@ -12,6 +12,8 @@ const MQLRequest = {
     var version = process.env.VUE_APP_VERSION
     var region = process.env.VUE_APP_REGION
     const POST = 'post'
+    const CancelToken = axios.CancelToken;
+    let cancel ;
     //var mqlBaseURL = options.mqlBaseURL
     //mqlInstance.defaults.baseURL = mqlBaseURL
     // ------------ Do Not Change it-------------- //
@@ -63,7 +65,11 @@ const MQLRequest = {
         url: generateURL(mqlServiceName, customURL),
         method: requestType,
         headers: generateHeaders(mqlServiceName, headers),
-        data: postParam
+        data: postParam,
+        cancelToken: new CancelToken(function executor(c) {
+          // An executor function receives a cancel function as a parameter
+          cancel = c;
+        })
       })
     }
     Vue.setVersion = function (newVersion) {
@@ -97,15 +103,29 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              if (!error.response.data.error) {
+               if(error.message === 'Network Error'){
+                var data = {}
+                data.result = null
+                data.error = 'Network Error'
+                reject(data)
+              }else if(axios.isCancel(error)){
+                var data = {}
+                data.result = null
+                data.error = error.message
+                reject(data)
+              }
+              else if (!error.response.data.error) {
                 // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
                 var data = {}
                 data.result = null
                 data.error = error.response.status
-                // reject(JSON.stringify(error.response))
                 reject(data)
               } else {
-                reject(error.response.data.error)
+                var data = {}
+                data.result = null
+                data.error = error.message
+                reject(data)
+                // reject(error.response.data.error)
               }
             })
             .then(function () {
@@ -116,8 +136,9 @@ const MQLRequest = {
     }
 
     mqlInstance.interceptors.request.use(function (config) {
-      if (config.url.indexOf('/r/') !== -1) { // Check for restricted request
+      if (config.url.indexOf('r/') !== -1) { // Check for restricted request
         if (sessionStorage.getItem('user-token') === null) {
+          cancel("Operation canceled by the MQL interceptor.")
           window.app.$store.dispatch('AUTH_LOGOUT')
         }
       }
@@ -152,7 +173,12 @@ const MQLRequest = {
                 // reject(JSON.stringify(error.response))
                 reject(data)
               } else {
-                reject(error.response.data.error)
+                var data = {}
+                data.result = null
+                data.error = error.message
+                // reject(JSON.stringify(error.response))
+                reject(data)
+                //reject(error.response.data.error)
               }
             })
             .then(function () {
