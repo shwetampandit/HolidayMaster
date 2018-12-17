@@ -165,7 +165,18 @@ const MQLRequest = {
               resolve(data)
             })
             .catch(function (error) {
-              if (!error.response.data.error) {
+              if(error.message === 'Network Error'){
+                var data = {}
+                data.result = null
+                data.error = 'Network Error'
+                reject(data)
+              }else if(axios.isCancel(error)){
+                var data = {}
+                data.result = null
+                data.error = error.message
+                reject(data)
+              }
+              else if (!error.response.data.error) {
                 // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
                 var data = {}
                 data.result = null
