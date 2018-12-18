@@ -2,6 +2,9 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const productionGzipExtensions = ['js', 'css']
 
 module.exports = {
+  chainWebpack: (config) => {
+    config.plugins.delete('prefetch')
+  },
   configureWebpack: {
     plugins: [
       new CompressionWebpackPlugin({
