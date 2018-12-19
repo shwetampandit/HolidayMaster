@@ -4,7 +4,6 @@
             <div class="row">
                 <div class="col-md-4 offset-md-4">
                     <div class="login-card">
-
                         <button @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
                     </div>
                 </div>
@@ -13,7 +12,8 @@
     </section>
 </template>
 
-<script>
+<script> 
+import Vue from 'vue'
 export default {
     data () {
         return {
@@ -23,18 +23,13 @@ export default {
     methods: {
 
         GetAllPosts () {
-            this.$MQLFetch('o.ServiceName1', null, null, null, null, headers).then(res => {
-                this.result = res
-            }).catch(error => {
-                this.$log.error(1,error)
-            })
-           var headers = {}
-           headers['Test-Header'] = "Hello Test"
-        this.$MQLFetch('r.ServiceName2', null, null, null, null, headers).then(res => {
-                this.result = res
-            }).catch(error => {
-                this.$log.error(2,error)
-            })
+            // for(let i=0; i <=100; i++) {
+            //     this.$MQL.setActivity(i+' -Activity', ).setData(i+' - Data').fetch(i+' - Fetch').then(res => {
+            //         console.log(res)
+            //     });
+            // }
+
+             this.$MQL.testFormatActivity('o.[Activity1, Activity2, Activity3, query_ghsgyagshagsywy7227]')
         }
     }
 }

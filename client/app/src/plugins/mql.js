@@ -1,208 +1,47 @@
-// This is your plugin object. It can be exported to be used anywhere.
-import axios from 'axios'
-
-const MQLRequest = {
-  install (Vue, options) {
-    //console.log(options.mqlBaseURL)
-    // var mqlInstance = axios.create()
-    const mqlInstance = axios.create({
-      baseURL: options.mqlBaseURL
-    })
-    // ------------ Do Not Change it-------------- //
-    var version = process.env.VUE_APP_VERSION
-    var region = process.env.VUE_APP_REGION
-    const POST = 'post'
-    const CancelToken = axios.CancelToken;
-    let cancel ;
-    //var mqlBaseURL = options.mqlBaseURL
-    //mqlInstance.defaults.baseURL = mqlBaseURL
-    // ------------ Do Not Change it-------------- //
-    const deepFreeze = (object) => {
-      // Retrieve the property names defined on object
-      var propNames = Object.getOwnPropertyNames(object)
-      // Freeze properties before freezing self
-
-      for (let name of propNames) {
-        let value = object[name]
-
-        object[name] = value && typeof value === 'object'
-          ? deepFreeze(value) : value
-      }
-
-      return Object.freeze(object)
+export default {
+  install: (Vue) => {
+    let m
+    let n;
+    let activityType;
+    let activityArray = [] ;
+    let fetchableMap = new Map();
+    const QueryActivity = 'QueryFetch'
+    const QuerySeperator = 'query_'
+    const ActivitySplitter = '.['
+    const help = (str) => {
+      return 'help-' + str
     }
-    const generateURL = (mqlServiceName, customURL) => {
-      //console.log('1' + mqlBaseURL)
-      if (customURL != null && customURL !== undefined) {
-        return customURL + getVersion() + getRegion() + getServiceURL(mqlServiceName)
-      } else {
-        //console.log(mqlBaseURL + getVersion() + getRegion() + getServiceURL(mqlServiceName))
-        return getVersion() + getRegion() + getServiceURL(mqlServiceName)
-      }
-    }
-    // baseURL/ version/ region/ restrictType/mql
-    const getServiceURL = (mqlServiceName) => {
-      return (mqlServiceName.split('.').length > 1
-      // length > 0
-        ? (mqlServiceName.split('.')[0].toLowerCase() === 'c' ? 'r/' + mqlServiceName.split('.')[0].toLowerCase() + '/' : mqlServiceName.split('.')[0].toLowerCase() + '/')
-      // length < 0 default to restrict 'r'
-        : 'r/') +
-        // mql
-        'mql'
-    }
-
-    const generateHeaders = (mqlServiceName, headers = {}) => {
-      headers['Service-Header'] = mqlServiceName.split('.').length > 0 ? mqlServiceName.split('.')[1] : mqlServiceName
-      if (mqlServiceName.split('.').length > 1 && mqlServiceName.split('.')[0].toLowerCase() !== 'o') {
-        headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
-      }
-      return headers
-    }
-
-    // Return mql base axios request of type 'POST'
-    const prepareMQLRequest = (requestType, mqlServiceName, postParam = null, customURL = null, headers = null) => {
-      return mqlInstance({
-        url: generateURL(mqlServiceName, customURL),
-        method: requestType,
-        headers: generateHeaders(mqlServiceName, headers),
-        data: postParam,
-        cancelToken: new CancelToken(function executor(c) {
-          // An executor function receives a cancel function as a parameter
-          cancel = c;
-        })
-      })
-    }
-    Vue.setVersion = function (newVersion) {
-      version = newVersion
-    }
-    Vue.setRegion = function (newRegion) {
-      region = newRegion
-    }
-    const getVersion = function () {
-      return options.versionEnable ? version + '/' : ''
-    }
-    const getRegion = function () {
-      return options.regionEnable ? region + '/' : ''
-    }
-
-    /* Post MQLFetch method */
-    const MQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null, headers = {}) => {
-      return new Promise((resolve, reject) => {
-        if (localStore && Vue.localStorage.get(serviceKey) !== null) {
-          resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
+    const formatActivity = (activity_str) => {
+      activityType = activity_str.split(ActivitySplitter)[0]
+      activityArray = ((activity_str.split(ActivitySplitter)[1]).substring(0, (activity_str.split(ActivitySplitter)[1]).length - 1)).split(',')
+      console.log(activityType, activityArray)
+      activityArray.map(item => {
+        if(item.search(QuerySeperator) > 0) {
+          fetchableMap.set(QueryActivity, {'ActivityName': item})
         } else {
-          prepareMQLRequest(POST, serviceKey, postData, customURL, headers)
-            .then(function (response) {
-              var data = deepFreeze(response.data)
-              if (localStore) {
-                Vue.localStorage.set(serviceKey, JSON.stringify(data))
-              }
-              if (mutableKey !== null) {
-                window.app.$store.commit(mutableKey, data)
-              }
-              resolve(data)
-            })
-            .catch(function (error) {
-               if(error.message === 'Network Error'){
-                var data = {}
-                data.result = null
-                data.error = 'Network Error'
-                reject(data)
-              }else if(axios.isCancel(error)){
-                var data = {}
-                data.result = null
-                data.error = error.message
-                reject(data)
-              }
-              else if (!error.response.data.error) {
-                // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
-                var data = {}
-                data.result = null
-                data.error = error.response.status
-                reject(data)
-              } else {
-                var data = {}
-                data.result = null
-                data.error = error.message
-                reject(data)
-                // reject(error.response.data.error)
-              }
-            })
-            .then(function () {
-              resolve('do something')
-            })
+          fetchableMap.set(item, {'ActivityName': item})
         }
       })
+      console.log(fetchableMap)
     }
-
-    mqlInstance.interceptors.request.use(function (config) {
-      if (config.url.indexOf('r/') !== -1) { // Check for restricted request
-        if (sessionStorage.getItem('user-token') === null) {
-          cancel("Operation canceled by the MQL interceptor.")
-          window.app.$store.dispatch('AUTH_LOGOUT')
-        }
+    Vue.prototype.$MQL = {  
+      testFormatActivity(str) {
+        formatActivity(str)
+      } ,  
+      setActivity(str) {
+        m = str
+        return this
+      },
+      setData(str) {
+        n = str
+        return this
+      },
+      fetch(str) {
+        return new Promise((resolve, reject) => {
+         let d = str + m + n + help(str)
+         setTimeout(function(){ resolve(d) }, 3000);
+        });
       }
-      return config
-    }, function (error) {
-      return Promise.reject(error)
-    })
-
-    /** ******* SLOW MQL Fetch ****************/
-    const SlowMQLFetch = (serviceKey, postData = null, localStore = false, mutableKey = null, customURL = null, headers = {}) => {
-      return new Promise((resolve, reject) => {
-        if (localStore && Vue.localStorage.get(serviceKey) !== null) {
-          resolve(JSON.parse(Vue.localStorage.get(serviceKey)))
-        } else {
-          prepareMQLRequest(POST, serviceKey, postData, customURL, headers)
-            .then(function (response) {
-              var data = response.data
-              if (localStore) {
-                Vue.localStorage.set(serviceKey, JSON.stringify(data))
-              }
-              if (mutableKey !== null) {
-                window.app.$store.commit(mutableKey, data)
-              }
-              resolve(data)
-            })
-            .catch(function (error) {
-              if(error.message === 'Network Error'){
-                var data = {}
-                data.result = null
-                data.error = 'Network Error'
-                reject(data)
-              }else if(axios.isCancel(error)){
-                var data = {}
-                data.result = null
-                data.error = error.message
-                reject(data)
-              }
-              else if (!error.response.data.error) {
-                // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
-                var data = {}
-                data.result = null
-                data.error = error.response.status
-                // reject(JSON.stringify(error.response))
-                reject(data)
-              } else {
-                var data = {}
-                data.result = null
-                data.error = error.message
-                // reject(JSON.stringify(error.response))
-                reject(data)
-                //reject(error.response.data.error)
-              }
-            })
-            .then(function () {
-              resolve('do something')
-            })
-        }
-      })
-    }
-    Vue.prototype.$MQLFetch = MQLFetch
-    Vue.MQLFetch = MQLFetch
-    Vue.prototype.$SlowMQLFetch = SlowMQLFetch
-    Vue.SlowMQLFetch = SlowMQLFetch
+    };
   }
-}
-
-export default MQLRequest
+};

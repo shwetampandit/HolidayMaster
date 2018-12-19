@@ -5,7 +5,7 @@ import store from '@/store'
 import './registerServiceWorker'
 import axios from 'axios'
 import VueLogger from 'vuejs-logger'
-import mql from './plugins/mql.js'
+import generalHelpers from './plugins/mql.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 
@@ -25,18 +25,15 @@ const options = {
 }
 Vue.use(VueLogger, options)
 
-var baseURL = 'http://localhost:8080/server/'
+var baseURL = 'http://localhost:9898/server23/'
+Vue.use(generalHelpers);
 axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
 // TODO: delete axios header on logout and clear session storage
 // delete axios.defaults.headers.common['Authorization']
-Vue.use(mql, {
-  mqlBaseURL: baseURL,
-  versionEnable: false,
-  regionEnable: false
-})
+
 
 Vue.use(VueLocalStorage)
 
