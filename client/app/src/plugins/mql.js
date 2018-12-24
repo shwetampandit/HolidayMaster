@@ -44,7 +44,6 @@ export default {
       return Object.freeze(object)
     }
     const generateURL = (activityType, customURL) => {
-      //console.log('1' + mqlBaseURL)
       if (customURL != null && customURL !== undefined) {
         return customURL + getVersion() + getRegion() + getServiceURL(activityType)
       } else {
@@ -53,6 +52,7 @@ export default {
     }
     // baseURL/ version/ region/ restrictType/mql
     const getServiceURL = (activityType) => {
+      //console.log('service url')
       return (
         activityType.toLowerCase() === 'c' 
         ? 'r/' + activityType.toLowerCase() + '/' 
@@ -61,7 +61,8 @@ export default {
         'mql'
     }
 
-     const generateHeaders = (activityType, activities, headers = {}) => {
+     const generateHeaders = (activityType, activities, headers = {}, isQuery = false) => {
+       //console.log(isQuery, headers)
       headers['Service-Header'] = isQuery ? QueryActivityKey : activities
       if (activityType !== 'o') {
         headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
@@ -70,11 +71,11 @@ export default {
     }
 
     // Return mql base axios request of type 'POST'
-    const prepareMQLRequest = (activityType, activities, postParamObj, customURL = null, headers = null) => {
+    const prepareMQLRequest = (activityType, activities, postParamObj, customURL = null, headers = {}, isQuery = false) => {
       return mqlInstance({
         url: generateURL(activityType, customURL),
         method: Post,
-        headers: generateHeaders(activityType, activities, headers),
+        headers: generateHeaders(activityType, activities, headers, isQuery),
         data: postParamObj,
         cancelToken: new CancelToken(function executor(c) {
           // An executor function receives a cancel function as a parameter
@@ -82,31 +83,8 @@ export default {
         })
       })
     }
-
-    const formatActivity = (activity_str) => {
-      fetchableMap = new Map()
-      activityType = activity_str.split(ActivitySplitter)[0]
-      fetchableMap.set('ActivityType', activityType)
-      activityArray = ((activity_str.split(ActivitySplitter)[1]).substring(0, (activity_str.split(ActivitySplitter)[1]).length - 1)).split(',')      
-      activityArray.map(item => {
-        let obj = {},srvName;
-        obj[ObjActivityData] = null
-        if(item.search(QuerySeperator) > 0) {
-          obj[ObjActivityNameKey] = item.trim()
-          srvName = item.trim()
-          isQuery = true;
-        } else {
-          obj[ObjActivityNameKey] = item.trim()
-          srvName = item.trim()
-          isActivity = true;
-        }
-        fetchableMap.set(srvName, obj)
-
-      })
-      return{'isQuery': isQuery, 'isActivity': isActivity}
-    }
-
-    mqlInstance.interceptors.request.use(function (config) {
+   
+   mqlInstance.interceptors.request.use(function (config) {
       if (config.url.indexOf('r/') !== -1) { // Check for restricted request
         if (sessionStorage.getItem('user-token') === null) {
           cancel("Operation canceled by the MQL interceptor.")
@@ -118,63 +96,98 @@ export default {
     }, function (error) {
       return Promise.reject(error)
     })
-
-    Vue.prototype.$MQL = {   
+    mqlInstance.interceptors.response.use(function (config) {
+      if (config.url.indexOf('r/') !== -1) { // Check for restricted request
+        if (sessionStorage.getItem('user-token') === null) {
+          cancel("Operation canceled by the MQL interceptor.")
+          //TODO: Uncomment below code for dispatch
+          // window.app.$store.dispatch('AUTH_LOGOUT')
+        }
+      }
+      return config
+    }, function (error) {
+      return Promise.reject(error)
+    })
+    Vue.prototype.$MQL = {
+      setMap() {
+        this.fetchableMap = new Map()
+      },
+       formatActivity (activity_str) {
+        activityType = activity_str.split(ActivitySplitter)[0]
+        this.fetchableMap.set('ActivityType', activityType)
+        activityArray = ((activity_str.split(ActivitySplitter)[1]).substring(0, (activity_str.split(ActivitySplitter)[1]).length - 1)).split(',')      
+        activityArray.map(item => {
+          let obj = {},srvName;
+          obj[ObjActivityData] = null
+          if(item.match(/query_/) !== null && item.match(/query_/).length > 0) {
+            obj[item] = item.trim()
+            srvName = item.trim()
+            isQuery = true;
+          } else {
+            obj[ObjActivityNameKey] = item.trim()
+            srvName = item.trim()
+            isActivity = true;
+          }
+          this.fetchableMap.set(srvName, obj)
+  
+        })
+        return{'isQuery': isQuery, 'isActivity': isActivity}
+      },
       setActivity(str) {
-        let formattedResult = formatActivity(str)
+        this.setMap()
+        let formattedResult = this.formatActivity(str)
         if(formattedResult.isQuery && formattedResult.isActivity) {
           console.error('Can not support query and activity in a single execution')
           return
         } else {
+          this.fetchableMap.set('isQuery', formattedResult.isQuery)
           return this
         }       
       },
       setData(activity = null, data = null) {
+        //console.log(activity, data, this.fetchableMap)
         if (null === activity) {
           console.error('Data cannot be null')
         } else if(null === data) {
           // common data
-          for (let [key, value] of fetchableMap) {
+          for (let [key, value] of this.fetchableMap) {
             if (null === value[ObjActivityData]) {
               value[ObjActivityData] = activity
-              fetchableMap.set(key, value )
+              this.fetchableMap.set(key, value )
             }
           }
         } else {
           // service specific
-          let activityValue = fetchableMap.get(activity)
+          let activityValue = this.fetchableMap.get(activity)
           activityValue[ObjActivityData] = data
-              fetchableMap.set(activity, activityValue )
+              this.fetchableMap.set(activity, activityValue )
         }
         return this
       },
       setHeader(header = {}) {
-        fetchableMap.set('Header', header )
+        this.fetchableMap.set('Header', header )
         return this
       },
       setCustomURL(url = null) {
-        fetchableMap.set('CustomURL', url )        
+        this.fetchableMap.set('CustomURL', url )        
         return this
       },
       fetch() {
         return new Promise((resolve, reject) => {
           let activities = new String()
           let postParamObject = {}
-          for (var [key, value] of fetchableMap) {
-            console.log(key)
-           console.log(key.search('ActivityType') < 0)
-           console.log(key.search('Header') < 0)
-           console.log( key.search('CustomURL') < 0)
-            if (key.search('ActivityType') < 0 && key.search('Header') < 0 && key.search('CustomURL') < 0){
+          for (var [key, value] of this.fetchableMap) {
+           
+            if (key.search('ActivityType') < 0 && key.search('Header') < 0 && key.search('CustomURL') < 0 && key.search('isQuery') < 0){
               activities = activities + ',' + key
-              postParamObject[key] = value.Data
+              postParamObject[key.match(/query_/) !== null && key.match(/query_/).length > 0? key.substring('query_'.length, key.length): key] = value.Data
             }
           }
-          console.log(activities.substring(1, activities.length))
-         
-          prepareMQLRequest(fetchableMap.get('ActivityType'), activities.substring(1, activities.length), postParamObject, fetchableMap.get('CustomURL'), fetchableMap.get('Header'))
+          //console.log(this.fetchableMap)
+          prepareMQLRequest(this.fetchableMap.get('ActivityType'), activities.substring(1, activities.length), postParamObject, this.fetchableMap.get('CustomURL'), this.fetchableMap.get('Header'), this.fetchableMap.get('isQuery'))
             .then(function (response) {
               var data = deepFreeze(response.data)
+              data.fetchablObj = fetch
               resolve(data)
             })
             .catch(function (error) {
@@ -190,7 +203,6 @@ export default {
                 reject(data)
               }
               else if (!error.response.data.error) {
-                // "{\"result\":null,\"error\":\"ERROR_KEY\",\"reponseHeader\":null}"
                 var data = {}
                 data.result = null
                 data.error = error.response.status
@@ -200,7 +212,6 @@ export default {
                 data.result = null
                 data.error = error.message
                 reject(data)
-                // reject(error.response.data.error)
               }
             })
             .then(function () {
