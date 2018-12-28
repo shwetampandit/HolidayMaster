@@ -1,224 +1,229 @@
 import axios from 'axios'
+import Vue from 'vue'
+import Response from '@/plugins/response.js'
 
-export default {
-  install: (Vue, options) => {
+class MQL {
+  constructor(str_activities = null) {
+    let cancel, CancelToken = axios.CancelToken;
+    this.str_activities = str_activities;
+    this.isQuery = false;
+    this.isActivity = false;
+    this.fetchableMap = new Map();
+    this.version = Vue.getVersion();
+    this.region = Vue.getRegion();
+    this.appCode = Vue.getAppCode();
+    this.activityType = 'o';
+    this.isConfirm = false;
+    const QueryActivityKey = 'QueryFetch', QuerySeperator = 'query_', ActivitySplitter = '.[', ObjActivityNameKey = 'ActivityName', ObjActivityData = 'Data';
     const mqlInstance = axios.create({
-      baseURL: options.mqlBaseURL
-    })
-    let activityType, 
-        activityArray = [], 
-        fetchableMap, isQuery = false, isActivity = false, 
-        externalHeader = {}, customURL = null, cancel, version = process.env.VUE_APP_VERSION, 
-        region = process.env.VUE_APP_REGION
-
-    const QueryActivityKey = 'QueryFetch', 
-          QuerySeperator = 'query_',
-          ActivitySplitter = '.[',
-          ObjActivityNameKey = 'ActivityName',
-          ObjActivityData = 'Data',
-          CancelToken = axios.CancelToken, Post = 'post'
-    const setVersion = function (newVersion) {
-      version = newVersion
-    }
-    const setRegion = function (newRegion) {
-      region = newRegion
-    }
-    const getVersion = function () {
-      return options.versionEnable ? version + '/' : ''
-    }
-    const getRegion = function () {
-      return options.regionEnable ? region + '/' : ''
-    }
-    const deepFreeze = (object) => {
-      // Retrieve the property names defined on object
-      var propNames = Object.getOwnPropertyNames(object)
-      // Freeze properties before freezing self
-
-      for (let name of propNames) {
-        let value = object[name]
-
-        object[name] = value && typeof value === 'object'
-          ? deepFreeze(value) : value
-      }
-
-      return Object.freeze(object)
-    }
-    const generateURL = (activityType, customURL) => {
-      if (customURL != null && customURL !== undefined) {
-        return customURL + getVersion() + getRegion() + getServiceURL(activityType)
-      } else {
-        return getVersion() + getRegion() + getServiceURL(activityType)
-      }
-    }
-    // baseURL/ version/ region/ restrictType/mql
-    const getServiceURL = (activityType) => {
-      //console.log('service url')
-      return (
-        activityType.toLowerCase() === 'c' 
-        ? 'r/' + activityType.toLowerCase() + '/' 
-        : activityType.toLowerCase() + '/')
-         +
-        'mql'
-    }
-
-     const generateHeaders = (activityType, activities, headers = {}, isQuery = false) => {
-       //console.log(isQuery, headers)
-      headers['Service-Header'] = isQuery ? QueryActivityKey : activities
-      if (activityType !== 'o') {
-        headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
-      }
-      return headers
-    }
-
-    // Return mql base axios request of type 'POST'
-    const prepareMQLRequest = (activityType, activities, postParamObj, customURL = null, headers = {}, isQuery = false) => {
-      return mqlInstance({
-        url: generateURL(activityType, customURL),
-        method: Post,
-        headers: generateHeaders(activityType, activities, headers, isQuery),
-        data: postParamObj,
-        cancelToken: new CancelToken(function executor(c) {
-          // An executor function receives a cancel function as a parameter
-          cancel = c;
-        })
-      })
-    }
-   
-   mqlInstance.interceptors.request.use(function (config) {
+      baseURL: Vue.getBaseURL()
+    });
+    mqlInstance.interceptors.request.use(function (config) {
       if (config.url.indexOf('r/') !== -1) { // Check for restricted request
         if (sessionStorage.getItem('user-token') === null) {
-          cancel("Operation canceled by the MQL interceptor.")
+          cancel("Operation canceled by the MQL interceptor.");
           //TODO: Uncomment below code for dispatch
           // window.app.$store.dispatch('AUTH_LOGOUT')
         }
       }
-      return config
+      return config;
     }, function (error) {
-      return Promise.reject(error)
-    })
+      return Promise.reject(error);
+    });
     mqlInstance.interceptors.response.use(function (config) {
       if (config.url.indexOf('r/') !== -1) { // Check for restricted request
         if (sessionStorage.getItem('user-token') === null) {
-          cancel("Operation canceled by the MQL interceptor.")
+          cancel("Operation canceled by the MQL interceptor.");
           //TODO: Uncomment below code for dispatch
           // window.app.$store.dispatch('AUTH_LOGOUT')
         }
       }
-      return config
+      return config;
     }, function (error) {
-      return Promise.reject(error)
-    })
-    Vue.prototype.$MQL = {
-      setMap() {
-        this.fetchableMap = new Map()
-      },
-       formatActivity (activity_str) {
-        activityType = activity_str.split(ActivitySplitter)[0]
-        this.fetchableMap.set('ActivityType', activityType)
-        activityArray = ((activity_str.split(ActivitySplitter)[1]).substring(0, (activity_str.split(ActivitySplitter)[1]).length - 1)).split(',')      
-        activityArray.map(item => {
-          let obj = {},srvName;
-          obj[ObjActivityData] = null
-          if(item.match(/query_/) !== null && item.match(/query_/).length > 0) {
-            obj[item] = item.trim()
-            srvName = item.trim()
-            isQuery = true;
-          } else {
-            obj[ObjActivityNameKey] = item.trim()
-            srvName = item.trim()
-            isActivity = true;
-          }
-          this.fetchableMap.set(srvName, obj)
-  
-        })
-        return{'isQuery': isQuery, 'isActivity': isActivity}
-      },
-      setActivity(str) {
-        this.setMap()
-        let formattedResult = this.formatActivity(str)
-        if(formattedResult.isQuery && formattedResult.isActivity) {
-          console.error('Can not support query and activity in a single execution')
-          return
-        } else {
-          this.fetchableMap.set('isQuery', formattedResult.isQuery)
-          return this
-        }       
-      },
-      setData(activity = null, data = null) {
-        //console.log(activity, data, this.fetchableMap)
-        if (null === activity) {
-          console.error('Data cannot be null')
-        } else if(null === data) {
-          // common data
-          for (let [key, value] of this.fetchableMap) {
-            if (null === value[ObjActivityData]) {
-              value[ObjActivityData] = activity
-              this.fetchableMap.set(key, value )
-            }
-          }
-        } else {
-          // service specific
-          let activityValue = this.fetchableMap.get(activity)
-          activityValue[ObjActivityData] = data
-              this.fetchableMap.set(activity, activityValue )
+      return Promise.reject(error);
+    });
+    this.formatActivity = function (activity_str) {
+      let activityArray = [];
+      this.activityType = activity_str.split(ActivitySplitter)[0];
+      this.fetchableMap.set('ActivityType', this.activityType);
+      activityArray = ((activity_str.split(ActivitySplitter)[1]).substring(0, (activity_str.split(ActivitySplitter)[1]).length - 1)).split(',');
+      activityArray.map(item => {
+        let obj = {}, srvName;
+        obj[ObjActivityData] = null;
+        if (item.match(/query_/) !== null && item.match(/query_/).length > 0) {
+          obj[item] = item.trim();
+          srvName = item.trim();
+          this.isQuery = true;
         }
-        return this
-      },
-      setHeader(header = {}) {
-        this.fetchableMap.set('Header', header )
-        return this
-      },
-      setCustomURL(url = null) {
-        this.fetchableMap.set('CustomURL', url )        
-        return this
-      },
-      fetch() {
-        return new Promise((resolve, reject) => {
-          let activities = new String()
-          let postParamObject = {}
-          for (var [key, value] of this.fetchableMap) {
-           
-            if (key.search('ActivityType') < 0 && key.search('Header') < 0 && key.search('CustomURL') < 0 && key.search('isQuery') < 0){
-              activities = activities + ',' + key
-              postParamObject[key.match(/query_/) !== null && key.match(/query_/).length > 0? key.substring('query_'.length, key.length): key] = value.Data
-            }
-          }
-          //console.log(this.fetchableMap)
-          prepareMQLRequest(this.fetchableMap.get('ActivityType'), activities.substring(1, activities.length), postParamObject, this.fetchableMap.get('CustomURL'), this.fetchableMap.get('Header'), this.fetchableMap.get('isQuery'))
-            .then(function (response) {
-              var data = deepFreeze(response.data)
-              data.fetchablObj = fetch
-              resolve(data)
-            })
-            .catch(function (error) {
-               if(error.message === 'Network Error'){
-                var data = {}
-                data.result = null
-                data.error = 'Network Error'
-                reject(data)
-              }else if(axios.isCancel(error)){
-                var data = {}
-                data.result = null
-                data.error = error.message
-                reject(data)
-              }
-              else if (!error.response.data.error) {
-                var data = {}
-                data.result = null
-                data.error = error.response.status
-                reject(data)
-              } else {
-                var data = {}
-                data.result = null
-                data.error = error.message
-                reject(data)
-              }
-            })
-            .then(function () {
-              resolve('do something')
-            })
-        });
+        else {
+          obj[ObjActivityNameKey] = item.trim();
+          srvName = item.trim();
+          this.isActivity = true;
+        }
+        this.fetchableMap.set(srvName, obj);
+      });
+    };
+    this.deepFreeze = (object) => {
+      // Retrieve the property names defined on object
+      var propNames = Object.getOwnPropertyNames(object);
+      // Freeze properties before freezing self
+      for (let name of propNames) {
+        let value = object[name];
+        object[name] = value && typeof value === 'object'
+          ? this.deepFreeze(value) : value;
+      }
+      return Object.freeze(object);
+    };
+    this.generateURL = (activityType, customURL) => {
+      if (customURL != null && customURL !== undefined) {
+        return customURL + this.getVersion() + this.getRegion() + this.getAppCode() + this.getServiceURL(activityType);
+      }
+      else {
+        return this.getVersion() + this.getRegion() + this.getAppCode() + this.getServiceURL(activityType);
       }
     };
+    this.getServiceURL = (activityType) => {
+      return (activityType.toLowerCase() === 'c'
+        ? 'r/' + activityType.toLowerCase() + '/'
+        : activityType.toLowerCase() + '/')
+        +
+        'mql';
+    };
+    this.generateHeaders = (activityType, activities, headers = {}, isQuery = false) => {
+      headers['Service-Header'] = isQuery ? QueryActivityKey : activities;
+      if (activityType !== 'o') {
+        headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token');
+      }
+      return headers;
+    };
+    this.getVersion = function () {
+      return this.version != null || this.version != undefined ? this.version + '/' : '';
+    };
+    this.getRegion = function () {
+      return null != this.region || undefined != this.region ? this.region + '/' : '';
+    };
+    this.getAppCode = function () {
+      return this.appCode != null || this.appCode != undefined ? this.appCode + '/' : '';
+    };
+    /* Setter methods */
+    this.setActivity = function (str_activities = null) {
+      this.str_activities = str_activities;
+      this.formatActivity(this.str_activities);
+      return this;
+    };
+    this.setData = function (str_activity = null, str_data_obj = null) {
+      if (null === str_activity) {
+        console.error('Data cannot be null');
+      }
+      else if (null === str_data_obj) {
+        // common data
+        for (let [key, value] of this.fetchableMap) {
+          if (null === value[ObjActivityData]) {
+            value[ObjActivityData] = str_activity;
+            this.fetchableMap.set(key, value);
+          }
+        }
+      }
+      else {
+        // service specific
+        let activityValue = this.fetchableMap.get(str_activity);
+        activityValue[ObjActivityData] = str_data_obj;
+        this.fetchableMap.set(str_activity, activityValue);
+      }
+      return this;
+    };
+    this.setHeader = function (obj_header = {}) {
+      this.fetchableMap.set('Header', obj_header);
+      return this;
+    };
+    this.setCustomURL = function (str_customURL = null) {
+      this.fetchableMap.set('CustomURL', str_customURL);
+      return this;
+    };
+    this.showConfirmDialog = function (bool_confirmation = false) {
+      this.isConfirm = bool_confirmation;
+      return this;
+    };
+    this.fetch = function (docId = null) {
+      return new Promise((resolve, reject) => {
+        let self = this;
+        if (this.isConfirm) {
+          Vue.dialog
+            .confirm('Please confirm to continue')
+            .then(function (dialog) {
+              let rs = self.run(docId, self.isQuery, self.isActivity, self.fetchableMap, self.activityType);
+              resolve(rs);
+            })
+            .catch(function () {
+              // TODO: create result format
+              reject('cancel by user');
+            });
+        }
+        else {
+          let rs = self.run(docId, self.isQuery, self.isActivity, self.fetchableMap, self.activityType);
+          resolve(rs);
+        }
+      });
+    };
+    this.run = function (docId = null, isQuery = false, isActivity = false, fetchableMap = null, activityType = 'o') {
+      return new Promise((resolve, reject) => {
+        let txt = document.getElementById(docId).innerHTML;
+        let postParamObject = {};
+        let activities = new String();
+        document.getElementById(docId).disabled = true;
+        document.getElementById(docId).innerHTML = 'Processing';
+        if (isQuery && isActivity) {
+          console.error('Can not support query and activity in a single execution');
+          //TODO: check for return working
+          return;
+        }
+        else {
+          fetchableMap.set('isQuery', isQuery);
+        }
+        for (var [key, value] of fetchableMap) {
+          if (key.search('ActivityType') < 0 && key.search('Header') < 0 && key.search('CustomURL') < 0 && key.search('isQuery') < 0) {
+            activities = activities + ',' + key;
+            postParamObject[key.match(/query_/) !== null && key.match(/query_/).length > 0 ? key.substring('query_'.length, key.length) : key] = value.Data;
+          }
+        }
+        mqlInstance({
+          url: this.generateURL(activityType, fetchableMap.get('CustomURL')),
+          method: 'Post',
+          headers: this.generateHeaders(activityType, activities.substring(1, activities.length), fetchableMap.get('Header'), isQuery),
+          data: postParamObject,
+          cancelToken: new CancelToken(function executor(c) {
+            cancel = c;
+          })
+        }).then(res => {
+          // TODO: Handel res and remove obj code
+          let obj = {};
+          for (var [key, value] of fetchableMap) {
+            obj[key] = value;
+          }
+          // TODO: remove setTimeout: it is for testing
+          setTimeout(function () {
+            document.getElementById(docId).disabled = false;
+            document.getElementById(docId).innerHTML = txt;
+          }, 3000);
+          // TODO: return handeled response
+          resolve(new Response(obj));
+        }).catch(error => {
+          // TODO: Handel res and remove obj code
+          let obj = {};
+          for (var [key, value] of fetchableMap) {
+            obj[key] = value;
+          }
+          // TODO: remove setTimeout: it is for testing
+          setTimeout(function () {
+            document.getElementById(docId).disabled = false;
+            document.getElementById(docId).innerHTML = txt;
+          }, 3000);
+          // TODO: return handeled response
+          resolve(new Response(obj));
+        });
+      });
+    };
   }
-};
+}
+
+export default MQL

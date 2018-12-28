@@ -4,8 +4,16 @@
             <div class="row">
                 <div class="col-md-4 offset-md-4">
                     <div class="login-card">
-                        <button @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
+                        <button id="a11" @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
+                    
                     </div>
+                    <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
                 </div>
             </div>
         </div>
@@ -14,6 +22,8 @@
 
 <script> 
 import Vue from 'vue'
+import MQL from '@/plugins/mql.js'
+ 
 export default {
     data () {
         return {
@@ -23,37 +33,21 @@ export default {
     methods: {
 
         GetAllPosts () {
-            // for(let i=1; i <=100; i++) {
-            //  this.$MQL.setActivity(`r.[Activity${i}, Activity${i}${i}]`)
-            //           .setHeader({'my-header': 'jjjj'})
-            //           .setData(`Activity${i}`,{'param1': `${i}`})
-            //           .setData('Data 3')
-            //           .fetch()
-            //           .then(res => {
-            //                 console.log(res)
-            //             })
-            //           .catch(error=> {
-            //                 console.log(error)
-            //             });
-            // }
             
-            // for(let i=0; i <=100; i++) {
-            //     this.$MQL.setActivity(i+' -Activity', ).setData(i+' - Data').fetch(i+' - Fetch').then(res => {
-            //         console.log(res)
-            //     });
-            // }
-
-             
-               this.$MQL.setActivity('o.[Act1, Act2]').setData('Act1', 'Act1 data').setData({'data1': 'hello'}).fetch().then(res => {
-                  console.log(res)
-              }).catch(error => {
-                  console.log(error)
-              })
-               this.$MQL.setActivity('o.[tempo, mars]').fetch().then(res => {
-                  console.log(res)
-              }).catch(error => {
-                  console.log(error)
-              })
+            new MQL().setActivity('o.[query_vijay,query_asasa]')
+            .setData('Chauhan')
+            .setHeader({'my-header': 'It is Ok'})
+            .setCustomURL('http://127.0.0.1:9090/server2/')
+            //.showConfirmDialog(true)
+            .fetch('a11').then(res => {
+                console.log(res)
+                let r = res.getRaw(true)
+                res.showErrorToast('string1')
+                res.showErrorToast('string 2')
+                res.showErrorToast('string 3')
+                let p = res.getActivity('query_vijay') 
+                res.isValid('a') ? res.Navigate('about', 'query_vijay', 'pId') : res.Navigate('home', 'query_vijay', 'pId')
+             })            
         }
     }
 }
