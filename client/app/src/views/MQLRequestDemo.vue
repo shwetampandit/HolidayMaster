@@ -32,13 +32,12 @@ export default {
     },
     methods: {
 
-        GetAllPosts () {
-            
+        GetAllPosts () {       
             new MQL().setActivity('o.[query_vijay,query_asasa]')
             .setData('Chauhan')
             .setHeader({'my-header': 'It is Ok'})
             .setCustomURL('http://127.0.0.1:9090/server2/')
-            //.showConfirmDialog(true)
+            .showConfirmDialog(true)
             .fetch('a11').then(res => {
                 console.log(res)
                 let r = res.getRaw(true)
@@ -47,7 +46,9 @@ export default {
                 res.showErrorToast('string 3')
                 let p = res.getActivity('query_vijay') 
                 res.isValid('a') ? res.Navigate('about', 'query_vijay', 'pId') : res.Navigate('home', 'query_vijay', 'pId')
-             })            
+             })   
+             
+            
         }
     }
 }

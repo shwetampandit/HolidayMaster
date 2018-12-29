@@ -34,7 +34,7 @@ class Response {
         this.showErrorToast = function (str_activity = null) {
             // TODO: fetch error from
             if(null != str_activity) {
-                // TODO: check for error and fetch error key or message in case
+            // TODO: check for error and fetch error key or message in case
             }
            // Vue.toasted.error(i18n? window.app.$t(str_activity) : str_activity).goAway(3000);
             Vue.toasted.error(null != str_activity ? str_activity : 'my error').goAway(3000);           

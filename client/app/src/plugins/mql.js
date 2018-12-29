@@ -167,6 +167,7 @@ class MQL {
     };
     this.run = function (docId = null, isQuery = false, isActivity = false, fetchableMap = null, activityType = 'o') {
       return new Promise((resolve, reject) => {
+        // TODO: check for docId null
         let txt = document.getElementById(docId).innerHTML;
         let postParamObject = {};
         let activities = new String();
