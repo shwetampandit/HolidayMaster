@@ -4,6 +4,7 @@ class Response {
     constructor(obj_raw) {
         this.raw = obj_raw;
         this.isReactive = false;
+
         this.setReactivity = (isReactive) => {
             this.isReactive = isReactive;
         };
@@ -22,6 +23,7 @@ class Response {
             return isReactive ? this.raw : this.deepFreeze(this.raw);
         };
         this.getActivity = function (str_activity, bool_isReactive = false) {
+            // TODO: if calling auto set the local cache property
             return bool_isReactive ? this.raw[str_activity] : this.deepFreeze(this.raw[str_activity]);
         };
         this.Navigate = function (str_routeName = null, str_activityData = null, str_key = null) {
