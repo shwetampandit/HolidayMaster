@@ -33,19 +33,21 @@ export default {
     methods: {
 
         GetAllPosts () {       
-            new MQL().setActivity('o.[query_vijay,query_asasa]')
-            .setData('Chauhan')
+            new MQL().setActivity("o.[query_1DYhS6usqRF3dXisyecSyswCq9Z]")
+        .setData({
+          fetchId: "1DYhS6usqRF3dXisyecSyswCq9Z"
+        })
             .setHeader({'my-header': 'It is Ok'})
             .setCustomURL('http://127.0.0.1:9090/server2/')
-            .showConfirmDialog(true)
-            .fetch('a11').then(res => {
+            //.showConfirmDialog(true)
+            .fetch().then(res => {
                 console.log(res)
                 let r = res.getRaw(true)
-                res.showErrorToast('string1')
-                res.showErrorToast('string 2')
-                res.showErrorToast('string 3')
-                let p = res.getActivity('query_vijay') 
-                res.isValid('a') ? res.Navigate('about', 'query_vijay', 'pId') : res.Navigate('home', 'query_vijay', 'pId')
+                console.log(res.isValid())
+                
+               // let p = res.getActivity('query_vijay') 
+                
+               // res.isValid('a') ? res.Navigate('about', 'query_vijay', 'pId') : res.Navigate('home', 'query_vijay', 'pId')
              })   
              
             
