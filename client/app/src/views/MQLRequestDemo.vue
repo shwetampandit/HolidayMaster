@@ -4,16 +4,26 @@
             <div class="row">
                 <div class="col-md-4 offset-md-4">
                     <div class="login-card">
-
-                        <button @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
+                        <button id="a11" @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
+                    
                     </div>
+                    <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
                 </div>
             </div>
         </div>
     </section>
 </template>
 
-<script>
+<script> 
+import Vue from 'vue'
+import MQL from '@/plugins/mql.js'
+ 
 export default {
     data () {
         return {
@@ -22,19 +32,25 @@ export default {
     },
     methods: {
 
-        GetAllPosts () {
-            this.$MQLFetch('o.ServiceName1', null, null, null, null, headers).then(res => {
-                this.result = res
-            }).catch(error => {
-                this.$log.error(1,error)
-            })
-           var headers = {}
-           headers['Test-Header'] = "Hello Test"
-        this.$MQLFetch('r.ServiceName2', null, null, null, null, headers).then(res => {
-                this.result = res
-            }).catch(error => {
-                this.$log.error(2,error)
-            })
+        GetAllPosts () {       
+            new MQL().setActivity("o.[query_1DYhS6usqRF3dXisyecSyswCq9Z]")
+        .setData({
+          fetchId: "1DYhS6usqRF3dXisyecSyswCq9Z"
+        })
+            .setHeader({'my-header': 'It is Ok'})
+            .setCustomURL('http://127.0.0.1:9090/server2/')
+            //.showConfirmDialog(true)
+            .fetch().then(res => {
+                console.log(res)
+                let r = res.getRaw(true)
+                console.log(res.isValid())
+                
+               // let p = res.getActivity('query_vijay') 
+                
+               // res.isValid('a') ? res.Navigate('about', 'query_vijay', 'pId') : res.Navigate('home', 'query_vijay', 'pId')
+             })   
+             
+            
         }
     }
 }

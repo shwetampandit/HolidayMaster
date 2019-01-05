@@ -5,12 +5,13 @@ import store from '@/store'
 import './registerServiceWorker'
 import axios from 'axios'
 import VueLogger from 'vuejs-logger'
-import mql from './plugins/mql.js'
+import mqlOptions from './plugins/mqlOptions.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
-
+import VuejsDialog from 'vuejs-dialog'
+import 'vuejs-dialog/dist/vuejs-dialog.min.css';
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
-
+import Toasted from 'vue-toasted'
 Vue.config.productionTip = false
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -24,19 +25,20 @@ const options = {
   showConsoleColors: true
 }
 Vue.use(VueLogger, options)
-
-var baseURL = 'http://localhost:8080/server/'
+Vue.use(VuejsDialog)
+Vue.use(Toasted)
+var baseURL = 'http://localhost:9898/server23/'
+Vue.use(mqlOptions, {
+  baseURL: baseURL,
+  appCode: 'GFS1'
+});
 axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
 // TODO: delete axios header on logout and clear session storage
 // delete axios.defaults.headers.common['Authorization']
-Vue.use(mql, {
-  mqlBaseURL: baseURL,
-  versionEnable: false,
-  regionEnable: false
-})
+
 
 Vue.use(VueLocalStorage)
 
