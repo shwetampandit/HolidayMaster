@@ -27,10 +27,9 @@ const options = {
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
 Vue.use(Toasted)
-var baseURL = 'http://localhost:9898/server23/'
+var baseURL = 'http://localhost:8080/server/'
 Vue.use(mqlOptions, {
-  baseURL: baseURL,
-  appCode: 'GFS1'
+  baseURL: baseURL
 });
 axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage

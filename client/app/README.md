@@ -30,3 +30,16 @@
 - once vue ui started click on import and add your app (it emit error if node_module not installed )
 - go to tasks menu and click on Serve (for running app) 
 - Other option like build , analyzer, plugin installation etc.
+- You can also updating serve execution script in package.json by adding
+```sh
+Usage: vue-cli-service serve [options] [entry]
+
+Options:
+  --open    open browser on server start
+  --copy    copy url to clipboard on server start
+  --mode    specify env mode (default: development)
+  --host    specify host (default: 0.0.0.0)
+  --port    specify port (default: 8080)
+  --https   use https (default: false)
+```
+  
