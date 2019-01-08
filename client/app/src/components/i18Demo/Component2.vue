@@ -4,7 +4,7 @@
     <h4>
       <b>{{$t('component2.title')}}</b>
     </h4>
-    <div>(Default Marathi)</div>
+    <!-- <div>(Default Marathi)</div> -->
     <div>
       <button @click="changeLanguage('en')">English</button>
       <button @click="changeLanguage('hi')">Hindi</button>

@@ -4,7 +4,7 @@
     <h4>
       <b>{{$t('demo.demoHeading')}}</b>
     </h4>
-    <div>(Default Hindi)</div>
+    <!-- <div>(Default Hindi)</div> -->
     <div>
       <button @click="changeLanguage('en')">English</button>
       <button @click="changeLanguage('hi')">Hindi</button>

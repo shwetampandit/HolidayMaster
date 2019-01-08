@@ -1,15 +1,15 @@
 {
   "about": {
-    "aboutHeading": "This is an about page(In English)"
+    "aboutHeading": "This is an about page"
   },
   "home": {
-    "homeTitle": "This is home page (In English)"
+    "homeTitle": "This is home page"
   },
   "demo": {
-    "demoHeading": "This is text in English"
+    "demoHeading": "This is text"
   },
   "component2": {
-    "title": "This is component 2 text in English (Loaded from file)"
+    "title": "English text (Loaded from file)"
   },
   "validation": {
     "nameRequired": "The Name field is required",

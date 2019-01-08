@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { shallowMount } from '@vue/test-utils'
-import Login from '@/views/login/login.vue'
+import Login from '@/views/Login.vue'
 
 Vue.use(Vuex)
 
