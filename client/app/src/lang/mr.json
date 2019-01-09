@@ -1,15 +1,15 @@
 {
   "about":{
-    "aboutHeading":"this is about page (In marathi)"
+    "aboutHeading":"हे पृष्ठ बद्दल आहे"
   },
   "home": {
-    "homeTitle": "This is home page (In marathi)"
+    "homeTitle": "हे मुख्यपृष्ठ आहे"
   },
   "demo": {
-    "demoHeading": "This is text in Marathi"
+    "demoHeading": "हे मराठीमध्ये आहे"
   },
   "component2": {
-    "title": "This is component 2 text in Marathi (Loaded from file)"
+    "title": "मराठी अनुच्छेद (Loaded from file)"
   },
   "validation": {
     "nameRequired": "The Name field is required",

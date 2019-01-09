@@ -1,15 +1,15 @@
 {
   "about": {
-    "aboutHeading": "this is about page (In hindi)"
+    "aboutHeading": "यह पेज के बारे में है"
   },
   "home": {
-    "homeTitle": "This is home page (In hindi)"
+    "homeTitle": "यह होम पेज है"
   },
   "demo": {
-    "demoHeading": "This is text in Hindi"
+    "demoHeading": "यह हिंदी में है"
   },
   "component2": {
-    "title": "This is component 2 text in Hindi (Loaded from file)"
+    "title": "हिंदी अनुच्छेद (Loaded from file)"
   },
   "validation": {
     "nameRequired": "The Name field is required",
