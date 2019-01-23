@@ -2,6 +2,7 @@
 import * as types from '../types'
 import axios from 'axios'
 import router from '../../router'
+import MQL from '@/plugins/mql.js'
 export const state = {
   token: sessionStorage.getItem('user-token') || '',
   status: ''
@@ -34,19 +35,24 @@ export const actions = {
       commit(types.MUTATE_AUTH_REQUEST, payload)
       sessionStorage.setItem('user-token', 'token')
       // axios.defaults.headers.common['Authorization'] = 'token'
-      axios.post('o/mql/login', payload).then(response => {
-        var token = response.headers.authorization
-        sessionStorage.setItem('user-token', token)
-        // set axios header
-        // axios.defaults.headers.common['Authorization'] = token
-        commit(types.MUTATE_AUTH_SUCCESS, response)
-        resolve(response)
+      new MQL()
+      .setLoginActivity()
+      .setData({
+        loginId: payload.username,
+        password: payload.password
       })
-        .catch(err => {
-          commit(types.MUTATE_AUTH_ERROR, err)
+      .fetch().then(response => {
+        if(response.isValid()){
+          var token = response.getHeaders().authorization
+          sessionStorage.setItem('user-token', token)
+          commit(types.MUTATE_AUTH_SUCCESS, response)
+          resolve(response)
+        }else {
+          commit(types.MUTATE_AUTH_ERROR, response)
           sessionStorage.removeItem('user-token')
-          reject(err)
-        })
+          reslove(response)
+        }
+      })
     })
   },
 

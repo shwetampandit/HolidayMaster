@@ -2,7 +2,8 @@ import router from "@/router.js";
 import Vue from "vue";
 class Response {
   constructor(obj_raw) {
-    this.raw = obj_raw;
+    this.raw = undefined === obj_raw.data? obj_raw : obj_raw.data;
+    this.headers = obj_raw.headers
     this.isReactive = false;
 
     this.setReactivity = isReactive => {
@@ -24,6 +25,9 @@ class Response {
     };
     this.getRaw = function (isReactive = false) {
       return isReactive ? this.raw : this.deepFreeze(this.raw);
+    };
+    this.getHeaders = function () {
+      return this.headers
     };
     this.getActivity = function (str_activity, bool_isReactive = false) {
       // TODO: if calling auto set the local cache property
