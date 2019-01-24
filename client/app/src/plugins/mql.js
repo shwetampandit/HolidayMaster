@@ -14,6 +14,7 @@ class MQL {
     this.region = Vue.getRegion()
     this.appCode = Vue.getAppCode()
     this.activityType = 'o';
+    this.mqlString = '/mql'
     this.isConfirm = false
     const QueryActivityKey = 'FetchQueryData',
       QuerySeperator = 'query_',
@@ -111,8 +112,8 @@ class MQL {
     this.getServiceURL = activityType => {
       return (
         (activityType.toLowerCase() === 'c'
-          ? 'r/' + activityType.toLowerCase() + '/'
-          : activityType.toLowerCase() + '/') + 'mql'
+          ? 'r/' + activityType.toLowerCase()
+          : activityType.toLowerCase()) + this.mqlString
       )
     };
     this.generateHeaders = (
@@ -178,6 +179,13 @@ class MQL {
     };
     this.showConfirmDialog = function (bool_confirmation = false) {
       this.isConfirm = bool_confirmation
+      return this
+    };
+    this.setLoginActivity = function () {
+      this.setActivity('o.[MQLIOActivity]')
+       this.setCustomURL('/o/mql/login')
+       this.activityType = ''
+       this.mqlString = ''
       return this
     };
     this.fetch = function (docId = null) {
@@ -276,21 +284,21 @@ class MQL {
             fetchableMap.get('Header'),
             isQuery
           ),
-          data: postParamObject,
+          data: 'MQLIOActivity' in postParamObject? postParamObject.MQLIOActivity: postParamObject,
           cancelToken: new CancelToken(function executor (c) {
             cancel = c
           })
         })
           .then(res => {
+           // console.log('RES')
             if (null != docId) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
-            resolve(new Response(res.data))
+            resolve(new Response(res))
           })
           .catch(error => {
-            console.log(error.message)
-            // TODO: Handel res and remove obj code
+           // console.log('ER', error.message)
             let obj = {}
             if (null != docId) {
               document.getElementById(docId).disabled = false
