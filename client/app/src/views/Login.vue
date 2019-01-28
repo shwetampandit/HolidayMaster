@@ -60,7 +60,7 @@ export default {
     authenticate() {
       this.$store.dispatch('AUTH_REQUEST', { loginId: this.username, password: this.password }).then(res => {
         //Redirect to next page after suucessfull login
-        alert('success')
+        alert(res.isValid('MQLLogin'))
       })
         .catch(err => {
           alert(err)

@@ -2,7 +2,7 @@ import router from "@/router.js";
 import Vue from "vue";
 class Response {
   constructor(obj_raw) {
-    this.raw = undefined === obj_raw.data? obj_raw : obj_raw.data;
+    this.raw = obj_raw.data;
     this.headers = obj_raw.headers
     this.isReactive = false;
 

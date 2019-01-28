@@ -37,12 +37,9 @@ export const actions = {
       // axios.defaults.headers.common['Authorization'] = 'token'
       new MQL()
       .setLoginActivity()
-      .setData({
-        loginId: payload.username,
-        password: payload.password
-      })
+      .setData(payload)
       .fetch().then(response => {
-        if(response.isValid()){
+        if(response.isValid('MQLLogin')){
           var token = response.getHeaders().authorization
           sessionStorage.setItem('user-token', token)
           commit(types.MUTATE_AUTH_SUCCESS, response)
@@ -50,7 +47,7 @@ export const actions = {
         }else {
           commit(types.MUTATE_AUTH_ERROR, response)
           sessionStorage.removeItem('user-token')
-          reslove(response)
+          resolve(response)
         }
       })
     })
