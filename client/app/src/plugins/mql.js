@@ -182,10 +182,10 @@ class MQL {
       return this
     };
     this.setLoginActivity = function () {
-      this.setActivity('o.[MQLIOActivity]')
-       this.setCustomURL('/o/mql/login')
-       this.activityType = ''
-       this.mqlString = ''
+      this.setActivity('o.[MQLLogin]')
+      // this.setCustomURL('/o/mql/login')
+       // this.activityType = ''
+       // this.mqlString = ''
       return this
     };
     this.fetch = function (docId = null) {
@@ -284,13 +284,12 @@ class MQL {
             fetchableMap.get('Header'),
             isQuery
           ),
-          data: 'MQLIOActivity' in postParamObject? postParamObject.MQLIOActivity: postParamObject,
+          data: postParamObject,
           cancelToken: new CancelToken(function executor (c) {
             cancel = c
           })
         })
           .then(res => {
-           // console.log('RES')
             if (null != docId) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
@@ -298,7 +297,6 @@ class MQL {
             resolve(new Response(res))
           })
           .catch(error => {
-           // console.log('ER', error.message)
             let obj = {}
             if (null != docId) {
               document.getElementById(docId).disabled = false
