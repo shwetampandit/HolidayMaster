@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Response from '@/plugins/response.js';
-
+// import pako from 'pako'
 class MQL {
   constructor (str_activities = null) {
     let cancel,
@@ -17,12 +17,24 @@ class MQL {
     this.mqlString = '/mql'
     this.isConfirm = false
     const QueryActivityKey = 'FetchQueryData',
-      QuerySeperator = 'query_',
       ActivitySplitter = '.[',
       ObjActivityNameKey = 'ActivityName',
       ObjActivityData = 'Data';
     const mqlInstance = axios.create({
       baseURL: Vue.getBaseURL()
+      // transformRequest: axios.defaults.transformRequest.concat(
+      //   function (data, headers) {
+      //     // compress strings if over 1KB
+      //     if (typeof data === 'string' && data.length > 10) {
+      //       headers['Content-Encoding'] = 'gzip';
+      //       return pako.gzip(data);
+      //     } else {
+      //       // delete is slow apparently, faster to set to undefined
+      //       //headers['Content-Encoding'] = undefined;
+      //       return data;
+      //     }
+      //   }
+      // )
     })
     mqlInstance.interceptors.request.use(
       function (config) {
@@ -194,7 +206,7 @@ class MQL {
         if (this.isConfirm) {
           Vue.dialog
             .confirm('Please confirm to continue')
-            .then(function (dialog) {
+            .then(function () {
               let rs = self.run(
                 docId,
                 self.isQuery,
@@ -227,11 +239,10 @@ class MQL {
       fetchableMap = null,
       activityType = 'o'
     ) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
         if (null != docId) {
-        //  alert('not null')
          txt = document.getElementById(docId).innerHTML
         document.getElementById(docId).disabled = true
         document.getElementById(docId).innerHTML = 'Processing'

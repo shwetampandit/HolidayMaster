@@ -1,6 +1,5 @@
 
 import * as types from '../types'
-import axios from 'axios'
 import router from '../../router'
 import MQL from '@/plugins/mql.js'
 export const state = {
@@ -31,30 +30,32 @@ export const mutations = {
 
 export const actions = {
   AUTH_REQUEST: ({ commit }, payload) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       commit(types.MUTATE_AUTH_REQUEST, payload)
       sessionStorage.setItem('user-token', 'token')
       // axios.defaults.headers.common['Authorization'] = 'token'
       new MQL()
-      .setLoginActivity()
-      .setData(payload)
-      .fetch().then(response => {
-        if(response.isValid('MQLLogin')){
-          var token = response.getHeaders().authorization
-          sessionStorage.setItem('user-token', token)
-          commit(types.MUTATE_AUTH_SUCCESS, response)
-          resolve(response)
-        }else {
-          commit(types.MUTATE_AUTH_ERROR, response)
-          sessionStorage.removeItem('user-token')
-          resolve(response)
-        }
-      })
+        .setLoginActivity()
+        .setData(payload)
+        //.showConfirmDialog(true)
+        .fetch('loginBtn').then(response => {
+          response.hideElement('loginFormId')
+          if (response.isValid('MQLLogin')) {
+            let token = response.getHeaders().authorization
+            sessionStorage.setItem('user-token', token)
+            commit(types.MUTATE_AUTH_SUCCESS, response)
+            resolve(response)
+          } else {
+            commit(types.MUTATE_AUTH_ERROR, response)
+            sessionStorage.removeItem('user-token')
+            resolve(response)
+          }
+        })
     })
   },
 
-  AUTH_LOGOUT: ({ commit }) => {
-    return new Promise((resolve, reject) => {
+  AUTH_LOGOUT: () => {
+    return new Promise((resolve) => {
       sessionStorage.removeItem('user-token')
       // remove the axios default header
       // delete axios.defaults.headers.common['Authorization']

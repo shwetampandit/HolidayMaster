@@ -2,9 +2,10 @@
   <div>
     check browser compatibility
     <div v-if="getBrowser">
-      current browser name is: {{browserName}} version: {{version}}
+      current browser name is: {{ browserName }} version: {{ version }}
     </div>
-    <div v-else> your browser is not compatible to required version current browser name is {{browserName}} version: {{version}}
+    <div v-else>
+      your browser is not compatible to required version current browser name is {{ browserName }} version: {{ version }}
     </div>
   </div>
 </template>

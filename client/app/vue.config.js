@@ -5,10 +5,10 @@ module.exports = {
   chainWebpack: (config) => {
     config.plugins.delete('prefetch')
   },
-  configureWebpack: config => {
+  configureWebpack: () => {
     if (process.env.NODE_ENV === 'production') {
       // mutate config for production...
-      plugins: [
+      [
         new CompressionWebpackPlugin({
           filename: '[path].gz[query]',
           algorithm: 'gzip',
@@ -24,7 +24,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/server': {
-        target: 'https://host:port/projectName',
+        target: 'http://10.2.11.17/RoshanpDevelopment',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
