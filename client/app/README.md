@@ -42,4 +42,39 @@ Options:
   --port    specify port (default: 8080)
   --https   use https (default: false)
 ```
-  
+  VSCode Setting:
+  Install eslint extension
+  This is for vue client application formatting you can add your other plugins related to Golang, Python, todo Highlight, theme etc
+  ```
+  {
+  "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14,
+  "workbench.colorTheme": "Visual Studio Dark",
+  "nativescript.analytics.enabled": false,
+  "window.zoomLevel": 0,
+  "vetur.format.defaultFormatter.js": "vscode-typescript",
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.validate": [
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    {
+      "language": "html",
+      "autoFix": true
+    },
+    {
+      "language": "javascript",
+      "autoFix": true
+    }
+  ],
+}
+  ```sh
+  Ctrl + S => shall format your code (multiple save action may require)
+
+  -- edit: .eslintrc.js file update "plugin:vue/recommended" to "plugin:vue/strongly-recommended"
+  -- edit: .eslintignore file add update src/* to src/*.js
+  -- run: npm run lint and resolve the issue you are facing refer : https://vuejs.github.io/eslint-plugin-vue/rules/

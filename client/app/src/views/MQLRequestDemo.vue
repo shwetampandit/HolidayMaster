@@ -1,27 +1,38 @@
 <template>
-    <section id="masterAxios">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4 offset-md-4">
-                    <div class="login-card">
-                        <button id="a11" @click="GetAllPosts" class="btn btn-info px-4">MQL Request</button> {{result}}
-                    
-                    </div>
-                    <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      ...
-    </div>
-  </div>
-</div>
-                </div>
+  <section id="masterAxios">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 offset-md-4">
+          <div class="login-card">
+            {{ user }}
+            <button
+              id="a11"
+              @click="GetAllPosts"
+              class="btn btn-info px-4"
+            >
+              MQL Request
+            </button> {{ result }}
+          </div>
+          <div
+            class="modal fade bd-example-modal-xl"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="myExtraLargeModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                ...
+              </div>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script> 
-import Vue from 'vue'
 import MQL from '@/plugins/mql.js'
  
 export default {
@@ -32,8 +43,10 @@ export default {
     },
     methods: {
 
-        GetAllPosts () {       
-            new MQL().setActivity("o.[query_1DYhS6usqRF3dXisyecSyswCq9Z]")
+        GetAllPosts () {    
+            new MQL()
+           // .setActivity("o.[query_1DYhS6usqRF3dXisyecSyswCq9Z]")
+           // .setLoginActivity()
         .setData({
           fetchId: "1DYhS6usqRF3dXisyecSyswCq9Z"
         })
@@ -42,7 +55,7 @@ export default {
             //.showConfirmDialog(true)
             .fetch().then(res => {
                 console.log(res)
-                let r = res.getRaw(true)
+                //let r = res.getRaw(true) 
                 console.log(res.isValid())
                 
                // let p = res.getActivity('query_vijay') 

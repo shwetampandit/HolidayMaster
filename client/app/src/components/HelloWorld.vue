@@ -10,7 +10,10 @@ import axios from 'axios'
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
+    msg: {
+      type: String,
+      default: null
+      } 
   },
   mounted () {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + 'token'

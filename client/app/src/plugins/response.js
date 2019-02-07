@@ -6,6 +6,12 @@ class Response {
     this.headers = obj_raw.headers
     this.isReactive = false;
 
+    if (this.headers !== undefined) {
+      if(this.headers.authorization !== undefined ) {
+         sessionStorage.setItem('user-token', this.headers.authorization)
+       }
+    }
+
     this.setReactivity = isReactive => {
       this.isReactive = isReactive;
     };
@@ -28,6 +34,21 @@ class Response {
     };
     this.getHeaders = function () {
       return this.headers
+    };
+    this.showElement = function (str_docId) {
+      if (null != str_docId) {
+        var x = document.getElementById(str_docId);
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        }
+      }
+    };
+    this.hideElement = function (str_docId) {
+      console.log(str_docId)
+      if (null != str_docId) {
+        var x = document.getElementById(str_docId);
+        x.style.display = "none";
+      }
     };
     this.getActivity = function (str_activity, bool_isReactive = false) {
       // TODO: if calling auto set the local cache property

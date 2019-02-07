@@ -4,37 +4,113 @@
       <div class="row">
         <div class="col-md-4 offset-md-4">
           <div class="login-card">
-            <img src="../assets/mkcl-logo.png" alt="mkcl logo" class="mb-4" width="100px">
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input type="email" v-model="username" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <img
+              src="../assets/mkcl-logo.png"
+              alt="mkcl logo"
+              class="mb-4"
+              width="100px"
+            >
+            <div
+              id="loginFormId"
+              class="form-group"
+            >
+              <label
+                id="emailId"
+                for="email"
+              >
+                Email address
+              </label>
+              <input
+                v-model="username"
+                id="email"
+                type="email"
+                name="email"
+                class="form-control"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+              >
+              <small
+                id="emailHelp"
+                class="form-text text-muted"
+              >
+                We'll never share your email with anyone else.
+              </small>
             </div>
             <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" v-model="password"  @focus="showPassInfo = true" @blur="showPassInfo = false" name="password" class="form-control" id="password" placeholder="Password">
+              <label for="password">
+                Password
+              </label>
+              <input
+                v-model="password"
+                type="password"
+                name="password"
+                class="form-control"
+                @focus="showPassInfo = true"
+                id="password"
+                @blur="showPassInfo = false"
+                placeholder="Password"
+              >
             </div>
-            <button type="submit" name="btnlogin" @click="authenticate()" class="btn btn-info px-4">Submit</button>
+            <button
+              id="loginBtn"
+              type="submit"
+              name="btnlogin"
+              class="btn btn-info px-4"
+              @click="authenticate()"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              name="btnlogin"
+              class="btn btn-info px-4"
+              @click="show()"
+            >
+              Show
+            </button>
           </div>
         </div>
         <div class="col-md-4">
           <div class="aro-pswd_info">
-            <div id="pswd_info" v-show="showPassInfo">
+            <div
+              v-show="showPassInfo"
+              id="pswd_info"
+            >
               <h4>Password must be requirements</h4>
               <ul>
-                <li id="letter" class="invalid">At least
+                <li
+                  id="letter"
+                  class="invalid"
+                >
+                  At least
                   <strong>one letter</strong>
                 </li>
-                <li id="capital" class="invalid">At least
+                <li
+                  id="capital"
+                  class="invalid"
+                >
+                  At least
                   <strong>one capital letter</strong>
                 </li>
-                <li id="number" class="invalid">At least
+                <li
+                  id="number"
+                  class="invalid"
+                >
+                  At least
                   <strong>one number</strong>
                 </li>
-                <li id="length" class="invalid">Be at least
+                <li
+                  id="length"
+                  class="invalid"
+                >
+                  Be at least
                   <strong>8 characters</strong>
                 </li>
-                <li id="space" class="invalid">be
+                <li
+                  id="space"
+                  class="invalid"
+                >
+                  be
                   <strong> use [~,!,@,#,$,%,^,&,*,-,=,.,;,']</strong>
                 </li>
               </ul>
@@ -48,8 +124,9 @@
 
 <script>
 import Vue from "vue";
+import Response from "@/plugins/response.js"
 export default {
-  data() {
+  data () {
     return {
       username: "",
       password: "",
@@ -57,10 +134,14 @@ export default {
     };
   },
   methods: {
-    authenticate() {
+    show () {
+      let r = new Response({})
+      r.showElement('loginFormId')
+    },
+    authenticate () {
       this.$store.dispatch('AUTH_REQUEST', { loginId: this.username, password: this.password }).then(res => {
         //Redirect to next page after suucessfull login
-        alert(res.isValid('MQLLogin'))
+        alert('Login : ' + res.isValid('MQLLogin'))
       })
         .catch(err => {
           alert(err)
@@ -81,58 +162,58 @@ export default {
       //     Vue.error(error);
       //   });
     },
-    validatePassword() {
+    validatePassword () {
       //validate password length
       if (this.password.length < 8) {
-        var showLengthMsg = document.getElementById("length");
+        let showLengthMsg = document.getElementById("length");
         showLengthMsg.classList.remove("valid");
         showLengthMsg.classList.add("invalid");
       } else {
-        var showLengthMsg = document.getElementById("length");
+        let showLengthMsg = document.getElementById("length");
         showLengthMsg.classList.remove("invalid");
         showLengthMsg.classList.add("valid");
       }
 
       //validate letter
       if (this.password.match(/[A-z]/)) {
-        var showLengthMsg = document.getElementById("letter");
+        let showLengthMsg = document.getElementById("letter");
         showLengthMsg.classList.remove("invalid");
         showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById("letter");
+        let showLengthMsg = document.getElementById("letter");
         showLengthMsg.classList.remove("valid");
         showLengthMsg.classList.add("invalid");
       }
 
       //validate capital letter
       if (this.password.match(/[A-Z]/)) {
-        var showLengthMsg = document.getElementById("capital");
+        let showLengthMsg = document.getElementById("capital");
         showLengthMsg.classList.remove("invalid");
         showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById("capital");
+        let showLengthMsg = document.getElementById("capital");
         showLengthMsg.classList.remove("valid");
         showLengthMsg.classList.add("invalid");
       }
 
       //validate number
       if (this.password.match(/\d/)) {
-        var showLengthMsg = document.getElementById("number");
+        let showLengthMsg = document.getElementById("number");
         showLengthMsg.classList.remove("invalid");
         showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById("number");
+        let showLengthMsg = document.getElementById("number");
         showLengthMsg.classList.remove("valid");
         showLengthMsg.classList.add("invalid");
       }
 
       //validate space
-      if (this.password.match(/[^a-zA-Z0-9\-\/]/)) {
-        var showLengthMsg = document.getElementById("space");
+      if (this.password.match(/[^a-zA-Z0-9\-/]/)) {
+        let showLengthMsg = document.getElementById("space");
         showLengthMsg.classList.remove("invalid");
         showLengthMsg.classList.add("valid");
       } else {
-        var showLengthMsg = document.getElementById("space");
+        let showLengthMsg = document.getElementById("space");
         showLengthMsg.classList.remove("valid");
         showLengthMsg.classList.add("invalid");
       }
