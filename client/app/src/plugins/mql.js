@@ -1,25 +1,29 @@
-import axios from 'axios';
-import Vue from 'vue';
-import Response from '@/plugins/response.js';
+import axios from 'axios'
+import Vue from 'vue'
+import Response from '@/plugins/response.js'
 // import pako from 'pako'
 class MQL {
-  constructor (str_activities = null) {
-    let cancel,
-      CancelToken = axios.CancelToken
-    this.str_activities = str_activities
+  constructor (strActivities = null) {
+    let cancel
+
+    let CancelToken = axios.CancelToken
+    this.strActivities = strActivities
     this.isQuery = false
     this.isActivity = false
     this.fetchableMap = new Map()
     this.version = Vue.getVersion()
     this.region = Vue.getRegion()
     this.appCode = Vue.getAppCode()
-    this.activityType = 'o';
+    this.activityType = 'o'
     this.mqlString = '/mql'
     this.isConfirm = false
-    const QueryActivityKey = 'FetchQueryData',
-      ActivitySplitter = '.[',
-      ObjActivityNameKey = 'ActivityName',
-      ObjActivityData = 'Data';
+    const QueryActivityKey = 'FetchQueryData'
+
+    const ActivitySplitter = '.['
+
+    const ObjActivityNameKey = 'ActivityName'
+
+    const ObjActivityData = 'Data'
     const mqlInstance = axios.create({
       baseURL: Vue.getBaseURL()
       // transformRequest: axios.defaults.transformRequest.concat(
@@ -42,7 +46,7 @@ class MQL {
           // Check for restricted request
           if (sessionStorage.getItem('user-token') === null) {
             cancel('Operation canceled by the MQL interceptor.')
-            //TODO: Uncomment below code for dispatch
+            // TODO: Uncomment below code for dispatch
             // window.app.$store.dispatch('AUTH_LOGOUT')
           }
         }
@@ -68,17 +72,18 @@ class MQL {
     //     return Promise.reject(error)
     //   }
     // )
-    this.formatActivity = function (activity_str) {
+    this.formatActivity = function (activityStr) {
       let activityArray = []
-      this.activityType = activity_str.split(ActivitySplitter)[0]
+      this.activityType = activityStr.split(ActivitySplitter)[0]
       this.fetchableMap.set('ActivityType', this.activityType)
-      activityArray = activity_str
+      activityArray = activityStr
         .split(ActivitySplitter)[1]
-        .substring(0, activity_str.split(ActivitySplitter)[1].length - 1)
+        .substring(0, activityStr.split(ActivitySplitter)[1].length - 1)
         .split(',')
       activityArray.map(item => {
-        let obj = {},
-          srvName
+        let obj = {}
+
+        let srvName
         obj[ObjActivityData] = null
         if (item.match(/query_/) !== null && item.match(/query_/).length > 0) {
           obj[item] = item.trim()
@@ -91,7 +96,7 @@ class MQL {
         }
         this.fetchableMap.set(srvName, obj)
       })
-    };
+    }
     this.deepFreeze = object => {
       // Retrieve the property names defined on object
       var propNames = Object.getOwnPropertyNames(object)
@@ -102,7 +107,7 @@ class MQL {
           value && typeof value === 'object' ? this.deepFreeze(value) : value
       }
       return Object.freeze(object)
-    };
+    }
     this.generateURL = (activityType, customURL) => {
       if (customURL != null && customURL !== undefined) {
         return (
@@ -127,7 +132,7 @@ class MQL {
           ? 'r/' + activityType.toLowerCase()
           : activityType.toLowerCase()) + this.mqlString
       )
-    };
+    }
     this.generateHeaders = (
       activityType,
       activities,
@@ -140,66 +145,66 @@ class MQL {
           'Bearer ' + sessionStorage.getItem('user-token')
       }
       return headers
-    };
+    }
     this.getVersion = function () {
-      return this.version != null || this.version != undefined
+      return this.version != null || this.version !== undefined
         ? this.version + '/'
-        : '';
+        : ''
     }
     this.getRegion = function () {
-      return this.region != null || undefined != this.region
+      return this.region != null || undefined !== this.region
         ? this.region + '/'
-        : '';
+        : ''
     }
     this.getAppCode = function () {
-      return this.appCode != null || this.appCode != undefined
+      return this.appCode != null || this.appCode !== undefined
         ? this.appCode + '/'
-        : '';
+        : ''
     }
     /* Setter methods */
-    this.setActivity = function (str_activities = null) {
-      this.str_activities = str_activities
-      this.formatActivity(this.str_activities)
+    this.setActivity = function (strActivities = null) {
+      this.strActivities = strActivities
+      this.formatActivity(this.strActivities)
       return this
-    };
-    this.setData = function (str_activity = null, str_data_obj = null) {
-      if (str_activity === null) {
+    }
+    this.setData = function (strActivity = null, strDataObj = null) {
+      if (strActivity === null) {
         console.error('Data cannot be null')
-      } else if (str_data_obj === null) {
+      } else if (strDataObj === null) {
         // common data
         for (let [key, value] of this.fetchableMap) {
           if (value[ObjActivityData] === null) {
-            value[ObjActivityData] = str_activity
+            value[ObjActivityData] = strActivity
             this.fetchableMap.set(key, value)
           }
         }
       } else {
         // service specific
-        let activityValue = this.fetchableMap.get(str_activity)
-        activityValue[ObjActivityData] = str_data_obj
-        this.fetchableMap.set(str_activity, activityValue)
+        let activityValue = this.fetchableMap.get(strActivity)
+        activityValue[ObjActivityData] = strDataObj
+        this.fetchableMap.set(strActivity, activityValue)
       }
       return this
-    };
+    }
     this.setHeader = function (obj_header = {}) {
       this.fetchableMap.set('Header', obj_header)
       return this
-    };
+    }
     this.setCustomURL = function (str_customURL = null) {
       this.fetchableMap.set('CustomURL', str_customURL)
       return this
-    };
-    this.showConfirmDialog = function (bool_confirmation = false) {
-      this.isConfirm = bool_confirmation
+    }
+    this.showConfirmDialog = function (boolConfirmation = false) {
+      this.isConfirm = boolConfirmation
       return this
-    };
+    }
     this.setLoginActivity = function () {
       this.setActivity('o.[MQLLogin]')
       // this.setCustomURL('/o/mql/login')
-       // this.activityType = ''
-       // this.mqlString = ''
+      // this.activityType = ''
+      // this.mqlString = ''
       return this
-    };
+    }
     this.fetch = function (docId = null) {
       return new Promise((resolve, reject) => {
         let self = this
@@ -218,6 +223,7 @@ class MQL {
             })
             .catch(function () {
               // TODO: create result format
+              // eslint-disable-next-line prefer-promise-reject-errors
               reject('cancel by user')
             })
         } else {
@@ -231,7 +237,7 @@ class MQL {
           resolve(rs)
         }
       })
-    };
+    }
     this.run = function (
       docId = null,
       isQuery = false,
@@ -242,19 +248,19 @@ class MQL {
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
-        if (null !== docId) {
-         txt = document.getElementById(docId).innerHTML
-        document.getElementById(docId).disabled = true
-        document.getElementById(docId).innerHTML = 'Processing'
+        if (docId !== null) {
+          txt = document.getElementById(docId).innerHTML
+          document.getElementById(docId).disabled = true
+          document.getElementById(docId).innerHTML = 'Processing'
         }
         let postParamObject = {}
-        let activities = new String()
+        let activities = ''
         if (isQuery && isActivity) {
           console.error(
             'Can not support query and activity in a single execution'
           )
-          //TODO: check for return working
-          return;
+          // TODO: check for return working
+          return
         } else {
           fetchableMap.set('isQuery', isQuery)
         }
@@ -267,6 +273,7 @@ class MQL {
             key.search('isQuery') < 0
           ) {
             activities = activities + ',' + key
+            // eslint-disable-next-line standard/computed-property-even-spacing
             payloadObject[
               key.match(/query_/) !== null && key.match(/query_/).length > 0
                 ? key.substring('query_'.length, key.length)
@@ -301,7 +308,7 @@ class MQL {
           })
         })
           .then(res => {
-            if (null !== docId) {
+            if (docId !== null) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
@@ -309,7 +316,7 @@ class MQL {
           })
           .catch(error => {
             let obj = {}
-            if (null !== docId) {
+            if (docId !== null) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
@@ -320,7 +327,7 @@ class MQL {
             resolve(new Response(obj))
           })
       })
-    };
+    }
   }
 }
 

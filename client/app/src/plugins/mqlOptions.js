@@ -1,8 +1,6 @@
-
-
 export default {
- 
-  install: (Vue, options) => {console.log(options)
+
+  install: (Vue, options) => {
     let baseURL = options.baseURL
     let version = options.version
     let region = options.region
@@ -12,29 +10,28 @@ export default {
       return baseURL
     }
     Vue.setBaseURL = (str) => {
-       baseURL = str
+      baseURL = str
     }
 
     Vue.getVersion = function () {
       return version
     }
     Vue.setVersion = function (str) {
-       version = str
+      version = str
     }
 
     Vue.getRegion = function () {
       return region
     }
     Vue.setRegion = function (str) {
-       region = str
+      region = str
     }
 
     Vue.getAppCode = function () {
       return appCode
     }
     Vue.setAppCode = function (str) {
-       appCode = str
+      appCode = str
     }
-    
   }
-};
+}

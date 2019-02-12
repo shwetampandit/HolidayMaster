@@ -123,15 +123,15 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Response from "@/plugins/response.js"
+import Vue from 'vue'
+import Response from '@/plugins/response.js'
 export default {
   data () {
     return {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
       showPassInfo: false
-    };
+    }
   },
   methods: {
     show () {
@@ -140,7 +140,7 @@ export default {
     },
     authenticate () {
       this.$store.dispatch('AUTH_REQUEST', { loginId: this.username, password: this.password }).then(res => {
-        //Redirect to next page after suucessfull login
+        // Redirect to next page after suucessfull login
         alert('Login : ' + res.isValid('MQLLogin'))
       })
         .catch(err => {
@@ -163,63 +163,63 @@ export default {
       //   });
     },
     validatePassword () {
-      //validate password length
+      // validate password length
       if (this.password.length < 8) {
-        let showLengthMsg = document.getElementById("length");
-        showLengthMsg.classList.remove("valid");
-        showLengthMsg.classList.add("invalid");
+        let showLengthMsg = document.getElementById('length')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
       } else {
-        let showLengthMsg = document.getElementById("length");
-        showLengthMsg.classList.remove("invalid");
-        showLengthMsg.classList.add("valid");
+        let showLengthMsg = document.getElementById('length')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
       }
 
-      //validate letter
+      // validate letter
       if (this.password.match(/[A-z]/)) {
-        let showLengthMsg = document.getElementById("letter");
-        showLengthMsg.classList.remove("invalid");
-        showLengthMsg.classList.add("valid");
+        let showLengthMsg = document.getElementById('letter')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
       } else {
-        let showLengthMsg = document.getElementById("letter");
-        showLengthMsg.classList.remove("valid");
-        showLengthMsg.classList.add("invalid");
+        let showLengthMsg = document.getElementById('letter')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
       }
 
-      //validate capital letter
+      // validate capital letter
       if (this.password.match(/[A-Z]/)) {
-        let showLengthMsg = document.getElementById("capital");
-        showLengthMsg.classList.remove("invalid");
-        showLengthMsg.classList.add("valid");
+        let showLengthMsg = document.getElementById('capital')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
       } else {
-        let showLengthMsg = document.getElementById("capital");
-        showLengthMsg.classList.remove("valid");
-        showLengthMsg.classList.add("invalid");
+        let showLengthMsg = document.getElementById('capital')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
       }
 
-      //validate number
+      // validate number
       if (this.password.match(/\d/)) {
-        let showLengthMsg = document.getElementById("number");
-        showLengthMsg.classList.remove("invalid");
-        showLengthMsg.classList.add("valid");
+        let showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
       } else {
-        let showLengthMsg = document.getElementById("number");
-        showLengthMsg.classList.remove("valid");
-        showLengthMsg.classList.add("invalid");
+        let showLengthMsg = document.getElementById('number')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
       }
 
-      //validate space
+      // validate space
       if (this.password.match(/[^a-zA-Z0-9\-/]/)) {
-        let showLengthMsg = document.getElementById("space");
-        showLengthMsg.classList.remove("invalid");
-        showLengthMsg.classList.add("valid");
+        let showLengthMsg = document.getElementById('space')
+        showLengthMsg.classList.remove('invalid')
+        showLengthMsg.classList.add('valid')
       } else {
-        let showLengthMsg = document.getElementById("space");
-        showLengthMsg.classList.remove("valid");
-        showLengthMsg.classList.add("invalid");
+        let showLengthMsg = document.getElementById('space')
+        showLengthMsg.classList.remove('valid')
+        showLengthMsg.classList.add('invalid')
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
