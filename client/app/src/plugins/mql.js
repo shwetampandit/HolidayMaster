@@ -242,7 +242,7 @@ class MQL {
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
-        if (null != docId) {
+        if (null !== docId) {
          txt = document.getElementById(docId).innerHTML
         document.getElementById(docId).disabled = true
         document.getElementById(docId).innerHTML = 'Processing'
@@ -301,7 +301,7 @@ class MQL {
           })
         })
           .then(res => {
-            if (null != docId) {
+            if (null !== docId) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
@@ -309,7 +309,7 @@ class MQL {
           })
           .catch(error => {
             let obj = {}
-            if (null != docId) {
+            if (null !== docId) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
