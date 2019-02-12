@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import Response from '@/plugins/response.js';
+import Response from '@/plugins/response.js'
 
 export default {
 
@@ -32,7 +32,6 @@ export default {
       let rs = new Response()
 
       rs.hideElement('headerId')
-
     }
   }
 }
