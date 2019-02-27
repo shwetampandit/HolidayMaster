@@ -12,6 +12,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    pageBlocker: false
   },
   getters,
   mutations,

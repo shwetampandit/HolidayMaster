@@ -22,7 +22,6 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      // TODO: Change login.vue to Login.vue
       component: loadView('Login'),
       meta: { title: 'Login', lang: 'mr' }
     },

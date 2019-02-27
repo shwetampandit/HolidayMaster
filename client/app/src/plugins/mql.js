@@ -17,6 +17,7 @@ class MQL {
     this.activityType = 'o'
     this.mqlString = '/mql'
     this.isConfirm = false
+    this.showPageLoader = false
     const QueryActivityKey = 'FetchQueryData'
 
     const ActivitySplitter = '.['
@@ -198,6 +199,10 @@ class MQL {
       this.isConfirm = boolConfirmation
       return this
     }
+    this.enablePageLoader = function (boolShowPageLoader = false) {
+      this.showPageLoader = boolShowPageLoader
+      return this
+    }
     this.setLoginActivity = function () {
       this.setActivity('o.[MQLLogin]')
       // this.setCustomURL('/o/mql/login')
@@ -222,9 +227,13 @@ class MQL {
               resolve(rs)
             })
             .catch(function () {
-              // TODO: create result format
+              let obj = {}
+              obj.data = {}
+              obj.data.error = 'Canceled by user'
+              obj.data.errorCode = 1990
+              obj.data.result = null
               // eslint-disable-next-line prefer-promise-reject-errors
-              reject('cancel by user')
+              resolve(new Response(obj))
             })
         } else {
           let rs = self.run(
@@ -248,6 +257,9 @@ class MQL {
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
+        if (this.showPageLoader) {
+          window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
+        }
         if (docId !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
@@ -256,11 +268,13 @@ class MQL {
         let postParamObject = {}
         let activities = ''
         if (isQuery && isActivity) {
-          console.error(
-            'Can not support query and activity in a single execution'
-          )
-          // TODO: check for return working
-          return
+          let obj = {}
+          obj.data = {}
+          obj.data.error = 'Can not support query and activity in a single execution'
+          obj.data.errorCode = 1990
+          obj.data.result = null
+
+          resolve(new Response(obj))
         } else {
           fetchableMap.set('isQuery', isQuery)
         }
@@ -292,7 +306,6 @@ class MQL {
         } else {
           postParamObject = payloadObject
         }
-        // console.log(activities)
         mqlInstance({
           url: this.generateURL(activityType, fetchableMap.get('CustomURL')),
           method: 'Post',
@@ -312,18 +325,24 @@ class MQL {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
+            if (this.showPageLoader) {
+              window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+            }
             resolve(new Response(res))
           })
           .catch(error => {
             let obj = {}
+            obj.data = {}
             if (docId !== null) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
-            obj.error = error.message
-            obj.errorCode = 1990
-            obj.result = null
-            // TODO: return handeled response
+            if (this.showPageLoader) {
+              window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+            }
+            obj.data.error = error.message
+            obj.data.errorCode = 1990
+            obj.data.result = null
             resolve(new Response(obj))
           })
       })

@@ -78,7 +78,7 @@ class Response {
     }
 
     this.isValid = function (strActivity = null) {
-      // TODO: check global error and activity specific error
+      // NOTE: check global error and activity specific error
       if (strActivity === null) {
         // check for global errorCode
         return !!(this.raw.errorCode === 1000 || this.raw.errorCode === 0)
@@ -100,15 +100,6 @@ class Response {
       }
     }
     this.showErrorToast = function (strActivity = null) {
-      // // TODO: fetch error from
-      // if (strActivity != null) {
-      //   // TODO: check for error and fetch error key or message in case
-      // }
-      // // Vue.toasted.error(i18n? window.app.$t(strActivity) : strActivity).goAway(3000);
-      // Vue.toasted
-      //   .error(strActivity != null ? strActivity : 'my error')
-      //   .goAway(3000)
-      // TODO: check global error and activity specific error
       if (strActivity === null) {
         // check for global errorCode
         Vue.toasted
