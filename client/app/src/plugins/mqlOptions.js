@@ -5,7 +5,13 @@ export default {
     let version = options.version
     let region = options.region
     let appCode = options.appCode
-
+    let pageLoader = false
+    Vue.prototype.$p = 'hello'
+    Vue.prototype.$PageLoader = pageLoader
+    Vue.setPageLoader = (show = false) => {
+      alert(show)
+      pageLoader = show
+    }
     Vue.getBaseURL = () => {
       return baseURL
     }
