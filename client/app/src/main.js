@@ -9,8 +9,10 @@ import mqlOptions from './plugins/mqlOptions.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 import VuejsDialog from 'vuejs-dialog'
-import 'vuejs-dialog/dist/vuejs-dialog.min.css';
+import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
+import 'vue2-dropzone/dist/vue2Dropzone.css'
+
 import Toasted from 'vue-toasted'
 Vue.config.productionTip = false
 const isProduction = process.env.NODE_ENV === 'production'
@@ -27,18 +29,19 @@ const options = {
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
 Vue.use(Toasted)
-var baseURL = 'http://localhost:8080/server/'
+var baseURL = 'http://localhost:8080/cdnserver'
+var cdnBaseURL = 'http://localhost:8080/cdnserver'
 Vue.use(mqlOptions, {
-  baseURL: baseURL
-});
+  baseURL: baseURL,
+  cdnBaseURL: cdnBaseURL
+})
 axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
 // TODO: delete axios header on logout and clear session storage
 // delete axios.defaults.headers.common['Authorization']
-
-
+sessionStorage.setItem('user-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.qCJ-hcgSTLgkaT7kfI6--xRm4IEpPFQmMj3UZ94gNo4')
 Vue.use(VueLocalStorage)
 
 router.beforeEach((to, from, next) => {
@@ -76,7 +79,6 @@ axios.interceptors.request.use(function (config) {
 }, function (error) {
   return Promise.reject(error)
 })
-
 
 var vm = new Vue({
   router,

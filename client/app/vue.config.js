@@ -30,8 +30,16 @@ module.exports = {
         pathRewrite: {
           '^/server': ''
         }
+      },
+      '/cdnserver': {
+        target: 'http://localhost:3032/',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/cdnserver': ''
+        }
       }
     }
   },
-  productionSourceMap:false,
+  productionSourceMap: false
 }

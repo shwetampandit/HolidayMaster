@@ -60,6 +60,12 @@ export default new Router({
       name: 'encryption',
       component: loadView('Encryption'),
       meta: { title: 'Encrypt' }
+    },
+    {
+      path: '/cdnUpload',
+      name: 'cdnUpload',
+      component: loadView('CdnUpload'),
+      meta: { title: 'Cdn Upload' }
     }
   ]
 })
