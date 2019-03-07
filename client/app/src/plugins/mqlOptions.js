@@ -7,22 +7,13 @@ export default {
     let region = options.region
     let appCode = options.appCode
     let pageLoader = false
-    let bucketConfigurations = [
-      {
-        'bucketKey': 'client1',
-        'bucketId': 'client1'
-      },
-      {
-        'bucketKey': 'client2',
-        'bucketId': 'client2'
-      }
+    // TODO check for values on staging /development/ production
+    let bucketConfigurations = process.env.NODE_ENV !== 'production' ? options.cdnConfig : null
 
-    ]
     Vue.getBucketIdByKey = (bucketKey) => {
       let result = bucketConfigurations.find(bucket => bucket.bucketKey === bucketKey)
       return result
     }
-    Vue.prototype.$p = 'hello'
     Vue.prototype.$PageLoader = pageLoader
     Vue.setPageLoader = (show = false) => {
       alert(show)

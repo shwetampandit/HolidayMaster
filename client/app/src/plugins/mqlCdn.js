@@ -33,10 +33,11 @@ class MQLCdn {
     mqlInstance.interceptors.request.use(
       function (config) {
         // console.log('config', config.url.indexOf('r/'))
+        // TODO check for private bucket
         if (config.url.indexOf('r/') !== -1) {
           // Check for restricted request
           if (sessionStorage.getItem('user-token') === null) {
-            cancel('Operation canceled by the MQL interceptor.')
+            cancel('Operation canceled by the MQLCDN interceptor.')
             // TODO: Uncomment below code for dispatch
             // window.app.$store.dispatch('AUTH_LOGOUT')
           }
@@ -123,11 +124,13 @@ class MQLCdn {
       this.formData = formData
       return this
     }
+    // TODO remove it if not required
     this.setClientId = (clientID) => {
       this.clientID = clientID
       this.cdnURL = 'cdnserver/' + this.clientID + '/uploadFile'
       return this
     }
+    // TODO it should be setBucketKey and seperate methode for fetching bucketId
     this.setBucketId = (bucketKey) => {
       let bucketObj = Vue.getBucketIdByKey(bucketKey)
       if (bucketObj === undefined) {
@@ -197,5 +200,5 @@ class MQLCdn {
     }
   }
 }
-
+// TODO add pageLoader enable method
 export default MQLCdn

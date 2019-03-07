@@ -33,7 +33,16 @@ var baseURL = 'http://localhost:8080/cdnserver'
 var cdnBaseURL = 'http://localhost:8080/cdnserver'
 Vue.use(mqlOptions, {
   baseURL: baseURL,
-  cdnBaseURL: cdnBaseURL
+  cdnBaseURL: cdnBaseURL,
+  cdnConfig: [
+    {
+      'bucketKey': 'client1',
+      'bucketId': 'client1'
+    },
+    {
+      'bucketKey': 'client2',
+      'bucketId': 'client2'
+    }]
 })
 axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage

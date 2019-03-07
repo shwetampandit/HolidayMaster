@@ -8,6 +8,7 @@ module.exports = {
   configureWebpack: () => {
     if (process.env.NODE_ENV === 'production') {
       // mutate config for production...
+      // eslint-disable-next-line no-unused-expressions
       [
         new CompressionWebpackPlugin({
           filename: '[path].gz[query]',
