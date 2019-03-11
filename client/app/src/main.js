@@ -37,11 +37,13 @@ Vue.use(mqlOptions, {
   cdnConfig: [
     {
       'bucketKey': 'client1',
-      'bucketId': 'client1'
+      'bucketId': 'client1',
+      'isPrivateBucket': true
     },
     {
       'bucketKey': 'client2',
-      'bucketId': 'client2'
+      'bucketId': 'client2',
+      'isPrivateBucket': false
     }]
 })
 axios.defaults.baseURL = baseURL

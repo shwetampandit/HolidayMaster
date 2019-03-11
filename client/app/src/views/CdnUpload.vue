@@ -22,12 +22,11 @@
                     @vdropzone-file-added="fileData"
                   /> -->
                   <h2>Upload File</h2>
-                  Enter FileName : <input
+                  Enter FileName to  upload : <input
                     id="files"
                     type="text"
                     v-model="inputFileName"
                   ><br>
-                  <br>
                   <input
                     id="files"
                     @change="submitFile"
@@ -41,6 +40,16 @@
                   >
                     Upload
                   </button>
+                  <span v-if="uploadedFilePath!==''">
+                    Uploaded FilePath is : {{ uploadedFilePath }}
+                  </span>
+                  <h2>Download File</h2>
+                  Enter FileURl to download : <input
+                    id="files"
+                    type="text"
+                    v-model="fileURL"
+                  ><br>
+                  <br>
                   <button
                     id="downloadBtn"
                     @click.stop.prevent="downloadFile"
@@ -49,9 +58,6 @@
                   </button>
                   <br>
                   <br>
-                  <span v-if="uploadedFilePath!==''">
-                    Uploaded FilePath is : {{ uploadedFilePath }}
-                  </span>
                 </form>
               </div>
             </div>
@@ -60,7 +66,7 @@
               <img
                 width="200px"
                 height="150px"
-                :src="cdnBaserURl+'client2/getFile/loginIP.png'"
+                :src="cdnBaserURl+'client2/loginIP.png'"
               >
             </div>
           </section>
@@ -94,6 +100,7 @@ export default {
         title: 'Upload zip'
       },
       inputFileName: '',
+      fileURL: '',
       files: '',
       uploadedFilePath: '',
       cdnBaserURl: Vue.getCDNBaseURL()
@@ -107,9 +114,10 @@ export default {
       let formData = new FormData()
       formData.append('file', this.files) // append your file as 'file' in formdata.
       new MQLCdn()
+        .enablePageLoader(true)
         .setFormData(formData) // (required) sets file data
         .setFileName(this.inputFileName) // (optional field) if you want to set name to file that is being uploaded
-        .setBucketId('client2') // (required) valid bucket key need to set in which file will be uploaded.
+        .setBucketKey('client2') // (required) valid bucket key need to set in which file will be uploaded.
         .uploadFile('uploadtBtn').then(res => { // (required) this will upload file takes element id (optional param) which will be blocked while file upload..
           if (res.isValid()) {
             this.uploadedFilePath = res.uploadedFileURL() // returns uploaded file url..
@@ -119,9 +127,10 @@ export default {
         })
     },
     downloadFile () {
-      if (this.inputFileName !== '') {
+      if (this.fileURL !== '') {
         new MQLCdn()
-          .setCDNPath(this.inputFileName) // (required)set a filepath whihch needs to be download.
+          .setCDNPath(this.fileURL) // (required) set a filepath whihch needs to be download.
+          .enablePageLoader(true)
           .downloadFile('downloadBtn').then(res => { // (required) this will take elemnt id (optional) which will be blocked while file being downloaded.
           })
       }

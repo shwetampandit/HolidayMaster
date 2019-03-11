@@ -8,11 +8,12 @@ class MQLCdn {
     this.fileName = ''
     this.formData = new FormData()
     this.formData.set('enctype', 'multipart/form-data')
-
     this.clientID = ''
     this.bucketId = ''
+    this.isPrivateBucket = false
     this.cdnURL = ''
     this.cdnPath = ''
+    this.showPageLoader = false
     let CancelToken = axios.CancelToken
     const mqlInstance = axios.create({
       baseURL: Vue.getCDNBaseURL()
@@ -32,16 +33,15 @@ class MQLCdn {
     })
     mqlInstance.interceptors.request.use(
       function (config) {
-        // console.log('config', config.url.indexOf('r/'))
-        // TODO check for private bucket
-        if (config.url.indexOf('r/') !== -1) {
-          // Check for restricted request
-          if (sessionStorage.getItem('user-token') === null) {
-            cancel('Operation canceled by the MQLCDN interceptor.')
-            // TODO: Uncomment below code for dispatch
-            // window.app.$store.dispatch('AUTH_LOGOUT')
-          }
+        // TODO: check for private bucket(not required.)
+        // if (config.url.indexOf('r/') !== -1) {
+        // Check for restricted request
+        if (sessionStorage.getItem('user-token') === null) {
+          cancel('Operation canceled by the MQLCDN interceptor.')
+          // TODO Uncomment below code for dispatch
+          // window.app.$store.dispatch('AUTH_LOGOUT')
         }
+        // }
         return config
       },
       function (error) {
@@ -49,19 +49,17 @@ class MQLCdn {
       }
     )
 
-    // TODO:  set headers if any for cdn...
-    const setHeaders = (cdnURL, headers = {}) => {
+    const setHeaders = (headers = {}) => {
       headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
       return headers
     }
 
     this.uploadFile = (docId = null) => {
-      // TODO: Set cdnURL for upload
-      // this.cdnURL = Vue.getCDNBaseURL() + this.bucketId + '/uploadFile'
       this.cdnURL = this.bucketId + '/uploadFile'
-      console.log('uploadFile Vue.getCDNBaseURL()', Vue.getCDNBaseURL())
-      console.log('uploadFile', this.cdnURL)
       let txt = ''
+      if (this.showPageLoader) {
+        window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
+      }
       return new Promise((resolve) => {
         if (docId !== null) {
           txt = document.getElementById(docId).innerHTML
@@ -82,27 +80,77 @@ class MQLCdn {
         // add cdnbase url.
         this.cdnURL = Vue.getCDNBaseURL() + this.cdnPath
       }
-      console.log('downloadFile cdnURL', this.cdnURL)
       let txt = ''
+      if (this.showPageLoader) {
+        window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
+      }
+      if (docId !== null) {
+        txt = document.getElementById(docId).innerHTML
+        document.getElementById(docId).disabled = true
+        document.getElementById(docId).innerHTML = 'Processing'
+      }
       return new Promise((resolve) => {
-        if (docId !== null) {
-          txt = document.getElementById(docId).innerHTML
-          document.getElementById(docId).disabled = true
-          document.getElementById(docId).innerHTML = 'Processing'
+        if (this.bucketId !== undefined) {
+          mqlInstance({
+            url: this.cdnURL,
+            method: 'GET',
+            headers: setHeaders(),
+            responseType: 'blob',
+            cancelToken: new CancelToken(function executor (c) {
+              cancel = c
+            })
+          })
+            .then(res => {
+              if (this.showPageLoader) {
+                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+              }
+              if (docId !== null) {
+                document.getElementById(docId).disabled = false
+                document.getElementById(docId).innerHTML = txt
+              }
+              this.fileName = getFilenameFromUrl(this.cdnURL)
+              const url = window.URL.createObjectURL(new Blob([res.data]))
+              var a = document.createElement('a')
+              a.href = url
+              a.download = this.fileName
+              a.target = '_blank'
+              a.click()
+            })
+            .catch(error => {
+              console.log('fail error', error.message)
+              let obj = {}
+              obj.data = {}
+              if (docId !== null) {
+                document.getElementById(docId).disabled = false
+                document.getElementById(docId).innerHTML = txt
+              }
+              if (this.showPageLoader) {
+                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+              }
+              obj.data.error = error.message
+              obj.data.errorCode = 1990
+              obj.data.result = null
+              resolve(new Response(obj))
+            })
+        } else {
+          if (docId !== null) {
+            document.getElementById(docId).disabled = false
+            document.getElementById(docId).innerHTML = txt
+          }
+          let obj = {}
+          obj.data = {}
+          obj.data.error = 'Invalid Bucket Key...'
+          obj.data.errorCode = 1990
+          obj.data.result = null
+          resolve(new Response(obj))
         }
-        // prepareMQLCDNRequest('GET', docId, txt).then(cdnResponse => {
-        //   resolve(cdnResponse)
-        // })
-        let result = window.document.createElement('a')
-        result.href = this.cdnURL
-        result.download = this.fileName
-        result.click()
-        if (docId !== null) {
-          document.getElementById(docId).disabled = false
-          document.getElementById(docId).innerHTML = txt
-        }
-        resolve()
       })
+    }
+
+    const getFilenameFromUrl = (url) => {
+      const pathname = new URL(url).pathname
+      const index = pathname.lastIndexOf('/')
+      return (index !== -1 ? pathname.substring(index + 1) : pathname)
     }
     this.setFileName = (fileName) => {
       this.fileName = fileName
@@ -111,35 +159,37 @@ class MQLCdn {
       }
       return this
     }
-    this.setCDNPath = (cdnPath) => {
-      // if (cdnPath.includes('http://')) {
 
-      // } else {
-      // }
-      // this.cdnURL = Vue.getCDNBaseURL() + this.cdnPath
+    this.setCDNPath = (cdnPath) => {
       this.cdnPath = cdnPath
       return this
     }
+
     this.setFormData = (formData) => {
       this.formData = formData
       return this
     }
-    // TODO remove it if not required
-    this.setClientId = (clientID) => {
-      this.clientID = clientID
-      this.cdnURL = 'cdnserver/' + this.clientID + '/uploadFile'
+
+    this.enablePageLoader = function (boolShowPageLoader = false) {
+      this.showPageLoader = boolShowPageLoader
       return this
     }
-    // TODO it should be setBucketKey and seperate methode for fetching bucketId
-    this.setBucketId = (bucketKey) => {
+
+    this.setBucketKey = (bucketKey) => {
+      // console.log('setBucketKey called..')
+      fetchBucketIdFromKey(bucketKey)
+      return this
+    }
+    const fetchBucketIdFromKey = (bucketKey) => {
       let bucketObj = Vue.getBucketIdByKey(bucketKey)
       if (bucketObj === undefined) {
         this.bucketId = undefined
       } else {
         this.bucketId = bucketObj.bucketId
+        this.isPrivateBucket = bucketObj.isPrivateBucket
+        // console.log('this.isPrivateBucket result', this.isPrivateBucket)
       }
-      console.log('setBucketId result', this.bucketId)
-      return this
+      // console.log('setBucketId result', this.bucketId)
     }
     const prepareMQLCDNRequest = (requestType, docId, txt) => {
       return new Promise((resolve) => {
@@ -147,16 +197,16 @@ class MQLCdn {
           mqlInstance({
             url: this.cdnURL,
             method: requestType,
-            headers: setHeaders(this.cdnURL),
+            headers: setHeaders(),
             data: this.formData,
             cancelToken: new CancelToken(function executor (c) {
               cancel = c
             })
           })
             .then(res => {
-              // if (this.showPageLoader) {
-              //   window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-              // }
+              if (this.showPageLoader) {
+                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+              }
               if (docId !== null) {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
@@ -176,9 +226,9 @@ class MQLCdn {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
               }
-              // if (this.showPageLoader) {
-              //   window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-              // }
+              if (this.showPageLoader) {
+                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+              }
               obj.data.error = error.message
               obj.data.errorCode = 1990
               obj.data.result = null
@@ -200,5 +250,4 @@ class MQLCdn {
     }
   }
 }
-// TODO add pageLoader enable method
 export default MQLCdn

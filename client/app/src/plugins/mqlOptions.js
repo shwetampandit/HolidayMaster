@@ -7,7 +7,7 @@ export default {
     let region = options.region
     let appCode = options.appCode
     let pageLoader = false
-    // TODO check for values on staging /development/ production
+    // TODO: check for values on staging /development/ production
     let bucketConfigurations = process.env.NODE_ENV !== 'production' ? options.cdnConfig : null
 
     Vue.getBucketIdByKey = (bucketKey) => {
