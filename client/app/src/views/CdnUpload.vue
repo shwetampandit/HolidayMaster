@@ -132,9 +132,14 @@ export default {
           .setCDNPath(this.fileURL) // (required) set a filepath whihch needs to be download.
           .enablePageLoader(true)
           .downloadFile('downloadBtn').then(res => { // (required) this will take elemnt id (optional) which will be blocked while file being downloaded.
+            console.log('response', res)
+            if (!res.isValid()) {
+              res.showErrorToast()
+            }
           })
       }
     }
+
     // fileData (file) {
     //   this.files = file
     // }
