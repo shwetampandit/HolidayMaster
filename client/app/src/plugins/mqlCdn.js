@@ -10,6 +10,7 @@ class MQLCdn {
     this.formData.set('enctype', 'multipart/form-data')
     this.clientID = ''
     this.bucketId = ''
+    this.bucketKey = ''
     this.isPrivateBucket = false
     this.cdnURL = ''
     this.cdnPath = ''
@@ -67,6 +68,9 @@ class MQLCdn {
           document.getElementById(docId).innerHTML = 'Processing'
         }
         prepareMQLCDNRequest('POST', docId, txt).then(cdnResponse => {
+          if (this.showPageLoader) {
+            window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+          }
           resolve(cdnResponse)
         })
       })
@@ -139,9 +143,16 @@ class MQLCdn {
           }
           let obj = {}
           obj.data = {}
-          obj.data.error = 'Invalid Bucket Key...'
+          obj.data.error = 'Invalid Bucket Key...' + this.bucketKey
           obj.data.errorCode = 1990
           obj.data.result = null
+          if (docId !== null) {
+            document.getElementById(docId).disabled = false
+            document.getElementById(docId).innerHTML = txt
+          }
+          if (this.showPageLoader) {
+            window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+          }
           resolve(new Response(obj))
         }
       })
@@ -153,9 +164,11 @@ class MQLCdn {
       return (index !== -1 ? pathname.substring(index + 1) : pathname)
     }
     this.setFileName = (fileName) => {
-      this.fileName = fileName
-      if (this.fileName !== '') {
+      if (fileName !== '' && fileName !== undefined) {
+        this.fileName = fileName.trim()
         this.formData.append('fileName', this.fileName)
+      } else {
+        this.fileName = ''
       }
       return this
     }
@@ -176,6 +189,7 @@ class MQLCdn {
     }
 
     this.setBucketKey = (bucketKey) => {
+      this.bucketKey = bucketKey
       // console.log('setBucketKey called..')
       fetchBucketIdFromKey(bucketKey)
       return this
@@ -241,7 +255,7 @@ class MQLCdn {
           }
           let obj = {}
           obj.data = {}
-          obj.data.error = 'Invalid Bucket Key...'
+          obj.data.error = 'Invalid Bucket Key ' + this.bucketKey
           obj.data.errorCode = 1990
           obj.data.result = null
           resolve(new Response(obj))
