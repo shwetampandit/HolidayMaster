@@ -2,11 +2,18 @@ export default {
 
   install: (Vue, options) => {
     let baseURL = options.baseURL
+    let cdnBaseURL = options.cdnBaseURL
     let version = options.version
     let region = options.region
     let appCode = options.appCode
     let pageLoader = false
-    Vue.prototype.$p = 'hello'
+    // TODO: check for values on staging /development/ production
+    let bucketConfigurations = process.env.NODE_ENV !== 'production' ? options.cdnConfig : null
+
+    Vue.getBucketIdByKey = (bucketKey) => {
+      let result = bucketConfigurations.find(bucket => bucket.bucketKey === bucketKey)
+      return result
+    }
     Vue.prototype.$PageLoader = pageLoader
     Vue.setPageLoader = (show = false) => {
       alert(show)
@@ -14,6 +21,9 @@ export default {
     }
     Vue.getBaseURL = () => {
       return baseURL
+    }
+    Vue.getCDNBaseURL = () => {
+      return cdnBaseURL
     }
     Vue.setBaseURL = (str) => {
       baseURL = str

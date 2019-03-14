@@ -99,6 +99,9 @@ class Response {
         }
       }
     }
+    this.uploadedFileURL = function () {
+      return this.raw.result
+    }
     this.showErrorToast = function (strActivity = null) {
       if (strActivity === null) {
         // check for global errorCode

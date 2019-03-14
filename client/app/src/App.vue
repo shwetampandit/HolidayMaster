@@ -38,7 +38,10 @@
         Compatiblity
       </router-link> |
       <router-link to="/encryption">
-        EncryptDecypt
+        Encryption
+      </router-link> |
+      <router-link to="/cdnUpload">
+        Cdn Upload
       </router-link>
     </div>
     <router-view />
