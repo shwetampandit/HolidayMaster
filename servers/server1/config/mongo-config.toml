@@ -1,8 +1,0 @@
-# configuration file for clickerpoint mongodb
-[mongohosts]
-
-    [mongohosts.clickerpointhost]
-        server = "10.2.10.160:27017"
-        username = ""
-        password = ""
-        database = "clickerpoint"
