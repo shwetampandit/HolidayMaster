@@ -9,8 +9,8 @@ class MQLCdn {
     this.formData = new FormData()
     this.formData.set('enctype', 'multipart/form-data')
     this.clientID = ''
-    this.bucketId = ''
-    this.bucketKey = ''
+    this.clientId = ''
+    this.bucketName = ''
     this.isPrivateBucket = false
     this.cdnURL = ''
     this.cdnPath = ''
@@ -56,7 +56,7 @@ class MQLCdn {
     }
 
     this.uploadFile = (docId = null) => {
-      this.cdnURL = this.bucketId + '/uploadFile'
+      this.cdnURL = this.clientId + '/uploadFile'
       let txt = ''
       if (this.showPageLoader) {
         window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
@@ -94,7 +94,7 @@ class MQLCdn {
         document.getElementById(docId).innerHTML = 'Processing'
       }
       return new Promise((resolve) => {
-        if (this.bucketId !== undefined) {
+        if (this.clientId !== undefined) {
           mqlInstance({
             url: this.cdnURL,
             method: 'GET',
@@ -143,7 +143,7 @@ class MQLCdn {
           }
           let obj = {}
           obj.data = {}
-          obj.data.error = 'Invalid Bucket Key...' + this.bucketKey
+          obj.data.error = 'Invalid Bucket Key...' + this.bucketName
           obj.data.errorCode = 1990
           obj.data.result = null
           if (docId !== null) {
@@ -188,26 +188,26 @@ class MQLCdn {
       return this
     }
 
-    this.setBucketKey = (bucketKey) => {
-      this.bucketKey = bucketKey
+    this.setBucketKey = (bucketName) => {
+      this.bucketName = bucketName
       // console.log('setBucketKey called..')
-      fetchBucketIdFromKey(bucketKey)
+      fetchBucketIdFromKey(bucketName)
       return this
     }
-    const fetchBucketIdFromKey = (bucketKey) => {
-      let bucketObj = Vue.getBucketIdByKey(bucketKey)
+    const fetchBucketIdFromKey = (bucketName) => {
+      let bucketObj = Vue.getBucketIdByKey(bucketName)
       if (bucketObj === undefined) {
-        this.bucketId = undefined
+        this.clientId = undefined
       } else {
-        this.bucketId = bucketObj.bucketId
+        this.clientId = bucketObj.clientId
         this.isPrivateBucket = bucketObj.isPrivateBucket
         // console.log('this.isPrivateBucket result', this.isPrivateBucket)
       }
-      // console.log('setBucketId result', this.bucketId)
+      // console.log('setBucketId result', this.clientId)
     }
     const prepareMQLCDNRequest = (requestType, docId, txt) => {
       return new Promise((resolve) => {
-        if (this.bucketId !== undefined) {
+        if (this.clientId !== undefined) {
           mqlInstance({
             url: this.cdnURL,
             method: requestType,
@@ -255,7 +255,7 @@ class MQLCdn {
           }
           let obj = {}
           obj.data = {}
-          obj.data.error = 'Invalid Bucket Key ' + this.bucketKey
+          obj.data.error = 'Invalid Bucket Key ' + this.bucketName
           obj.data.errorCode = 1990
           obj.data.result = null
           resolve(new Response(obj))
