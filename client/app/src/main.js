@@ -35,13 +35,13 @@ Vue.use(mqlOptions, {
   cdnBaseURL: cdnBaseURL,
   cdnConfig: [
     {
-      'bucketKey': 'client1',
-      'bucketId': 'client1',
+      'bucketName': 'client1',
+      'clientId': 'client1',
       'isPrivateBucket': true
     },
     {
-      'bucketKey': 'client2',
-      'bucketId': 'client2',
+      'bucketName': 'client2',
+      'clientId': 'client2',
       'isPrivateBucket': false
     }]
 })
