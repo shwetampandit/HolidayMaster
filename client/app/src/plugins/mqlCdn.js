@@ -8,7 +8,7 @@ class MQLCdn {
     this.fileName = ''
     this.formData = new FormData()
     this.formData.set('enctype', 'multipart/form-data')
-    this.clientID = ''
+    // this.clientID = ''
     this.clientId = ''
     this.bucketName = ''
     this.isPrivateBucket = false
