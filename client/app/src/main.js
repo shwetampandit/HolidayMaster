@@ -28,7 +28,7 @@ const options = {
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
 Vue.use(Toasted)
-var baseURL = 'http://localhost:8080/cdnserver'
+var baseURL = 'http://localhost:8080/server'
 var cdnBaseURL = 'http://localhost:8080/cdnserver'
 Vue.use(mqlOptions, {
   baseURL: baseURL,
