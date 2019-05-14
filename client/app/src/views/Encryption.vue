@@ -89,7 +89,7 @@ export default {
       this.encryptOutputObject = op.toString()
     },
     decryptObj () {
-      var bytes = CryptoJS.AES.decrypt(this.encryptOutputObject.toString(), this.key);
+      var bytes = CryptoJS.AES.decrypt(this.encryptOutputObject.toString(), this.key)
       this.decryptOutputObject = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
     }
   }

@@ -1,3 +1,5 @@
+# Node and npm environement:
+  Updated and tested with latest dependencies using node 12.2.0 and npm 6.9.0
 # Vue Client app
 # Kindly do rename yor application in package.json name
 # Pre-requisite

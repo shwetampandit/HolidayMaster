@@ -37,7 +37,7 @@ export const actions = {
       new MQL()
         .setLoginActivity()
         .setData(payload)
-        //.showConfirmDialog(true)
+        // .showConfirmDialog(true)
         .fetch('loginBtn').then(response => {
           response.hideElement('loginFormId')
           if (response.isValid('MQLLogin')) {
