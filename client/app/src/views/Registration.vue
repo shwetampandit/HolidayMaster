@@ -31,42 +31,42 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      loginId: "",
-      password: "",
+      loginId: '',
+      password: '',
       file: null,
-      result: ""
-    };
+      result: ''
+    }
   },
-  mounted() {
-    let self = this;
-    document.getElementById("file").addEventListener(
-      "change",
-      function(evt) {
-        var files = evt.target.files;
-        self.file = files[0];
+  mounted () {
+    let self = this
+    document.getElementById('file').addEventListener(
+      'change',
+      function (evt) {
+        var files = evt.target.files
+        self.file = files[0]
       },
       false
-    );
+    )
   },
   methods: {
-    saveData() {
-      const form = new FormData();
-      form.set("enctype", "multipart/form-data");
-      form.append("file", this.file, this.file.name);
-      form.append("loginId", this.loginId);
-      form.append("password", this.password);
+    saveData () {
+      const form = new FormData()
+      form.set('enctype', 'multipart/form-data')
+      form.append('file', this.file, this.file.name)
+      form.append('loginId', this.loginId)
+      form.append('password', this.password)
       this.$MQLFetch('services.O_REGISTERUSERSERVICE', form)
         .then(res => {
-          this.result = res;
+          this.result = res
         })
         .catch(error => {
-          alert(error.response.data.error);
-        });
+          alert(error.response.data.error)
+        })
     }
   }
-};
+}
 </script>
 
 <style>

@@ -22,7 +22,7 @@
 <script>
 import VueI18n from 'vue-i18n'
 export default {
-  i18n: new VueI18n({  // `i18n` option, setup locale info for component
+  i18n: new VueI18n({ // `i18n` option, setup locale info for component
     locale: 'mr'
   }),
   mounted () {

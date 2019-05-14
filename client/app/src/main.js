@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from '@/store'
 import './registerServiceWorker'
-import axios from 'axios'
+// import axios from 'axios'
 import VueLogger from 'vuejs-logger'
 import mqlOptions from './plugins/mqlOptions.js'
 import VueLocalStorage from 'vue-localstorage'
@@ -45,7 +45,7 @@ Vue.use(mqlOptions, {
       'isPrivateBucket': false
     }]
 })
-axios.defaults.baseURL = baseURL
+// axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
@@ -77,18 +77,18 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-axios.interceptors.request.use(function (config) {
-  // if (config.url.indexOf('/r/') !== -1) {  // Check for restricted request
-  if (config.headers.common['Authorization']) {
-    console.log('autorize!')
-  } else {
-    console.log('not authorize')
-  }
-  // }
-  return config
-}, function (error) {
-  return Promise.reject(error)
-})
+// axios.interceptors.request.use(function (config) {
+//   // if (config.url.indexOf('/r/') !== -1) {  // Check for restricted request
+//   if (config.headers.common['Authorization']) {
+//     console.log('autorize!')
+//   } else {
+//     console.log('not authorize')
+//   }
+//   // }
+//   return config
+// }, function (error) {
+//   return Promise.reject(error)
+// })
 
 var vm = new Vue({
   router,

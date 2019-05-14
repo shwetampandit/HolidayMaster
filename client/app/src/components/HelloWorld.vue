@@ -13,7 +13,7 @@ export default {
     msg: {
       type: String,
       default: null
-      } 
+    }
   },
   mounted () {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + 'token'
