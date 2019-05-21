@@ -260,7 +260,8 @@ class MQL {
         if (this.showPageLoader) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
         }
-        if (docId !== null) {
+        console.log(document.getElementById(docId))
+        if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
@@ -321,7 +322,7 @@ class MQL {
           })
         })
           .then(res => {
-            if (docId !== null) {
+            if (docId !== null && document.getElementById(docId) !== null) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
@@ -333,7 +334,7 @@ class MQL {
           .catch(error => {
             let obj = {}
             obj.data = {}
-            if (docId !== null) {
+            if (docId !== null && document.getElementById(docId) !== null) {
               document.getElementById(docId).disabled = false
               document.getElementById(docId).innerHTML = txt
             }
