@@ -17,7 +17,7 @@ class MQL {
     this.activityType = 'o'
     this.mqlString = '/mql'
     this.isConfirm = false
-    this.showPageLoader = false
+    this.showPageLoader = true
     const QueryActivityKey = 'FetchQueryData'
 
     const ActivitySplitter = '.['
@@ -260,14 +260,13 @@ class MQL {
       fetchableMap = null,
       activityType = 'o'
     ) {
-      console.log('ha ha ha')
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
         if (this.showPageLoader) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
         }
-        if (docId !== null) {
+        if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'

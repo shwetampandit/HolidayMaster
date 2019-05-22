@@ -64,7 +64,7 @@ class MQLCdn {
         window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
       }
       return new Promise((resolve) => {
-        if (docId !== null) {
+        if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
@@ -96,7 +96,7 @@ class MQLCdn {
       if (this.showPageLoader) {
         window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
       }
-      if (docId !== null) {
+      if (docId !== null && document.getElementById(docId) !== null) {
         txt = document.getElementById(docId).innerHTML
         document.getElementById(docId).disabled = true
         document.getElementById(docId).innerHTML = 'Processing'
@@ -116,7 +116,7 @@ class MQLCdn {
               if (this.showPageLoader) {
                 window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
               }
-              if (docId !== null) {
+              if (docId !== null && document.getElementById(docId) !== null) {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
               }
@@ -132,7 +132,7 @@ class MQLCdn {
               console.log('fail error', error.message)
               let obj = {}
               obj.data = {}
-              if (docId !== null) {
+              if (docId !== null && document.getElementById(docId) !== null) {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
               }
@@ -145,7 +145,7 @@ class MQLCdn {
               resolve(new Response(obj))
             })
         } else {
-          if (docId !== null) {
+          if (docId !== null && document.getElementById(docId) !== null) {
             document.getElementById(docId).disabled = false
             document.getElementById(docId).innerHTML = txt
           }
@@ -154,7 +154,7 @@ class MQLCdn {
           obj.data.error = 'Invalid Bucket Key...' + this.bucketName
           obj.data.errorCode = 1990
           obj.data.result = null
-          if (docId !== null) {
+          if (docId !== null && document.getElementById(docId) !== null) {
             document.getElementById(docId).disabled = false
             document.getElementById(docId).innerHTML = txt
           }
@@ -235,7 +235,7 @@ class MQLCdn {
               if (this.showPageLoader) {
                 window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
               }
-              if (docId !== null) {
+              if (docId !== null && document.getElementById(docId) !== null) {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
               }
@@ -250,7 +250,7 @@ class MQLCdn {
               console.log('fail error', error.message)
               let obj = {}
               obj.data = {}
-              if (docId !== null) {
+              if (docId !== null && document.getElementById(docId) !== null) {
                 document.getElementById(docId).disabled = false
                 document.getElementById(docId).innerHTML = txt
               }
@@ -263,7 +263,7 @@ class MQLCdn {
               resolve(new Response(obj))
             })
         } else {
-          if (docId !== null) {
+          if (docId !== null && document.getElementById(docId) !== null) {
             document.getElementById(docId).disabled = false
             document.getElementById(docId).innerHTML = txt
           }
