@@ -5,7 +5,7 @@ import Response from '@/plugins/response.js'
 class MQL {
   constructor (strActivities = null) {
     let cancel
-
+    let isDevelopment = process.env.NODE_ENV !== 'production'
     let CancelToken = axios.CancelToken
     this.strActivities = strActivities
     this.isQuery = false
@@ -245,6 +245,12 @@ class MQL {
           )
           resolve(rs)
         }
+      }).catch(error => {
+        // Handling development related errors
+        console.log(error)
+        if (isDevelopment) {
+          alert(error)
+        }
       })
     }
     this.run = function (
@@ -254,14 +260,14 @@ class MQL {
       fetchableMap = null,
       activityType = 'o'
     ) {
+      console.log('ha ha ha')
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
         if (this.showPageLoader) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
         }
-        console.log(document.getElementById(docId))
-        if (docId !== null && document.getElementById(docId) !== null) {
+        if (docId !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
@@ -346,6 +352,12 @@ class MQL {
             obj.data.result = null
             resolve(new Response(obj))
           })
+      }).catch(error => {
+        // Handling development related errors
+        console.log(error)
+        if (isDevelopment) {
+          alert(error)
+        }
       })
     }
   }

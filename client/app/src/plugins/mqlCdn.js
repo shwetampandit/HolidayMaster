@@ -5,6 +5,8 @@ import Vue from 'vue'
 class MQLCdn {
   constructor () {
     let cancel
+    let isDevelopment = process.env.NODE_ENV !== 'production'
+
     this.fileName = ''
     this.formData = new FormData()
     this.formData.set('enctype', 'multipart/form-data')
@@ -73,6 +75,12 @@ class MQLCdn {
           }
           resolve(cdnResponse)
         })
+      }).catch(error => {
+        // Handling development related errors
+        console.log(error)
+        if (isDevelopment) {
+          alert(error)
+        }
       })
     }
 
@@ -154,6 +162,12 @@ class MQLCdn {
             window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
           }
           resolve(new Response(obj))
+        }
+      }).catch(error => {
+        // Handling development related errors
+        console.log(error)
+        if (isDevelopment) {
+          alert(error)
         }
       })
     }
@@ -259,6 +273,12 @@ class MQLCdn {
           obj.data.errorCode = 1990
           obj.data.result = null
           resolve(new Response(obj))
+        }
+      }).catch(error => {
+        // Handling development related errors
+        console.log(error)
+        if (isDevelopment) {
+          alert(error)
         }
       })
     }
