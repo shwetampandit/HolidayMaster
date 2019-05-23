@@ -263,7 +263,7 @@ class MQL {
       return new Promise((resolve) => {
         // TODO: seperate this in new function
         let txt = 'Processing'
-        if (this.showPageLoader) {
+        if (this.showPageLoader && window.app.$store !== undefined && window.app.$store !== null) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
         }
         if (docId !== null && document.getElementById(docId) !== null) {
