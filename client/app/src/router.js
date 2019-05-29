@@ -50,12 +50,6 @@ export default new Router({
       meta: { title: 'Validator' }
     },
     {
-      path: '/browserCompatibility',
-      name: 'browserCompatibility',
-      component: loadView('BrowserCompatibility'),
-      meta: { title: 'Browser Compatibility' }
-    },
-    {
       path: '/encryption',
       name: 'encryption',
       component: loadView('Encryption'),

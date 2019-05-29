@@ -34,9 +34,6 @@
       <router-link to="/validator">
         Validator
       </router-link> |
-      <router-link to="/browserCompatibility">
-        Compatiblity
-      </router-link> |
       <router-link to="/encryption">
         Encryption
       </router-link> |
