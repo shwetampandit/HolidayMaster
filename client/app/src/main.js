@@ -9,10 +9,15 @@ import mqlOptions from './plugins/mqlOptions.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 import VuejsDialog from 'vuejs-dialog'
+import BootstrapVue from 'bootstrap-vue'
+import vSelect from 'vue-select'
+import Toasted from 'vue-toasted'
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
+import '../public/assets/plugins/materialdesignicons/css/materialdesignicons.min.css'
+import 'vue-select/dist/vue-select.css'
+import '../public/assets/css/template.scss'
 
-import Toasted from 'vue-toasted'
 Vue.config.productionTip = false
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -27,6 +32,8 @@ const options = {
 }
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
+Vue.use(BootstrapVue)
+Vue.use(vSelect)
 Vue.use(Toasted)
 var baseURL = 'http://localhost:8080/server'
 var cdnBaseURL = 'http://localhost:8080/cdnserver'

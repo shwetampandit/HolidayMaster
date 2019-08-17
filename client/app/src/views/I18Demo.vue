@@ -7,18 +7,27 @@
     <div>(Default English)</div>
     <strong>Change Language (I18)</strong>
     <div>
-      <button @click="changeLanguage('en')">
+      <b-button
+        variant="primary mx-1"
+        @click="changeLanguage('en')"
+      >
         English
-      </button>
-      <button @click="changeLanguage('hi')">
+      </b-button>
+      <b-button
+        variant="primary mx-1"
+        @click="changeLanguage('hi')"
+      >
         Hindi
-      </button>
-      <button @click="changeLanguage('mr')">
+      </b-button>
+      <b-button
+        variant="primary mx-1"
+        @click="changeLanguage('mr')"
+      >
         Marathi
-      </button>
+      </b-button>
     </div>
 
-    <component1 />
+    <component1 class="my-3" />
     <component2 />
   </div>
 </template>

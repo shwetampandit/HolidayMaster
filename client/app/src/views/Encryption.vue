@@ -1,57 +1,109 @@
 <template>
-  <div>
-    <h3>Plain text encryption/decryption</h3>
-    <input
-      type="text"
-      v-model="encryptInputText"
-    >
-    <button @click="encryptText">
-      Encrypt Text
-    </button>
-    <div>
-      <span><strong>Encrypted text:</strong></span>
-      <span>{{ encryptOutputText }}</span>
+  <div class="container">
+    <div class="card p-3">
+      <h3>Plain text encryption/decryption</h3>
+      <hr>
+      <div class="row text-left">
+        <div class="col-sm-6">
+          <div
+            class="form-group"
+          >
+            <label>Enter text for encrypt</label>
+            <input
+              type="text"
+              class="form-control mb-2"
+              v-model="encryptInputText"
+            >
+            <button
+              class="btn btn-primary"
+              @click="encryptText"
+            >
+              Encrypt Text
+            </button>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-2">
+            <strong>Encrypted text:</strong>
+          </p>
+          <span>{{ encryptOutputText }}</span>
+        </div>
+        <div class="col-sm-6 mt-4">
+          <div
+            class="form-group"
+          >
+            <label>Enter text for decrypt</label>
+            <input
+              type="text"
+              class="form-control mb-2"
+              v-model="decryptInputText"
+            >
+            <button
+              class="btn btn-primary"
+              @click="decryptText"
+            >
+              Decrypt Text
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 mt-4">
+          <p class="mb-2">
+            <strong>Decrypted text:</strong>
+          </p>
+          <span>{{ decryptOutputText }}</span>
+        </div>
+      </div>
     </div>
-    <input
-      type="text"
-      v-model="decryptInputText"
-    >
-    <button @click="decryptText">
-      Decrypt Text
-    </button>
-    <div>
-      <span><strong>Decrypted text:</strong></span>
-      <span>{{ decryptOutputText }}</span>
-    </div>
-    <span>==================================================</span>
-    <h3>Object encryption/decryption</h3>
-    <textarea
-      v-model="encryptInputObject"
-      rows="4"
-      cols="45"
-    />
-    <div>
-      <button @click="encryptObj">
-        Encrypt Object
-      </button>
-    </div>
-    <div>
-      <span><strong>Encrypted Object:</strong></span>
-      <span>{{ encryptOutputObject }}</span>
-    </div>
-    <textarea
-      v-model="decryptInputObject"
-      rows="4"
-      cols="45"
-    />
-    <div>
-      <button @click="decryptObj">
-        Decrypt Object
-      </button>
-    </div>
-    <div>
-      <span><strong>Decrypted Object:</strong></span>
-      <span>{{ decryptOutputObject }}</span>
+    <div class="card p-3 my-4 ">
+      <h3>Object encryption/decryption</h3>
+      <hr>
+      <div class="row text-left">
+        <div class="col-sm-6">
+          <div
+            class="form-group"
+          >
+            <label>Enter text for encrypt</label>
+            <textarea
+              v-model="encryptInputObject"
+              rows="4"
+              class="form-control mb-2"
+            />
+
+            <button
+              class="btn btn-primary"
+              @click="encryptObj"
+            >
+              Encrypt Object
+            </button>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-2">
+            <strong>Encrypted Object:</strong>
+          </p>
+          <span>{{ encryptOutputObject }}</span>
+        </div>
+        <div class="col-sm-6 mt-3">
+          <textarea
+            v-model="decryptInputObject"
+            rows="4"
+            class="form-control mb-2"
+          />
+
+          <button
+            class="btn btn-primary"
+            @click="decryptObj"
+          >
+            Decrypt Object
+          </button>
+        </div>
+        <div class="col-sm-6 mt-3">
+          <p class="mb-2">
+            <strong>Decrypted Object:</strong>
+          </p>
+          <span>{{ decryptOutputObject }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>

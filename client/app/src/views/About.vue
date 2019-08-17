@@ -3,19 +3,24 @@
     <h1 id="headId">
       This is an about page {{ result }}
     </h1>
-    <button @click="show">
+    <b-button
+      variant="primary mr-2"
+      @click="show"
+    >
       Show
-    </button>
-    <button @click="hide">
+    </b-button>
+    <b-button
+      variant="info"
+      @click="hide"
+    >
       Hide
-    </button>
+    </b-button>
   </div>
 </template>
 <script>
 import Response from '@/plugins/response.js'
 
 export default {
-
   data () {
     return {
       result: this.$route.params.pId
