@@ -55,7 +55,7 @@
               id="loginBtn"
               type="submit"
               name="btnlogin"
-              class="btn btn-info px-4"
+              class="btn btn-info px-4 mr-2"
               @click="authenticate()"
             >
               Submit

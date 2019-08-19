@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div
+    <!-- <div
       class="area_1"
     >
       <div class="v-bar-holder">
@@ -16,11 +16,6 @@
             <div class="row offset-2">
               <div class="row">
                 <form>
-                  <!-- <vue-dropzone
-                    id="drop1"
-                    :options="dropOptions"
-                    @vdropzone-file-added="fileData"
-                  /> -->
                   <h2>Upload File</h2>
                   Enter FileName to  upload : <input
                     id="files"
@@ -70,6 +65,71 @@
               >
             </div>
           </section>
+        </div>
+      </div>
+    </div> -->
+    <div class="container">
+      <h3>MarketPlace Applications</h3>
+      <div class="row text-left mt-3">
+        <div class="col-sm-6">
+          <div class="card p-3">
+            <div class="form-group">
+              <h5>Upload File</h5>
+              <label for=""> Enter FileName to  upload</label>
+              <input
+                class="form-control mb-2"
+                id="files"
+                type="text"
+                v-model="inputFileName"
+              >
+              <input
+                class="form-control mb-2"
+                id="files"
+                @change="submitFile"
+                type="file"
+              >
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                id="uploadtBtn"
+                @click.stop.prevent="uploadFile"
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card p-3">
+            <div class="form-group">
+              <h5>Download File</h5>
+              <label for=""> Enter FileURl to download</label>
+              <input
+                id="files"
+                type="text"
+                v-model="fileURL"
+                class="form-control mb-2"
+              >
+              <button
+                id="downloadBtn"
+                class="btn btn-primary btn-sm"
+                @click.stop.prevent="downloadFile"
+              >
+                Download
+              </button>
+            </div>
+            <div class="form-group">
+              <label
+                class="d-block"
+                for=""
+              > Show Image</label>
+              <img
+                width="200px"
+                height="150px"
+                :src="cdnBaserURl+'client2/loginIP.png'"
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>

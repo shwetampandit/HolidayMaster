@@ -11,7 +11,7 @@
     </div>
     <div id="nav">
       <router-link to="/">
-        Home {{ $store.getters.isPageBlocked }}
+        <i class="mdi mdi-home" /> Home {{ $store.getters.isPageBlocked }}
       </router-link> |
       <router-link to="/about">
         About
@@ -47,7 +47,7 @@
 
 <style lang="scss">
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
