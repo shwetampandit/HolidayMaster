@@ -111,7 +111,7 @@ function i18nGenerator (projPath, langArray, defaultLanguage) {
             }
             if (i === (len - 1)) {
               console.log('\n\n')
-              console.log('Internationalization successfully done on ' + i + ' files')
+              console.log('Internationalization successfully done on ' + (i + 1) + ' files')
               console.log('\n\n')
               let enFilePath = paths.langFolder + 'en.json'
               fs.writeFileSync(enFilePath, JSON.stringify(objToWrite))
