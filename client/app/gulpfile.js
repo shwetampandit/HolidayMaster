@@ -1,17 +1,19 @@
 const path = require('path')
 const fs = require('fs')
 const gulp = require('gulp')
-const readlineSync = require('readline-sync')
+// const readlineSync = require('readline-sync')
 const fsExtra = require('fs-extra')
 
 let objToWrite = {}
 let paths = {
-  langFolder: path.join(__dirname, 'src/lang/')
+  langFolder: path.join(__dirname, 'src/lang/'),
+  srcFolder: path.join(__dirname, 'src/')
 }
 
 gulp.task('geni18n', function (done) {
-  let projPath = readlineSync.question("Please enter project path (path of 'src' folder)  ")
-  projPath = projPath + '/'
+  // let projPath = readlineSync.question("Please enter project path (path of 'src' folder)  ")
+  // projPath = projPath + '/'
+  let projPath = paths.srcFolder
   readPrevi18n()
   backUpI18nFile(projPath)
   i18nGenerator(projPath, ['en'], 'en')
@@ -46,10 +48,9 @@ function paddingZero (number) {
 }
 
 function createDvJson (projPath, objToWrite) {
-  let dvObj = JSON.parse(JSON.stringify(objToWrite))
-  for (let key in dvObj) {
-    if (typeof dvObj[key] === 'object') {
-      let temp = dvObj[key]
+  for (let key in objToWrite) {
+    if (typeof objToWrite[key] === 'object') {
+      let temp = objToWrite[key]
       for (let newKey in temp) {
         if (temp.hasOwnProperty(newKey)) {
           temp[newKey] = newKey
@@ -58,7 +59,7 @@ function createDvJson (projPath, objToWrite) {
     }
   }
   let dvFilePath = paths.langFolder + 'dv.json'
-  fs.writeFileSync(dvFilePath, JSON.stringify(dvObj))
+  fs.writeFileSync(dvFilePath, JSON.stringify(objToWrite))
 }
 
 function readPrevi18n () {
@@ -115,7 +116,7 @@ function i18nGenerator (projPath, langArray, defaultLanguage) {
               console.log('\n\n')
               let enFilePath = paths.langFolder + 'en.json'
               fs.writeFileSync(enFilePath, JSON.stringify(objToWrite))
-              createDvJson(projPath, JSON.parse(JSON.stringify(objToWrite)))
+              createDvJson(projPath, objToWrite)
             }
           }
         }
