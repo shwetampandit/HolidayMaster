@@ -60,6 +60,12 @@ export default new Router({
       name: 'cdnUpload',
       component: loadView('CdnUpload'),
       meta: { title: 'Cdn Upload' }
+    },
+    {
+      path: '/tableDemo',
+      name: 'tableDemo',
+      component: loadView('TableDemo'),
+      meta: { title: 'Table Demo' }
     }
   ]
 })
