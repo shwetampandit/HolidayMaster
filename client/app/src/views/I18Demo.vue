@@ -2,7 +2,7 @@
   <div>
     <h2>Parent</h2>
     <h3>
-      <b>{{ $t('demo.demoHeading') }}</b>
+      <b><h4>i18n Pattern</h4>  {{ $t('##msg##@@Message@@') }}</b>
     </h3>
     <div>(Default English)</div>
     <strong>Change Language (I18)</strong>
