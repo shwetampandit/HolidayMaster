@@ -40,9 +40,6 @@
       <router-link to="/cdnUpload">
         Cdn Upload
       </router-link> |
-      <router-link to="/saveEmployeeData">
-        Save Employee Data
-      </router-link> |
       <router-link to="/tableDemo">
         Table Demo
       </router-link>

@@ -62,12 +62,6 @@ export default new Router({
       meta: { title: 'Cdn Upload' }
     },
     {
-      path: '/saveEmployeeData',
-      name: 'saveEmployeeData',
-      component: loadView('SaveEmployeeData'),
-      meta: { title: 'Save Employee' }
-    },
-    {
       path: '/tableDemo',
       name: 'tableDemo',
       component: loadView('TableDemo'),
