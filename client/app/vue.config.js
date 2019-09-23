@@ -200,7 +200,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/server': {
-        target: 'http://10.2.11.17/RoshanpDevelopment',
+        target: 'https://mepcs.mkcl.org/1LMDrmk4UOkW2m7wnbWIj3z8gO7/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

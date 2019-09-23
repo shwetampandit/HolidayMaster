@@ -30,6 +30,7 @@
 
 <script>
 import MQL from '@/plugins/mql.js'
+
 export default {
   name: 'MTable',
   props: {
@@ -39,21 +40,19 @@ export default {
     },
     activity: {
       type: String,
-      default: null
-    },
-    query: {
-      type: String,
+      required: true,
       default: null
     },
     restriction: {
       type: String,
+      required: true,
       default: null
     },
     params: {
       type: Object,
       default: null
     },
-    resultArrayKey: {
+    resultKey: {
       type: String,
       default: null
     },
@@ -93,90 +92,32 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    this.getActivityData()
   },
   methods: {
-    getData () {
-      if (this.query != null) {
-        // call for query specific mql
-        this.getQueryData()
-      } else if (this.activity != null) {
-        // call for activity specific mql
-        this.getActivityData()
-      } else {
-      // Neither query nor activity is provided
-        alert('Will you please provide query or activity details while calling TABLE Component.')
-      }
-    },
-    // call for query specific mql
-    getQueryData () {
-      console.log('Query Type MQL With Params')
-      if (this.params != null) {
-        new MQL()
-          .setActivity(this.restriction + '.[query_' + this.query + ']')
-          .setData(this.params)
-          .fetch()
-          .then(rs => {
-            let res = rs.getActivity('query_' + this.query, false)
-            // console.log('RES: ', res)
-            if (rs.isValid('query_' + this.query)) {
-              this.itemList = res
-              // console.log('data:: ' + this.itemList)
-            } else {
-              rs.showErrorToast('query_QueryID')
-            }
-          })
-      } else {
-        console.log('Query Type MQL Without Params')
-        new MQL()
-          .setActivity(this.restriction + '.[query_' + this.query + ']')
-          // .setData(data)
-          .fetch()
-          .then(rs => {
-            let res = rs.getActivity('query_' + this.query, false)
-            // console.log('RES: ', res)
-            if (rs.isValid('query_' + this.query)) {
-              this.itemList = res
-              // console.log('data:: ' + this.itemList)
-            } else {
-              rs.showErrorToast('query_QueryID')
-            }
-          })
-      }
-    },
     // call for activity specific mql
     getActivityData () {
-      console.log('Activity Type MQL With Params')
-      if (this.params != null) {
-        new MQL()
-          .setActivity(this.restriction + '.[' + this.activity + ']')
-          .setData(this.params)
-          .fetch()
-          .then(rs => {
-            let res = rs.getActivity(this.activity, false)
-            if (rs.isValid(this.activity)) {
-              this.itemList = res.result.userProfile
-            // console.log(this.itemList)
+      new MQL()
+        .setActivity(this.restriction + '.[' + this.activity + ']')
+        // In case params not provided it will go with empty object
+        .setData(this.params || {})
+        .fetch()
+        .then(rs => {
+          let res = rs.getActivity(this.activity, false)
+          if (rs.isValid(this.activity)) {
+            // Check if the request is of query type
+            if ((this.activity).startsWith('query_')) {
+              // Request is of query type
+              this.itemList = res
             } else {
-              rs.showErrorToast(this.activity)
+              // Request is of activity type
+              this.itemList = res.result[this.resultKey || []]
             }
-          })
-      } else {
-        console.log('Activity Type MQL Without Params')
-        new MQL()
-          .setActivity(this.restriction + '.[' + this.activity + ']')
-          // .setData(this.params)
-          .fetch()
-          .then(rs => {
-            let res = rs.getActivity(this.activity, false)
-            if (rs.isValid(this.activity)) {
-              this.itemList = res.result.userProfile
-            // console.log(this.itemList)
-            } else {
-              rs.showErrorToast(this.activity)
-            }
-          })
-      }
+          } else {
+            // In case there is error from server side
+            rs.showErrorToast(this.activity)
+          }
+        })
     }
   }
 }
