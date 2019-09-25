@@ -39,6 +39,9 @@
       </router-link> |
       <router-link to="/cdnUpload">
         Cdn Upload
+      </router-link> |
+      <router-link to="/tableDemo">
+        Table Demo
       </router-link>
     </div>
     <router-view />
