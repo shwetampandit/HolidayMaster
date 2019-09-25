@@ -11,7 +11,7 @@
     </div>
     <div id="nav">
       <router-link to="/">
-        <i class="mdi mdi-home" /> Home {{ $store.getters.isPageBlocked }}
+        <i class="mdi mdi-home" /> Home
       </router-link> |
       <router-link to="/about">
         About
