@@ -213,8 +213,8 @@ class MQL {
     this.fetch = function (docId = null) {
       return new Promise((resolve, reject) => {
         let self = this
-        if (isDevelopment && (docId == null || document.getElementById(docId) == null)) {
-          alert('You forget to add button Id on fetch or on button element')
+        if (isDevelopment && (docId !== null && document.getElementById(docId) == null)) {
+          alert('Unable to find element with Id : ' + docId)
           return
         }
         if (this.isConfirm) {
