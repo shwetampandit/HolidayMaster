@@ -175,12 +175,14 @@ export default {
       formData.append('file', this.files) // append your file as 'file' in formdata.
       new MQLCdn()
         .enablePageLoader(true)
+        .setCDNPath('/test')
         .setFormData(formData) // (required) sets file data
         .setFileName(this.inputFileName) // (optional field) if you want to set name to file that is being uploaded
         .setBucketKey('client2') // (required) valid bucket key need to set in which file will be uploaded.
         .uploadFile('uploadtBtn').then(res => { // (required) this will upload file takes element id (optional param) which will be blocked while file upload..
           if (res.isValid()) {
             this.uploadedFilePath = res.uploadedFileURL() // returns uploaded file url..
+            console.log('res cdn changes', res, this.uploadedFilePath)
           } else {
             res.showErrorToast()
           }
