@@ -144,7 +144,7 @@ module.exports = {
       // swSrc: 'src/registerServiceWorker.js',
       swSrc: 'public/sw.js',
       // swDest: './public/service-worker.js',
-      exclude: [ /\.LICENSE$/],
+      exclude: [/\.LICENSE$/],
       include: [/\.html$/, /\.js$/, /\.css$/]
       // ...other Workbox options...
     },
@@ -200,7 +200,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/server': {
-        target: 'https://mepcs.mkcl.org/1LMDrmk4UOkW2m7wnbWIj3z8gO7/',
+        target: 'http://localhost:8080', // provide proxy  for your project
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -208,7 +208,7 @@ module.exports = {
         }
       },
       '/cdnserver': {
-        target: 'http://localhost:3032/',
+        target: 'http://localhost:3034/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

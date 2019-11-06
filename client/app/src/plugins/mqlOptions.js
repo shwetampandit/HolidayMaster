@@ -10,8 +10,8 @@ export default {
     // TODO: check for values on staging /development/ production
     let bucketConfigurations = process.env.NODE_ENV !== 'production' ? options.cdnConfig : null
 
-    Vue.getBucketIdByKey = (bucketName) => {
-      let result = bucketConfigurations.find(bucket => bucket.bucketName === bucketName)
+    Vue.getBucketConfigByKey = (bucketId) => {
+      let result = bucketConfigurations.find(bucket => bucket.bucketId === bucketId)
       return result
     }
     Vue.prototype.$PageLoader = pageLoader
