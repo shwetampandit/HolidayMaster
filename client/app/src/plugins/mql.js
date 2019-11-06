@@ -213,6 +213,10 @@ class MQL {
     this.fetch = function (docId = null) {
       return new Promise((resolve, reject) => {
         let self = this
+        if (isDevelopment && (docId !== null && document.getElementById(docId) == null)) {
+          alert('Unable to find element with Id : ' + docId)
+          return
+        }
         if (this.isConfirm) {
           Vue.dialog
             .confirm('Please confirm to continue')
@@ -266,6 +270,7 @@ class MQL {
         if (this.showPageLoader && window.app.$store !== undefined && window.app.$store !== null) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
         }
+
         if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
