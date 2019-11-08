@@ -19,6 +19,7 @@ class MQLCdn {
     this.forceCreateDirectory = true
     this.showPageLoader = false
     this.GateWayConfigObj = {}
+    this.savedConfig = {}
     let CancelToken = axios.CancelToken
     const mqlInstance = axios.create({
       baseURL: Vue.getCDNBaseURL()
@@ -66,7 +67,7 @@ class MQLCdn {
     }
 
     // To fetch bucket config from the bucketConfigs on bucketId
-    const fetchBucketConfigFromKey = (bucketId) => {
+    /* const fetchBucketConfigFromKey = (bucketId) => {
       let bucketObj = Vue.getBucketConfigByKey(bucketId)
       if (!bucketObj) {
         return
@@ -85,7 +86,7 @@ class MQLCdn {
         'bucketId': bucketObj.bucketId
       }
       this.GateWayConfigObj.bucketConfig.push(data)
-    }
+    } */
 
     // To prepare the post request to gateway server of cdn
     const prepareMQLCDNGatewayRequest = (requestType, docId, txt) => {
@@ -233,6 +234,18 @@ class MQLCdn {
       })
     }
 
+    const checkCdnURLPresentForPurposeId = () => {
+      return new Promise((resolve) => {
+        let result = Vue.getServerList(this.GateWayConfigObj.purposeId, this.GateWayConfigObj.bucketConfig[0].bucketId)
+        if (result) {
+          this.savedConfig = result
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+    }
+
     // To route request to actual cdn server
     const uploadFileToCDN = (docId = null, cdnURL = '') => {
       let cdnurlWithoutroute = cdnURL
@@ -301,8 +314,31 @@ class MQLCdn {
 
     // To get the bucket config from bucket name
     this.setBucketKey = (bucketId) => {
-      this.bucketId = bucketId
-      fetchBucketConfigFromKey(bucketId)
+      // this.bucketId = bucketId
+      // fetchBucketConfigFromKey(bucketId)
+      this.GateWayConfigObj.bucketConfig = []
+      let data = {
+        'bucketId': bucketId
+      }
+      this.GateWayConfigObj.bucketConfig.push(data)
+      return this
+    }
+
+    // To set the purposeId for cdn
+    this.setPurposeId = (purposeId) => {
+      this.GateWayConfigObj.purposeId = purposeId
+      return this
+    }
+
+    // To set the clientId for cdn
+    this.setClientId = (clientId) => {
+      this.GateWayConfigObj.clientId = clientId
+      return this
+    }
+
+    // To set the userId for cdn
+    this.setUserId = (userId) => {
+      this.GateWayConfigObj.userId = userId
       return this
     }
 
@@ -373,7 +409,7 @@ class MQLCdn {
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
         }
-        prepareMQLCDNGatewayRequest('POST', docId, txt).then(cdnResponse => {
+        checkCdnURLPresentForPurposeId().then(res => {
           if (this.showPageLoader) {
             window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
           }
@@ -381,13 +417,25 @@ class MQLCdn {
             document.getElementById(docId).disabled = false
             document.getElementById(docId).innerHTML = txt
           }
-          if (cdnResponse.raw.errorCode !== requestProcessedWithoutErrorCode) {
-            resolve(cdnResponse)
-          } else {
-            setBucketConfigInFormData(cdnResponse.raw.result.bucketConfig[0])
-            uploadFileToCDN(docId, cdnResponse.raw.result.cdnURL).then(cdnres => {
+          if (res) {
+            setBucketConfigInFormData(this.savedConfig.bucketConfig[0])
+            uploadFileToCDN(docId, this.savedConfig.cdnURL).then(cdnres => {
               obj.data = cdnres.raw
               resolve(new Response(obj))
+            })
+          } else {
+            prepareMQLCDNGatewayRequest('POST', docId, txt).then(cdnResponse => {
+              if (cdnResponse.raw.errorCode !== requestProcessedWithoutErrorCode) {
+                resolve(cdnResponse)
+              } else {
+                cdnResponse.raw.result.purposeId = this.GateWayConfigObj.purposeId
+                Vue.setServerList(cdnResponse.raw.result)
+                setBucketConfigInFormData(cdnResponse.raw.result.bucketConfig[0])
+                uploadFileToCDN(docId, cdnResponse.raw.result.cdnURL).then(cdnres => {
+                  obj.data = cdnres.raw
+                  resolve(new Response(obj))
+                })
+              }
             })
           }
         })

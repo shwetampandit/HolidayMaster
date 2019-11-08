@@ -1,6 +1,6 @@
 export default {
-
   install: (Vue, options) => {
+    let cdnServerList = []
     let baseURL = options.baseURL
     let cdnBaseURL = options.cdnBaseURL
     let version = options.version
@@ -48,6 +48,13 @@ export default {
     }
     Vue.setAppCode = function (str) {
       appCode = str
+    }
+    Vue.getServerList = function (purposeId, bucketId) {
+      let result = cdnServerList.find(purpose => (purpose.purposeId === purposeId && purpose.bucketConfig[0].bucketId === bucketId))
+      return result
+    }
+    Vue.setServerList = function (obj) {
+      cdnServerList.push(obj)
     }
   }
 }

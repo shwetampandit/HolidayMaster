@@ -200,7 +200,9 @@ export default {
         .setFormData(formData) // (required) sets file data
         .setFileName(this.inputFileName) // (optional field) if you want to set name to file that is being uploaded
         // FIXED: pass buckeyKey instead of name
-        .setBucketKey('1TC5up2yyDGAeJfMXBRnazhPG6Z') // (required) valid bucket key need to set in which file will be uploaded.
+        .setBucketKey('1') // (required) valid bucket key need to set in which file will be uploaded.
+        .setPurposeId('1') // (required) valid purposeId need to set in which file will be uploaded.
+        .setClientId('26') // (required) valid purposeId need to set in which file will be uploaded.
         .uploadFile('uploadtBtn').then(res => { // (required) this will upload file takes element id (optional param) which will be blocked while file upload..
           if (res.isValid()) {
             this.uploadedFilePath = res.uploadedFileURL() // returns uploaded file url..
