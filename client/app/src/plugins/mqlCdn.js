@@ -344,38 +344,38 @@ class MQLCdn {
 
     const getFileFromCDN = (cdnURL = '') => {
       return new Promise((resolve) => {
-        if (this.clientId !== undefined) {
-          mqlInstance({
-            url: cdnURL,
-            method: 'GET',
-            headers: setHeaders(),
-            responseType: 'blob',
-            cancelToken: new CancelToken(function executor (c) {
-              cancel = c
-            })
+        // if (this.clientId !== undefined) {
+        mqlInstance({
+          url: cdnURL,
+          method: 'GET',
+          headers: setHeaders(),
+          responseType: 'blob',
+          cancelToken: new CancelToken(function executor (c) {
+            cancel = c
           })
-            .then(res => {
-              this.fileName = getFilenameFromUrl(this.cdnURL)
-              const url = window.URL.createObjectURL(new Blob([res.data]))
-              var a = document.createElement('a')
-              a.href = url
-              a.download = this.fileName
-              a.target = '_blank'
-              a.click()
-            })
-            .catch(error => {
-              console.log('fail error', error.message)
-              let obj = {}
-              obj.data = {}
-              if (this.showPageLoader) {
-                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-              }
-              obj.data.error = error.message
-              obj.data.errorCode = 1990
-              obj.data.result = null
-              resolve(new Response(obj))
-            })
-        } else {
+        })
+          .then(res => {
+            this.fileName = getFilenameFromUrl(this.cdnURL)
+            const url = window.URL.createObjectURL(new Blob([res.data]))
+            var a = document.createElement('a')
+            a.href = url
+            a.download = this.fileName
+            a.target = '_blank'
+            a.click()
+          })
+          .catch(error => {
+            console.log('fail error', error.message)
+            let obj = {}
+            obj.data = {}
+            if (this.showPageLoader) {
+              window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
+            }
+            obj.data.error = error.message
+            obj.data.errorCode = 1990
+            obj.data.result = null
+            resolve(new Response(obj))
+          })
+        /* } else {
           let obj = {}
           obj.data = {}
           obj.data.error = 'Invalid Bucket Key...' + this.bucketId
@@ -385,7 +385,7 @@ class MQLCdn {
             window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
           }
           resolve(new Response(obj))
-        }
+        } */
       }).catch(error => {
         // Handling development related errors
         console.log(error)

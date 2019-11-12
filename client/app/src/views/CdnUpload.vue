@@ -221,7 +221,9 @@ export default {
       if (this.fileURL !== '') {
         new MQLCdn()
           .setCDNPath(this.fileURL) // (required) set a filepath whihch needs to be download.
-          .setBucketKey('1TC5up2yyDGAeJfMXBRnazhPG6Z') // (required) if you are providing relative path
+          .setBucketKey('1')
+          .setPurposeId('1') // (required) valid purposeId need to set in which file will be uploaded.
+          .setClientId('26') // (required) if you are providing relative path
           .enablePageLoader(true)
           .downloadFile('downloadBtn').then(res => { // (required) this will take elemnt id (optional) which will be blocked while file being downloaded.
             if (!res.isValid()) {
