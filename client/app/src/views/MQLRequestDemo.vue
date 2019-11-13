@@ -47,10 +47,11 @@ export default {
       // Vue.setPageLoader(true)
       // this.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
       new MQL()
-        .setActivity('o.[query_1DYhS6usqRF3dXisyecSyswCq9Z, HelloActivity]')
+        // .setActivity('o.[query_1QPikbRCETCu32Dj13qzRKNBraC, HelloActivity]')
+        .setActivity('o.[query_1QPikbRCETCu32Dj13qzRKNBraC]')
       // .setLoginActivity()
         .setData({
-          fetchId: '1DYhS6usqRF3dXisyecSyswCq9Z'
+          fetchId: '1QPikbRCETCu32Dj13qzRKNBraC'
         })
         .setHeader({ 'my-header': 'It is Ok' })
       // .setCustomURL('http://127.0.0.1:9090/server2/')

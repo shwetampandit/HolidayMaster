@@ -96,6 +96,26 @@
               >
                 Upload
               </button>
+              <br>
+              <div v-if="uploadedFilePath">
+                cdnServer :
+                <input
+                  class="form-control mb-2"
+                  id="filesData"
+                  v-model="uploadedFilePath.cdnServer"
+                  type="text"
+                  readonly
+                >
+                filePath :
+                <textarea
+                  class="form-control mb-2"
+                  id="filesData"
+                  rows="2"
+                  cols="5"
+                  v-model="uploadedFilePath.filePath"
+                  readonly
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -126,7 +146,7 @@
               <img
                 width="200px"
                 height="150px"
-                :src="cdnBaserURl+'client2/loginIP.png'"
+                :src="'http://10.4.0.119:3032/1T8hSbGxKTul1GnF3s6zp8kjk41/test/loginIP.png'"
               >
             </div>
           </div>
@@ -175,12 +195,23 @@ export default {
       formData.append('file', this.files) // append your file as 'file' in formdata.
       new MQLCdn()
         .enablePageLoader(true)
+        // FIXED: change this to directory path
+        .setDirectoryPath('/demoFolder') // (optional field) if you want to save  file to specific directory path
         .setFormData(formData) // (required) sets file data
         .setFileName(this.inputFileName) // (optional field) if you want to set name to file that is being uploaded
-        .setBucketKey('client2') // (required) valid bucket key need to set in which file will be uploaded.
+        // FIXED: pass buckeyKey instead of name
+        .setBucketKey('1') // (required) valid bucket key need to set in which file will be uploaded.
+        .setPurposeId('1') // (required) valid purposeId need to set in which file will be uploaded.
+        .setClientId('26') // (required) valid purposeId need to set in which file will be uploaded.
         .uploadFile('uploadtBtn').then(res => { // (required) this will upload file takes element id (optional param) which will be blocked while file upload..
           if (res.isValid()) {
             this.uploadedFilePath = res.uploadedFileURL() // returns uploaded file url..
+            console.log('res cdn path', this.uploadedFilePath)
+            this.$toasted.success('file uploaded.', {
+              theme: 'bubble',
+              position: 'top-center',
+              duration: 5000
+            })
           } else {
             res.showErrorToast()
           }
@@ -190,9 +221,11 @@ export default {
       if (this.fileURL !== '') {
         new MQLCdn()
           .setCDNPath(this.fileURL) // (required) set a filepath whihch needs to be download.
+          .setBucketKey('1')
+          .setPurposeId('1') // (required) valid purposeId need to set in which file will be uploaded.
+          .setClientId('26') // (required) if you are providing relative path
           .enablePageLoader(true)
           .downloadFile('downloadBtn').then(res => { // (required) this will take elemnt id (optional) which will be blocked while file being downloaded.
-            console.log('response', res)
             if (!res.isValid()) {
               res.showErrorToast()
             }

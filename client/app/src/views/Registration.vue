@@ -73,13 +73,6 @@ export default {
       form.append('file', this.file, this.file.name)
       form.append('loginId', this.loginId)
       form.append('password', this.password)
-      this.$MQLFetch('services.O_REGISTERUSERSERVICE', form)
-        .then(res => {
-          this.result = res
-        })
-        .catch(error => {
-          alert(error.response.data.error)
-        })
     }
   }
 }

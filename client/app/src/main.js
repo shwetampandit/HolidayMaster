@@ -35,22 +35,50 @@ Vue.use(VuejsDialog)
 Vue.use(BootstrapVue)
 Vue.use(vSelect)
 Vue.use(Toasted)
-var baseURL = 'http://localhost:8080/server'
-var cdnBaseURL = 'http://localhost:8080/cdnserver'
+var baseURL = '/server'
+var cdnBaseURL = '/cdnserver'
 Vue.use(mqlOptions, {
   baseURL: baseURL,
   cdnBaseURL: cdnBaseURL,
   cdnConfig: [
     {
-      'bucketName': 'client1',
-      'clientId': 'client1',
+      'purposeId': '1',
+      'bucketId': '123456',
+      'bucketName': 'client2',
+      'clientId': '26',
+      'userId': '23',
       'isPrivateBucket': true
     },
     {
       'bucketName': 'client2',
       'clientId': 'client2',
       'isPrivateBucket': false
-    }]
+    },
+    {
+      'bucketId': '1TBvOvV0WPk52KoYrslIPmdieBD',
+      'bucketName': 'TestBucket',
+      'clientId': '1TBvKXU60Lu2zPAfU85dcPYOvlb',
+      'createdBy': 'suvarnar@mkcl.org',
+      'createdOn': 1572946274,
+      'description': 'TestBucket.',
+      'isPrivateBucket': null,
+      'modifiedBy': 'suvarnar@mkcl.org',
+      'modifiedOn': 1572946274,
+      'purposeId': '1TBvKXU60Lu2zPAfU85dcPYOvlb'
+    },
+    {
+      'bucketId': '1TC5up2yyDGAeJfMXBRnazhPG6Z',
+      'bucketName': 'TestBucket',
+      'clientId': '1TC5qFX6rFuxNcrtTqCzpGumfWI',
+      'createdBy': 'suvarnar@mkcl.org',
+      'createdOn': 1572951461,
+      'description': 'Testbucket.',
+      'isPrivateBucket': null,
+      'modifiedBy': 'suvarnar@mkcl.org',
+      'modifiedOn': 1572951461,
+      'purposeId': '1TC5qFX6rFuxNcrtTqCzpGumfWI'
+    }
+  ]
 })
 // axios.defaults.baseURL = baseURL
 // TODO: set axios header on login  to session storage
