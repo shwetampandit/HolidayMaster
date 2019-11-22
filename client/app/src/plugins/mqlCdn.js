@@ -264,8 +264,10 @@ class MQLCdn {
           if (this.showPageLoader) {
             window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
           }
-          document.getElementById(docId).disabled = false
-          document.getElementById(docId).innerHTML = txt
+          if (docId !== null && document.getElementById(docId) !== null) {
+            document.getElementById(docId).disabled = false
+            document.getElementById(docId).innerHTML = txt
+          }
           resolve(cdnResponse)
         })
       }).catch(error => {
