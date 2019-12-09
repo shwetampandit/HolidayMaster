@@ -66,6 +66,11 @@ export default new Router({
       name: 'tableDemo',
       component: loadView('TableDemo'),
       meta: { title: 'Table Demo' }
+    },
+    {
+      path: '/veuMetaExample/:title',
+      name: 'veuMetaExample',
+      component: loadView('VeuMetaExample')
     }
   ]
 })
