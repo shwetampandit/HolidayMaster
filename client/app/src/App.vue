@@ -42,11 +42,30 @@
       </router-link> |
       <router-link to="/tableDemo">
         Table Demo
+      </router-link> |
+      <router-link to="/veuMetaExample/Beach Cleanup">
+        Vue-Meta Demo
       </router-link>
     </div>
-    <router-view />
+    <router-view :key="$route.path" />
   </div>
 </template>
+
+<script>
+export default {
+  name: 'App',
+  metaInfo: {
+    meta: [
+      {
+        vmid: 'description',
+        name: 'description',
+        content: 'Test title',
+        template: chunk => `${chunk} - FullStack`
+      }
+    ]
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

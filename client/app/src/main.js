@@ -12,6 +12,8 @@ import VuejsDialog from 'vuejs-dialog'
 import BootstrapVue from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Toasted from 'vue-toasted'
+import VueMeta from 'vue-meta'
+
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
 import '../public/assets/plugins/materialdesignicons/css/materialdesignicons.min.css'
@@ -30,6 +32,8 @@ const options = {
   separator: '|',
   showConsoleColors: true
 }
+
+Vue.use(VueMeta)
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
 Vue.use(BootstrapVue)

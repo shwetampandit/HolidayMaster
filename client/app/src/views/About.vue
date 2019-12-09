@@ -21,6 +21,16 @@
 import Response from '@/plugins/response.js'
 
 export default {
+  metaInfo: {
+    title: 'About',
+    meta: [
+      {
+        vmid: 'description',
+        name: 'description',
+        content: 'An About title!'
+      }
+    ]
+  },
   data () {
     return {
       result: this.$route.params.pId
