@@ -45,7 +45,6 @@ export default {
         .then(rs => {
           let res = rs.getActivity('GetEventTitle', true)
           if (rs.isValid('GetEventTitle')) {
-            console.log(res)
             this.response = res.result
           } else {
             rs.showErrorToast('GetEventTitle')
