@@ -45,6 +45,9 @@
       </router-link> |
       <router-link to="/veuMetaExample/Beach Cleanup">
         Vue-Meta Demo
+      </router-link> |
+      <router-link to="/MqlAssetFDBDemo">
+        Mql AssetFDB Demo
       </router-link>
     </div>
     <router-view :key="$route.fullPath" />
