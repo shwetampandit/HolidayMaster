@@ -102,6 +102,15 @@ class Response {
     this.uploadedFileURL = function () {
       return this.raw.result
     }
+
+    this.getAssetPath = function () {
+      return this.raw.result.path // returns path where your asset is stored
+    }
+
+    // this.getAssetContent = function () {
+    //   return this.raw.result // returns the data in your asset
+    // }
+
     this.showErrorToast = function (strActivity = null) {
       if (strActivity === null) {
         // check for global errorCode
