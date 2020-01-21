@@ -1,0 +1,40 @@
+<template>
+  <div id="sidebar" :class="{ active: isActive }">
+    <div class="sidebar-header">
+      <img src="../../assets/logo_mkcl_w.svg" class="logo" />
+    </div>
+
+    <div class="custom-menu">
+      <button type="button" id="sidebarCollapse" class="btn btn-primary" @click="toggleSideBar()">
+        <i class="mdi mdi-menu"></i>
+        <span class="sr-only">Toggle Menu</span>
+      </button>
+    </div>
+
+    <ul>
+      <template v-for="(page, i) in this.$router.options.routes">
+        <li :key="i">
+          <b-link :to="page.path"><i :class="page.meta.icon"></i> {{ page.name}}</b-link>
+        </li>
+      </template>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Sidebar",
+  data: function() {
+    return {
+      isActive: false
+    }
+  },
+  methods: {
+        toggleSideBar() {
+            this.isActive = !this.isActive
+        }
+    }
+};
+</script>
+
+<style></style>

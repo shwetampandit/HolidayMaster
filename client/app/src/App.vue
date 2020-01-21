@@ -9,54 +9,24 @@
         alt="loader"
       >
     </div>
-    <div id="nav">
-      <router-link to="/">
-        <i class="mdi mdi-home" /> Home
-      </router-link> |
-      <router-link to="/about">
-        About
-      </router-link> |
-      <router-link
-        name="loginlink"
-        to="/login"
-      >
-        Login
-      </router-link> |
-      <router-link to="/registration">
-        Register
-      </router-link> |
-      <router-link to="/i18Demo">
-        Languages
-      </router-link> |
-      <router-link to="/mqlRequestDemo">
-        MQL Request
-      </router-link> |
-      <router-link to="/validator">
-        Validator
-      </router-link> |
-      <router-link to="/encryption">
-        Encryption
-      </router-link> |
-      <router-link to="/cdnUpload">
-        Cdn Upload
-      </router-link> |
-      <router-link to="/tableDemo">
-        Table Demo
-      </router-link> |
-      <router-link to="/veuMetaExample/Beach Cleanup">
-        Vue-Meta Demo
-      </router-link> |
-      <router-link to="/MqlAssetFDBDemo">
-        Mql AssetFDB Demo
-      </router-link>
+
+    <div class="wrapper">
+        <sidebar></sidebar>
+      <div class='column column2'>
+        <router-view :key="$route.fullPath" />
+      </div>
     </div>
-    <router-view :key="$route.fullPath" />
+   
   </div>
 </template>
 
 <script>
+import Sidebar from '@/components/common/Sidebar'
 export default {
   name: 'App',
+  components: {
+    Sidebar
+  },
   metaInfo: {
     meta: [
       {
@@ -75,7 +45,7 @@ export default {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  // text-align: center;
   color: #2c3e50;
 }
 #app-loader {
