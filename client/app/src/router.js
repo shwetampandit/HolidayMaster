@@ -71,7 +71,7 @@ export default new Router({
       path: '/veuMetaExample/:title',
       name: 'veuMetaExample',
       component: loadView('VeuMetaExample'),
-      meta: { title: 'veuMetaExample', icon : 'mdi mdi-file-table-outline' }
+      meta: { title: 'veuMetaExample', icon : 'mdi mdi-arrow-expand' }
     },
     {
       path: '/MqlAssetFDBDemo',
