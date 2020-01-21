@@ -4,6 +4,7 @@ import Vue from 'vue'
 
 class MQLCdn {
   constructor () {
+    // eslint-disable-next-line
     let cancel
     let requestProcessedWithoutErrorCode = 1000
     let isDevelopment = process.env.NODE_ENV !== 'production'
@@ -24,7 +25,7 @@ class MQLCdn {
     const mqlInstance = axios.create({
       baseURL: Vue.getCDNBaseURL()
     })
-    mqlInstance.interceptors.request.use(
+    /* mqlInstance.interceptors.request.use(
       function (config) {
         // TODO: check for private bucket(not required.)
         // if (config.url.indexOf('r/') !== -1) {
@@ -40,7 +41,7 @@ class MQLCdn {
       function (error) {
         return Promise.reject(error)
       }
-    )
+    ) */
 
     // To set cdnPath and authorization header in request
     const setHeaders = (headers = {}) => {
