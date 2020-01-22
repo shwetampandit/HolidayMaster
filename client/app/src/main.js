@@ -13,6 +13,7 @@ import BootstrapVue from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Toasted from 'vue-toasted'
 import VueMeta from 'vue-meta'
+import Vuebar from 'vuebar';
 
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
@@ -39,6 +40,8 @@ Vue.use(VuejsDialog)
 Vue.use(BootstrapVue)
 Vue.use(vSelect)
 Vue.use(Toasted)
+Vue.use(Vuebar);
+
 var baseURL = '/server'
 var cdnBaseURL = '/cdnserver'
 Vue.use(mqlOptions, {
