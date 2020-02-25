@@ -25,23 +25,6 @@ class MQLCdn {
     const mqlInstance = axios.create({
       baseURL: Vue.getCDNBaseURL()
     })
-    /* mqlInstance.interceptors.request.use(
-      function (config) {
-        // TODO: check for private bucket(not required.)
-        // if (config.url.indexOf('r/') !== -1) {
-        // Check for restricted request
-        if (sessionStorage.getItem('user-token') === null) {
-          cancel('Operation canceled by the MQLCDN interceptor.')
-          // TODO Uncomment below code for dispatch
-          // window.app.$store.dispatch('AUTH_LOGOUT')
-        }
-        // }
-        return config
-      },
-      function (error) {
-        return Promise.reject(error)
-      }
-    ) */
 
     // To set cdnPath and authorization header in request
     const setHeaders = (headers = {}) => {
@@ -62,37 +45,15 @@ class MQLCdn {
 
     // To get the filename from the request url for download
     const getFilenameFromUrl = (url) => {
-      const pathname = new URL(url).pathname
+      const pathname = decodeURIComponent(new URL(url).pathname)
       const index = pathname.lastIndexOf('/')
       return (index !== -1 ? pathname.substring(index + 1) : pathname)
     }
 
-    // To fetch bucket config from the bucketConfigs on bucketId
-    /* const fetchBucketConfigFromKey = (bucketId) => {
-      let bucketObj = Vue.getBucketConfigByKey(bucketId)
-      if (!bucketObj) {
-        return
-      }
-      if (bucketObj.clientId) {
-        this.GateWayConfigObj.clientId = bucketObj.clientId
-      }
-      if (bucketObj.userId) {
-        this.GateWayConfigObj.userId = bucketObj.userId
-      }
-      if (bucketObj.purposeId) {
-        this.GateWayConfigObj.purposeId = bucketObj.purposeId
-      }
-      this.GateWayConfigObj.bucketConfig = []
-      let data = {
-        'bucketId': bucketObj.bucketId
-      }
-      this.GateWayConfigObj.bucketConfig.push(data)
-    } */
-
     // To prepare the post request to gateway server of cdn
     const prepareMQLCDNGatewayRequest = (requestType, docId, txt) => {
       return new Promise((resolve) => {
-        if (this.GateWayConfigObj && this.GateWayConfigObj.purposeId !== undefined) {
+        if (this.GateWayConfigObj && this.GateWayConfigObj.purposeId && this.bucketId) {
           mqlInstance({
             url: this.cdnURL,
             method: requestType,
@@ -120,11 +81,6 @@ class MQLCdn {
                 obj.data.result = null
                 resolve(new Response(obj))
               } else {
-                // setBucketConfigInFormData(res.data.result.bucketConfig[0])
-                // uploadFileToCDN(docId, res.data.result.cdnURL).then(cdnres => {
-                //   obj.data = cdnres.raw
-                //   resolve(new Response(obj))
-                // })
                 resolve(new Response(obj))
               }
             })
@@ -151,7 +107,7 @@ class MQLCdn {
           }
           let obj = {}
           obj.data = {}
-          obj.data.error = 'Invalid Bucket Key ' + this.bucketId
+          obj.data.error = 'Bucket or Purpose Key cannot be empty.'
           obj.data.errorCode = 1990
           obj.data.result = null
           resolve(new Response(obj))
@@ -168,7 +124,32 @@ class MQLCdn {
     // To prepare post request to actual cdn server
     const prepareMQLCDNRequest = (requestType, cdnURL, cdnurlWithoutroute, docId, txt) => {
       return new Promise((resolve) => {
-        if (this.clientId !== undefined) {
+        // client side file size check
+        if (this.bucketId !== undefined) {
+          if (this.savedConfig.maxFileSize && this.formData.get('file') && this.formData.get('file').size > this.savedConfig.maxFileSize) {
+            if (docId !== null && document.getElementById(docId) !== null) {
+              document.getElementById(docId).disabled = false
+              document.getElementById(docId).innerHTML = txt
+            }
+            let obj = {}
+            obj.data = {}
+            obj.data.error = 'File size exceeds the maximum limit of ' + this.savedConfig.maxFileSize / (1024 * 1024) + ' MB.'
+            obj.data.errorCode = 1990
+            obj.data.result = null
+            return resolve(new Response(obj))
+          } else if (!this.savedConfig.maxFileSize && this.formData.get('file') && this.formData.get('file').size > (15 * 1024 * 1024)) {
+            if (docId !== null && document.getElementById(docId) !== null) {
+              document.getElementById(docId).disabled = false
+              document.getElementById(docId).innerHTML = txt
+            }
+            let obj = {}
+            obj.data = {}
+            obj.data.error = 'File size exceeds the default limit of 15 MB.'
+            obj.data.errorCode = 1990
+            obj.data.result = null
+            return resolve(new Response(obj))
+          }
+
           mqlInstance({
             url: cdnURL,
             method: requestType,
@@ -317,7 +298,7 @@ class MQLCdn {
 
     // To get the bucket config from bucket name
     this.setBucketKey = (bucketId) => {
-      // this.bucketId = bucketId
+      this.bucketId = bucketId
       // fetchBucketConfigFromKey(bucketId)
       this.GateWayConfigObj.bucketConfig = []
       let data = {
@@ -347,7 +328,6 @@ class MQLCdn {
 
     const getFileFromCDN = (cdnURL = '') => {
       return new Promise((resolve) => {
-        // if (this.clientId !== undefined) {
         mqlInstance({
           url: cdnURL,
           method: 'GET',
@@ -359,7 +339,7 @@ class MQLCdn {
         })
           .then(res => {
             this.fileName = getFilenameFromUrl(this.cdnURL)
-            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/octet-stream' }))
             var a = document.createElement('a')
             a.href = url
             a.download = this.fileName
@@ -378,17 +358,6 @@ class MQLCdn {
             obj.data.result = null
             resolve(new Response(obj))
           })
-        /* } else {
-          let obj = {}
-          obj.data = {}
-          obj.data.error = 'Invalid Bucket Key...' + this.bucketId
-          obj.data.errorCode = 1990
-          obj.data.result = null
-          if (this.showPageLoader) {
-            window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-          }
-          resolve(new Response(obj))
-        } */
       }).catch(error => {
         // Handling development related errors
         console.log(error)
@@ -421,20 +390,22 @@ class MQLCdn {
             document.getElementById(docId).innerHTML = txt
           }
           if (res) {
-            setBucketConfigInFormData(this.savedConfig.bucketConfig[0])
+            setBucketConfigInFormData(this.savedConfig)
             uploadFileToCDN(docId, this.savedConfig.cdnURL).then(cdnres => {
               obj.data = cdnres.raw
               resolve(new Response(obj))
             })
           } else {
-            prepareMQLCDNGatewayRequest('POST', docId, txt).then(cdnResponse => {
-              if (cdnResponse.raw.errorCode !== requestProcessedWithoutErrorCode) {
-                resolve(cdnResponse)
+            prepareMQLCDNGatewayRequest('POST', docId, txt).then(gatewayRes => {
+              if (gatewayRes.raw.errorCode !== requestProcessedWithoutErrorCode) {
+                resolve(gatewayRes)
               } else {
-                cdnResponse.raw.result.purposeId = this.GateWayConfigObj.purposeId
-                Vue.setServerList(cdnResponse.raw.result)
-                setBucketConfigInFormData(cdnResponse.raw.result.bucketConfig[0])
-                uploadFileToCDN(docId, cdnResponse.raw.result.cdnURL).then(cdnres => {
+                // TODO: check if working witout setting purpose id
+                // gatewayRes.raw.result.purposeId = this.GateWayConfigObj.purposeId
+                Vue.setServerList(gatewayRes.raw.result)
+                this.savedConfig = gatewayRes.raw.result
+                setBucketConfigInFormData(this.savedConfig)
+                uploadFileToCDN(docId, this.savedConfig.cdnURL).then(cdnres => {
                   obj.data = cdnres.raw
                   resolve(new Response(obj))
                 })
@@ -464,25 +435,36 @@ class MQLCdn {
 
       return new Promise((resolve) => {
         if (this.cdnPath.includes('http://') || this.cdnPath.includes('https://')) {
-        // if full path is  available
+          // if full path is  available
           this.cdnURL = this.cdnPath
           getFileFromCDN(this.cdnURL).then(res => {
             resolve(res)
           })
         } else {
-        // add cdnbase url.
-          this.cdnURL = 'o/getCdnConfig'
-          prepareMQLCDNGatewayRequest('POST', docId, txt).then(res => {
-            if (res.raw.errorCode !== requestProcessedWithoutErrorCode) {
-              resolve(res)
+          // check in cache for cdn url
+          checkCdnURLPresentForPurposeId().then(res => {
+            if (res) {
+              // cdn config found in cache
+              this.cdnURL = this.savedConfig.cdnURL
             } else {
-              this.cdnURL = res.raw.result.cdnURL + '/' + this.cdnPath
-              getFileFromCDN(this.cdnURL).then(res => {
-                resolve(res)
+              // add cdnbase url to call cdn gateway.
+              this.cdnURL = 'o/getCdnConfig'
+
+              prepareMQLCDNGatewayRequest('POST', docId, txt).then(res => {
+                if (res.raw.errorCode !== requestProcessedWithoutErrorCode) {
+                  resolve(res)
+                } else {
+                  // cdnUrl from gateway
+                  this.cdnURL = res.raw.result.cdnURL
+                }
               })
             }
+            // complete cdn file path
+            this.cdnURL = this.cdnURL + '/' + this.cdnPath
+            getFileFromCDN(this.cdnURL).then(res => {
+              resolve(res)
+            })
           })
-        // this.cdnURL = Vue.getCDNBaseURL() + this.cdnPath
         }
         if (this.showPageLoader) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
