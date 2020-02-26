@@ -9,6 +9,7 @@ class mqlAssetFDB {
     let CancelToken = axios.CancelToken
     this.assetData = new FormData()
     this.route = 'assetfdb'
+    this.downloadRoute = 'assetdownload'
     this.hostName = ''
     this.fileName = ''
     this.indexType = 'o'
@@ -36,7 +37,8 @@ class mqlAssetFDB {
     )
 
     const setHeaders = (headers = {}) => {
-      headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('user-token')
+      headers['Authorization'] =
+        'Bearer ' + sessionStorage.getItem('user-token')
       headers['Content-Type'] = 'multipart/form-data'
       return headers
     }
@@ -46,68 +48,66 @@ class mqlAssetFDB {
       this.indexId = indexIdStr.split(IndexSplitter)[1]
     }
 
-    this.generateURL = (assetPath) => {
+    // TODO: Validate the necessary params by creating a helper function
+    // to generate url for uploading an asset
+    this.generateUploadURL = () => {
+      let url = `${this.indexType}/${this.route}/${this.hostName}/${this.indexId}`
       if (this.customURL) {
-        if (assetPath) {
-          return (
-            this.customURL + '/' +
-            this.indexType + '/' +
-            this.route + '/' +
-            assetPath
-          )
-        } else {
-          if (this.recordId) {
-            return (
-              this.customURL +
-              '/' +
-                      this.indexType + '/' +
-                      this.route + '/' +
-                      this.hostName + '/' +
-                      this.indexId + '/' +
-                      this.recordId
-            )
-          } else {
-            return (
-              this.customURL +
-              '/' +
-                      this.indexType + '/' +
-                      this.route + '/' +
-                      this.hostName + '/' +
-                      this.indexId
-            )
-          }
-        }
+        url = `${this.customURL}/${url}`
       } else {
-        if (assetPath) {
-          return (
-            '/' +
-            this.indexType + '/' +
-            this.route + '/' +
-            assetPath
-          )
-        } else {
-          if (this.recordId) {
-            return (
-              '/' +
-                      this.indexType + '/' +
-                      this.route + '/' +
-                      this.hostName + '/' +
-                      this.indexId + '/' +
-                      this.recordId
-            )
-          } else {
-            return (
-              '/' +
-                    this.indexType + '/' +
-                    this.route + '/' +
-                    this.hostName + '/' +
-                    this.indexId
-            )
-          }
-        }
+        url = `/${url}`
+      }
+      return url
+    }
+    this.generateUpdateURL = () => {
+      let url = `${this.indexType}/${this.route}/${this.hostName}/${this.indexId}`
+      if (this.recordId) {
+        url = `${url}/${this.recordId}`
+      } else {
+        console.log('Record Id cannot be null')
+        url = `${url}/`
+        return url
+      }
+      if (this.customURL) {
+        url = `${this.customURL}/${url}`
+        return url
+      } else {
+        url = `/${url}`
+        return url
       }
     }
-
+    this.generateStreamURL = assetPath => {
+      let url = `${this.indexType}/${this.route}`
+      if (assetPath) {
+        url = `${url}/${assetPath}`
+      } else {
+        console.error('Asset Path cannot be null')
+        return
+      }
+      if (this.customURL) {
+        url = `${this.customURL}/${url}`
+        return url
+      } else {
+        url = `/server/${url}`
+        return url
+      }
+    }
+    this.generateDownloadURL = assetPath => {
+      let url = `${this.indexType}/${this.downloadRoute}`
+      if (assetPath) {
+        url = `${url}/${assetPath}`
+      } else {
+        console.error('Asset Path cannot be null')
+        return
+      }
+      if (this.customURL) {
+        url = `${this.customURL}/${url}`
+        return url
+      } else {
+        url = `/server/${url}`
+        return url
+      }
+    }
     this.setIndex = function (indexId) {
       this.formatIndex(indexId)
       return this
@@ -117,13 +117,13 @@ class mqlAssetFDB {
       this.hostName = hostName
       return this
     }
-    this.setFormData = (formData) => {
+    this.setFormData = formData => {
       this.fileName = formData.get('file').name
       this.assetData.append('asset', formData.get('file'))
       return this
     }
 
-    this.setCustomURL = (customURL) => {
+    this.setCustomURL = customURL => {
       this.customURL = customURL
       return this
     }
@@ -149,15 +149,21 @@ class mqlAssetFDB {
       if (this.showPageLoader) {
         window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
       }
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
         }
+        let url = ''
+        if (this.recordId) {
+          url = this.generateUpdateURL()
+        } else {
+          url = this.generateUploadURL()
+        }
         if (this.indexId) {
           mqlInstance({
-            url: this.generateURL(''),
+            url: url,
             method: 'POST',
             headers: setHeaders(),
             data: this.assetData,
@@ -214,68 +220,19 @@ class mqlAssetFDB {
       })
     }
 
-    /* this.getAsset = (assetPath, docId = null) => {
+    this.download = (assetPath, docId = null) => {
       let txt = ''
       if (this.showPageLoader) {
         window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
       }
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         if (docId !== null && document.getElementById(docId) !== null) {
           txt = document.getElementById(docId).innerHTML
           document.getElementById(docId).disabled = true
           document.getElementById(docId).innerHTML = 'Processing'
         }
         if (assetPath) {
-          mqlInstance({
-            url: this.generateURL(assetPath),
-            method: 'GET',
-            headers: setHeaders(),
-            cancelToken: new CancelToken(function executor (c) {
-              cancel = c
-            })
-          })
-            .then(res => {
-              if (this.showPageLoader) {
-                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-              }
-              if (docId !== null && document.getElementById(docId) !== null) {
-                document.getElementById(docId).disabled = false
-                document.getElementById(docId).innerHTML = txt
-              }
-              // console.log('res', res, JSON.parse(res.headers.requireddata).contentType)
-              // if (res.headers.requireddata && JSON.parse(res.headers.requireddata).fileName) {
-              //   this.fileName = JSON.parse(res.headers.requireddata).fileName
-              //   const url = window.URL.createObjectURL(new Blob([res.data], { 'type': JSON.parse(res.headers.requireddata).contentType }))
-              //   var a = document.createElement('a')
-              //   a.href = url
-              //   a.download = this.fileName
-              //   a.target = '_blank'
-              //   a.click()
-              let obj = {}
-              obj.data = {}
-
-              obj.data.errorCode = 1000
-              obj.data.result = res.data
-              resolve(new Response(obj))
-              // } else {
-              //   alert('File Not Found')
-              // }
-            })
-            .catch(error => {
-              let obj = {}
-              obj.data = {}
-              if (docId !== null && document.getElementById(docId) !== null) {
-                document.getElementById(docId).disabled = false
-                document.getElementById(docId).innerHTML = txt
-              }
-              if (this.showPageLoader) {
-                window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
-              }
-              obj.data.error = error.message
-              obj.data.errorCode = 1990
-              obj.data.result = null
-              resolve(new Response(obj))
-            })
+          window.open(this.generateDownloadURL(assetPath), '_blank')
         } else {
           if (docId !== null && document.getElementById(docId) !== null) {
             document.getElementById(docId).disabled = false
@@ -294,7 +251,39 @@ class mqlAssetFDB {
           alert(error)
         }
       })
-    } */
+    }
+    this.render = (assetPath, docId = null) => {
+      let txt = ''
+      if (this.showPageLoader) {
+        window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
+      }
+      return new Promise(resolve => {
+        if (docId !== null && document.getElementById(docId) !== null) {
+          txt = document.getElementById(docId).innerHTML
+          document.getElementById(docId).disabled = true
+          document.getElementById(docId).innerHTML = 'Processing'
+        }
+        if (assetPath) {
+          window.open(this.generateStreamURL(assetPath), '_blank')
+        } else {
+          if (docId !== null && document.getElementById(docId) !== null) {
+            document.getElementById(docId).disabled = false
+            document.getElementById(docId).innerHTML = txt
+          }
+          let obj = {}
+          obj.data = {}
+          obj.data.error = 'No Data Found' + this.assetData
+          obj.data.errorCode = 1990
+          obj.data.result = null
+          resolve(new Response(obj))
+        }
+      }).catch(error => {
+        // Handling development related errors
+        if (isDevelopment) {
+          alert(error)
+        }
+      })
+    }
   }
 }
 
