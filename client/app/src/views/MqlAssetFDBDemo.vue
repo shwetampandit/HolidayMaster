@@ -82,6 +82,26 @@
         </div>
       </div>
     </div>
+    <div class="row text-left mt-3">
+      <div class="col-sm-6">
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          @click.stop.prevent="downloadFile"
+        >
+          Download Asset
+        </button>
+      </div>
+      <div class="col-sm-6">
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          @click.stop.prevent="renderFile"
+        >
+          Render Asset
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,7 +109,6 @@
 import MQLAssetFDB from '@/plugins/mqlAssetFDB.js'
 
 export default {
-
   data () {
     return {
       assetPath: '',
@@ -109,7 +128,7 @@ export default {
         .setIndex('o.9929b6e44da568f390d20e51032b') // ( required  ) sets index
         .setHostName('TestMixedBucketFDB2') // (required) sets host name
         .setFormData(formData) // asset data it should be in form-data format
-        .setAssetData({ 'TestAssetBucket': 'bucket1' }) // required only when dynamic named flag is true and
+        .setAssetData({ TestAssetBucket: 'bucket1' }) // required only when dynamic named flag is true and
         // it must be in the JSON format against the 'BucketName' of your assetFDB
         .uploadAssetFile() // calls post request to upload the asset in AssetFDB
         .then(res => {
@@ -151,7 +170,7 @@ export default {
         .setHostName('TestMixedBucketFDB2') // (required) sets host name
         .setFormData(formData) // asset data it should be in form-data format
         .setUpdateWithRecordId(recordId) // (required) recordId of the asset that to be updated
-        .setAssetData({ 'TestAssetBucket': 'bucket1' }) // required only when dynamic named flag is true and
+        .setAssetData({ TestAssetBucket: 'bucket1' }) // required only when dynamic named flag is true and
         // it must be in the JSON format against the 'BucketName' of your assetFDB
         .uploadAssetFile() // calls the post request to update the asset in AssetFDB
         .then(res => {
@@ -161,12 +180,15 @@ export default {
             res.showErrorToast()
           }
         })
+    },
+    downloadFile () {
+      new MQLAssetFDB().download(this.updatedAssetPath || this.assetPath)
+    },
+    renderFile () {
+      new MQLAssetFDB().render(this.updatedAssetPath || this.assetPath)
     }
   }
-
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
