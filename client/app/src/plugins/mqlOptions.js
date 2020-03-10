@@ -50,7 +50,7 @@ export default {
       appCode = str
     }
     Vue.getServerList = function (purposeId, bucketId) {
-      let result = cdnServerList.find(purpose => (purpose.purposeId === purposeId && purpose.bucketConfig[0].bucketId === bucketId))
+      let result = cdnServerList.find(purpose => (purpose.purposeId === purposeId && purpose.bucketId === bucketId))
       return result
     }
     Vue.setServerList = function (obj) {
