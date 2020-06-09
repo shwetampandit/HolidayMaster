@@ -24,7 +24,7 @@ class mqlAssetFDB {
 
     mqlInstance.interceptors.request.use(
       function (config) {
-        if (config.url.indexOf('r/') !== -1) {
+        if (config.url.indexOf('r/mql') !== -1 || config.url.indexOf('r/c/mql') !== -1) {
           if (sessionStorage.getItem('user-token') === null) {
             cancel('Operation canceled by the MQL interceptor.')
           }
