@@ -300,19 +300,15 @@ class MQLCdn {
 
       return new Promise((resolve) => {
         if (this.cdnPath.includes('http://') || this.cdnPath.includes('https://')) {
-          // if full path is  available
           this.cdnURL = this.cdnPath
           getFileFromCDN(this.cdnURL).then(res => {
             resolve(res)
           })
         } else {
-          let obj = {}
-          obj.data = {
-            error: 'Invalid file URL.',
-            errorCode: 1990,
-            result: null
-          }
-          resolve(new Response(obj))
+          this.cdnURL = window.location.origin + Vue.getCDNBaseURL() +"/"+ this.cdnPath
+          getFileFromCDN(this.cdnURL).then(res => {
+            resolve(res)
+          })
         }
         if (this.showPageLoader) {
           window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', false)
