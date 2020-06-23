@@ -1,13 +1,6 @@
-
 <template>
-  <div
-    class="validator"
-    id="app"
-  >
-    <form
-      class="ui form"
-      @submit.prevent="onSubmit"
-    >
+  <div class="validator" id="app">
+    <form class="ui form" @submit.prevent="onSubmit">
       <!-- {{ errors }} -->
       <!-- <div
         class="field"
@@ -145,10 +138,7 @@
     <div class="container">
       <div class="row justify-content-center text-left">
         <div class="col-sm-6">
-          <form
-            class="card p-4 mb-5"
-            @submit.prevent="onSubmit"
-          >
+          <form class="card p-4 mb-5" @submit.prevent="onSubmit">
             <h4 class="text-center mb-3">
               Validator
             </h4>
@@ -163,11 +153,10 @@
                 placeholder="name"
                 v-validate="'required|alpha'"
                 v-model="name"
+              />
+              <small class="form-text text-danger" v-if="errors.has('name')">
+                {{ $t(errors.first('name')) }}</small
               >
-              <small
-                class="form-text text-danger"
-                v-if="errors.has('name')"
-              > {{ $t(errors.first('name')) }}</small>
             </div>
             <div class="form-group">
               <label for="full-name">Full Name</label>
@@ -179,11 +168,13 @@
                 placeholder="fullname"
                 v-validate="'required|alpha_spaces'"
                 v-model="fullname"
-              >
+              />
               <small
                 class="form-text text-danger"
                 v-if="errors.has('fullname')"
-              > {{ $t(errors.first('fullname')) }}</small>
+              >
+                {{ $t(errors.first('fullname')) }}</small
+              >
             </div>
             <div class="form-group">
               <label for="email">Email</label>
@@ -196,17 +187,16 @@
                 placeholder="Email"
                 v-validate="'required|email'"
                 v-model="email"
-              >
+              />
               <small
                 id="emailHelp"
                 class="form-text text-danger"
                 v-if="errors.has('email')"
-              > {{ $t(errors.first('email')) }}</small>
+              >
+                {{ $t(errors.first('email')) }}</small
+              >
             </div>
-            <div
-              class="form-group"
-              :class="{error: errors.has('phone')}"
-            >
+            <div class="form-group" :class="{ error: errors.has('phone') }">
               <label>Phone no</label>
               <input
                 type="phone"
@@ -218,30 +208,26 @@
                 minLength="10"
                 v-validate="'required|numeric'"
                 v-model="phone"
-              >
-              <small
-                class="form-text text-danger"
-                v-if="errors.has('phone')"
-              >
+              />
+              <small class="form-text text-danger" v-if="errors.has('phone')">
                 {{ $t(errors.first('phone')) }}
               </small>
             </div>
             <div
               class="form-group"
-              :class="{error: errors.has('credit_card')}"
+              :class="{ error: errors.has('credit_card') }"
             >
               <label>credit card</label>
               <input
-                type="credit_card"
                 autocomplete
                 class="form-control"
                 name="credit_card"
                 placeholder="credit card"
-                maxLength="16"
-                minLength="16"
+                maxlength="16"
+                minlength="16"
                 v-validate="'required|credit_card'"
                 v-model="credit_card"
-              >
+              />
               <small
                 class="form-text text-danger"
                 v-if="errors.has('credit_card')"
@@ -249,31 +235,22 @@
                 {{ $t(errors.first('credit_card')) }}
               </small>
             </div>
-            <div
-              class="form-group"
-              :class="{error: errors.has('ip')}"
-            >
+            <div class="form-group" :class="{ error: errors.has('ip') }">
               <label>IP Address</label>
               <input
-                type="credit_card"
+                type="ip"
                 autocomplete
                 class="form-control"
                 name="ip"
                 placeholder="ip address"
                 v-validate="'required|ip'"
                 v-model="ip"
-              >
-              <small
-                class="form-text text-danger"
-                v-if="errors.has('ip')"
-              >
+              />
+              <small class="form-text text-danger" v-if="errors.has('ip')">
                 {{ $t(errors.first('ip')) }}
               </small>
             </div>
-            <div
-              class="form-group"
-              :class="{error: errors.has('state')}"
-            >
+            <div class="form-group" :class="{ error: errors.has('state') }">
               <label>Select State</label>
               <v-select
                 :options="states"
@@ -283,20 +260,12 @@
                 data-vv-validate-on="blur"
               />
               <!-- {{ state }} -->
-              <small
-                class="form-text text-danger"
-                v-if="errors.has('state')"
-              >
+              <small class="form-text text-danger" v-if="errors.has('state')">
                 {{ $t(errors.first('state')) }}
               </small>
             </div>
-            <div
-              class="form-group text-right mb-0"
-            >
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-dark mr-2"
-              >
+            <div class="form-group text-right mb-0">
+              <button type="button" class="btn btn-sm btn-outline-dark mr-2">
                 Clear
               </button>
               <button
@@ -319,6 +288,7 @@ import Vue from 'vue'
 import vSelect from 'vue-select'
 import VeeValidate from 'vee-validate'
 Vue.use(VeeValidate, { events: 'input|blur' })
+import { loadLanguageAsync } from '@/setup/i18n-setup.js'
 
 // VeeValidate.Validator.extend('abc1', {
 //   getMessage: field => 'Sorry dude.',
@@ -330,7 +300,7 @@ Vue.use(VeeValidate, { events: 'input|blur' })
 // })
 export default {
   components: { vSelect },
-  data () {
+  data() {
     return {
       name: '',
       fullname: '',
@@ -339,56 +309,55 @@ export default {
       date: '',
       credit_card: '',
       ip: '',
-      states: [
-        'Maharashtra',
-        'Bihar',
-        'Gujrat'
-      ],
-      state: ''
+      states: ['Maharashtra', 'Bihar', 'Gujrat'],
+      state: '',
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit() {
       this.$validator.validateAll()
       if (this.errors === null) {
         alert('ok')
       }
-    }
+    },
   },
-  created () {
+  created() {
     const customMessage = {
       custom: {
-        'phone': {
+        phone: {
           numeric: 'validation.phoneNumeric',
           min: 'validation.phoneMinLength',
-          required: 'validation.phoneRequired'
+          required: 'validation.phoneRequired',
         },
-        'name': {
+        name: {
           required: 'validation.nameRequired',
-          alpha: 'validation.nameAlpha'
+          alpha: 'validation.nameAlpha',
         },
-        'email': {
+        email: {
           required: 'validation.emailRequired',
-          email: 'validation.emailValid'
+          email: 'validation.emailValid',
         },
-        'fullname': {
+        fullname: {
           required: 'validation.fullnameRequired',
           alpha_spaces: 'validation.fullnameValidate',
-          alpha: 'validation.alpha'
+          alpha: 'validation.alpha',
         },
-        'credit_card': {
+        credit_card: {
           required: 'validation.credit_cardRequired',
-          credit_card: 'validation.credit_cardValidate'
+          min: 'validation.credit_cardMinimum',
+          credit_card: 'validation.credit_cardValidate',
         },
-        'ip': {
-          ip: 'validation.ipValid'
+        ip: {
+          required: 'validation.ipRequired',
+          ip: 'validation.ipValid',
         },
-        'state': {
-          state: 'validation.stateValid'
-        }
-      }
+        state: {
+          required: 'validation.stateRequired',
+        },
+      },
     }
     this.$validator.localize('en', customMessage)
-  }
+  },
 }
 </script>
++

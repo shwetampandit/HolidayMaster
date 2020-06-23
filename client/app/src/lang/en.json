@@ -22,7 +22,10 @@
     "fullnameValidate": "The fullname field may only contain alphabetic characters as well as spaces.",
     "credit_cardRequired": "The credit card field is required.",
     "credit_cardValidate": "The credit card field is invalid.",
+    "credit_cardMinimum":"The credit card field must be of 16 characters.",
+    "ipRequired": "The ip field is required.",
     "ipValid": "The ip field must be a valid ip address.",
-    "phoneMinLength": "The phone field must be at least 10 characters."
+    "phoneMinLength": "The phone field must be at least 10 characters.",
+    "stateRequired": "The state field is required."
   }
 }

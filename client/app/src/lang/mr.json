@@ -1,28 +1,31 @@
 {
-  "about":{
-    "aboutHeading":"हे पृष्ठ बद्दल आहे"
+  "about": {
+    "aboutHeading": "हे एक पृष्ठ बद्दल आहे"
+  },
+  "component2": {
+    "title": "इंग्रजी मजकूर (फाइलमधून लोड)"
+  },
+  "demo": {
+    "demoHeading": "हा मजकूर आहे"
   },
   "home": {
     "homeTitle": "हे मुख्यपृष्ठ आहे"
   },
-  "demo": {
-    "demoHeading": "हे मराठीमध्ये आहे"
-  },
-  "component2": {
-    "title": "मराठी अनुच्छेद (Loaded from file)"
-  },
   "validation": {
-    "nameRequired": "The Name field is required",
-    "nameAlpha": "The Name field may only contain alphabetic characters.",
-    "emailValid": "The Email field must be a valid email.",
-    "emailRequired": "The Email field is required.",
-    "phoneNumeric": "The Phone number field format is invalid.",
-    "phoneRequired": "Phone no field is required.",
-    "fullnameRequired": "The fullname field is required.",
-    "fullnameValidate": "The fullname field may only contain alphabetic characters as well as spaces.",
-    "credit_cardRequired": "The credit card field is required.",
-    "credit_cardValidate": "The credit card field is invalid.",
-    "ipValid": "The ip field must be a valid ip address.",
-    "phoneMinLength": "The phone field must be at least 10 characters."
+    "credit_cardMinimum": "क्रेडिट कार्ड फील्ड 16 वर्णांचे असणे आवश्यक आहे.",
+    "credit_cardRequired": "क्रेडिट कार्ड फील्ड आवश्यक आहे.",
+    "credit_cardValidate": "क्रेडिट कार्ड फील्ड अवैध आहे.",
+    "emailRequired": "ईमेल फील्ड आवश्यक आहे.",
+    "emailValid": "ईमेल फील्ड वैध ईमेल असणे आवश्यक आहे.",
+    "fullnameRequired": "पूर्ण नाव फील्ड आवश्यक आहे.",
+    "fullnameValidate": "पूर्ण नाव फील्डमध्ये फक्त वर्णमाला तसेच रिक्त स्थान असू शकतात.",
+    "ipRequired": "आयपी फील्ड आवश्यक आहे.",
+    "ipValid": "आयपी फील्ड वैध आयपी पत्ता असणे आवश्यक आहे.",
+    "nameAlpha": "नेम फील्डमध्ये फक्त वर्णमाला वर्ण असू शकतात.",
+    "nameRequired": "नाव फील्ड आवश्यक आहे",
+    "phoneMinLength": "फोन फील्ड किमान 10 वर्णांचे असणे आवश्यक आहे.",
+    "phoneNumeric": "फोन नंबर फील्ड स्वरूपन अवैध आहे.",
+    "phoneRequired": "फोन फील्ड आवश्यक नाही.",
+    "stateRequired": "राज्य फील्ड आवश्यक आहे."
   }
 }
