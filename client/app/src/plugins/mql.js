@@ -57,9 +57,23 @@ class MQL {
 				return Promise.reject(error)
 			}
 		)
+
+		mqlInstance.interceptors.response.use(
+			function(response) {
+				return response
+			},
+			function(error) {
+				if (401 === error.response.status || 412 === error.response.status) {
+					window.app.$store.dispatch({ type: 'AUTH_LOGOUT' })
+				} else {
+					return Promise.reject(error)
+				}
+			}
+		)
+
 		// mqlInstance.interceptors.response.use(
 		//   function (config) {
-		//     if (config.url.indexOf('r/mql') !== -1 || config.url.indexOf('r/c/mql') !== -1) {
+		//     if (config.url.indexOf('r/') !== -1) {
 		//       // Check for restricted request
 		//       if (sessionStorage.getItem('user-token') === null) {
 		//         cancel('Operation canceled by the MQL interceptor.')
@@ -145,7 +159,7 @@ class MQL {
 		}
 		this.setData = function(strActivity = null, strDataObj = null) {
 			if (strActivity === null) {
-				console.error('Data cannot be null')
+				// console.error('Data cannot be null')
 			} else if (strDataObj === null) {
 				// common data
 				for (let [key, value] of this.fetchableMap) {
@@ -163,7 +177,7 @@ class MQL {
 			return this
 		}
 		this.setHeader = function(obj_header = {}) {
-			this.fetchableMap.set('Header', obj_header)
+			this.fetchableMap.set('MQLHeader', obj_header)
 			return this
 		}
 		this.setCustomURL = function(str_customURL = null) {
@@ -185,13 +199,13 @@ class MQL {
 			// this.mqlString = ''
 			return this
 		}
+		this.setBranch = function(branch = 'main') {
+			this.fetchableMap.set('MQLHeader', { 'Service-Branch': branch })
+			return this
+		}
 		this.fetch = function(docId = null) {
 			return new Promise((resolve, reject) => {
 				let self = this
-				if (isDevelopment && docId !== null && document.getElementById(docId) == null) {
-					alert('Unable to find element with Id : ' + docId)
-					return
-				}
 				if (this.isConfirm) {
 					Vue.dialog
 						.confirm('Please confirm to continue')
@@ -227,7 +241,6 @@ class MQL {
 				if (this.showPageLoader && window.app.$store !== undefined && window.app.$store !== null) {
 					window.app.$store.dispatch('app/MUTATE_PAGE_BLOCKER', true)
 				}
-
 				if (docId !== null && document.getElementById(docId) !== null) {
 					txt = document.getElementById(docId).innerHTML
 					document.getElementById(docId).disabled = true
@@ -250,7 +263,7 @@ class MQL {
 				for (var [key, value] of fetchableMap) {
 					if (
 						key.search('ActivityType') < 0 &&
-						key.search('Header') < 0 &&
+						key.search('MQLHeader') < 0 &&
 						key.search('CustomURL') < 0 &&
 						key.search('isQuery') < 0
 					) {
@@ -280,7 +293,7 @@ class MQL {
 					headers: this.generateHeaders(
 						activityType,
 						activities.substring(1, activities.length),
-						fetchableMap.get('Header'),
+						fetchableMap.get('MQLHeader'),
 						isQuery
 					),
 					data: postParamObject,
