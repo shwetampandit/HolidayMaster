@@ -16,7 +16,6 @@
         <router-view :key="$route.fullPath" />
       </div>
     </div>
-   
   </div>
 </template>
 

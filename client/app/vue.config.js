@@ -14,7 +14,7 @@ module.exports = {
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
       const opt = {
-      // （Default 5) Maximum concurrent requests when loading on demand
+        // （Default 5) Maximum concurrent requests when loading on demand
         maxAsyncRequests: 16,
         // (default 3) maximum number of concurrent requests on the entry point
         maxInitialRequests: 16,
@@ -65,7 +65,7 @@ module.exports = {
         // );
 
         plugins.push(new TerserPlugin({
-        // sourceMap: true,
+          // sourceMap: true,
           extractComments: 'all',
           terserOptions: {
             ecma: undefined,
@@ -122,7 +122,7 @@ module.exports = {
         // console.log(config.module.rules)
         // config.module.rules.push(rule1);
       } else {
-      // mutate for development...
+        // mutate for development...
       }
     }
   },
@@ -200,7 +200,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/server': {
-        target: 'http://localhost:8080', // provide proxy  for your project
+        target: 'https://cs.mkcl.org/1SEnILUUyAdUQFjFs4brGEbfukn', // provide proxy  for your project
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -208,7 +208,7 @@ module.exports = {
         }
       },
       '/cdnserver': {
-        target: 'http://localhost:3034/',
+        target: 'https://localhost:3034/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

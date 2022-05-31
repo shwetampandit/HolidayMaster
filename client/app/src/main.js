@@ -9,17 +9,21 @@ import mqlOptions from './plugins/mqlOptions.js'
 import VueLocalStorage from 'vue-localstorage'
 import { loadLanguageAsync, i18n } from './setup/i18n-setup.js'
 import VuejsDialog from 'vuejs-dialog'
-import BootstrapVue from 'bootstrap-vue'
+
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import Toasted from 'vue-toasted'
 import VueMeta from 'vue-meta'
 import Vuebar from 'vuebar';
 
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import '../public/assets/plugins/bootstrap-4.1.2-dist/css/bootstrap.min.css'
 import '../public/assets/plugins/materialdesignicons/css/materialdesignicons.min.css'
 import 'vue-select/dist/vue-select.css'
 import '../public/assets/css/template.scss'
+
 
 Vue.config.productionTip = false
 const isProduction = process.env.NODE_ENV === 'production'
@@ -37,7 +41,10 @@ const options = {
 Vue.use(VueMeta)
 Vue.use(VueLogger, options)
 Vue.use(VuejsDialog)
+// Vue use(Bootstrap)
+
 Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
 Vue.use(vSelect)
 Vue.use(Toasted)
 Vue.use(Vuebar);
